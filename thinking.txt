@@ -1,0 +1,22 @@
+routing
+/ -> main page (write down what the page does)
+/login -> login
+/register -> register
+/main -> ?
+/roomatefind -> searching for roomates
+/roomate -> 1 roomates profile 
+/houselistingfind -> searching for house
+/houselisting -> 1 house listing
+/addhouselisting -> make a houselisting
+/profile -> your own profiles page
+/changeprofile -> change data about your profile
+------------------------------------------------
+/chat -> if we make chatting possible
+
+needed:
+-context -> remember logged in user, maybe theme?, no CRUD
+-pages done
+-login (context) -> make it secure (dont know if front or backend)
+-register
+-make mobile look -> how to do swiping
+-algorithm for finding roomate and house
