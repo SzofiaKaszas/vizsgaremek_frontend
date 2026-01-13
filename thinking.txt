@@ -20,3 +20,4 @@ needed:
 -register
 -make mobile look -> how to do swiping
 -algorithm for finding roomate and house
+-interfaces
