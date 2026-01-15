@@ -1,32 +1,35 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   createContext,
   useEffect,
   useState,
   type PropsWithChildren,
 } from "react";
-import type { User } from "../interfaces";
-
-const API_URL = "http://localhost:3000";
+import type { User, AuthContextType } from "../interfaces";
 
 //make interface for context
-const defaultAuthContext = {
+const defaultAuthContext: AuthContextType = {
   currentUser: undefined as User | undefined,
-  login(email: string, password: string) {},
-  logout() {},
-  register(
-    //make interface for register function
-    firstName: string,
-    lastName: string,
-    connectionEmail: string,
-    phoneNumber: string,
-    hasHouse: boolean,
-    lookingForPeople: boolean,
-    password: string,
-    email: string
-  ) {},
+
+  login: async (email: string, password: string) => {},
+  logout: () => {},
+  register: async (user: Omit<User, "idUser">) => ({
+    idUser: 0,
+    firstName: "",
+    lastName: "",
+    connectionEmail: "",
+    phoneNumber: "",
+    password: "",
+    email: "",
+    hasHouse: false,
+    lookingForPeople: false,
+  }),
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(defaultAuthContext);
+
+const API_URL_BASE = "http://localhost:3000";
 
 export function AuthContextProvider(props: PropsWithChildren) {
   const [token, setToken] = useState("");
@@ -38,13 +41,15 @@ export function AuthContextProvider(props: PropsWithChildren) {
       return;
     }
 
-    const response = await fetch(API_URL + "/user/me", {
+    //fetch user data
+    const response = await fetch(API_URL_BASE + "/user/me", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
+    //handle errors lo
     if (!response.ok) {
       console.error("Failed to load user data, logging out");
       setToken("");
@@ -57,17 +62,18 @@ export function AuthContextProvider(props: PropsWithChildren) {
     console.log(userData);
   }
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      loadUserData(storedToken);
-    }
-  }, []);
+  const storedToken = localStorage.getItem("token");
+  if (storedToken) {
+    loadUserData(storedToken);
+  }
 
   const contextValue = {
     currentUser: user,
+
+    //#region Auth functions
+
     async login(email: string, password: string) {
-      const response = await fetch(API_URL + "/user-login/login", {
+      const response = await fetch(API_URL_BASE + "/user-login/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,38 +96,23 @@ export function AuthContextProvider(props: PropsWithChildren) {
       setUser(undefined);
       localStorage.removeItem("token");
     },
-    async register(
-      firstName: string,
-      lastName: string,
-      connectionEmail: string,
-      phoneNumber: string,
-      hasHouse: boolean,
-      lookingForPeople: boolean,
-      password: string,
-      email: string
-    ) {
-      /*const response = await fetch(API_URL + "/user/register", {
+    async register(user: Omit<User, "idUser">) {
+      const response = await fetch(API_URL_BASE + "/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          connectionEmail,
-          phoneNumber,
-          hasHouse,
-          lookingForPeople,
-          password,
-          email,
-        }),
+        body: JSON.stringify(user),
       });
       if (!response.ok) {
         throw new Error("Registration failed");
       }
       const newUser = await response.json();
-      console.log("Registration response:", newUser);*/
+      console.log("Registration response:", newUser);
+      return user as User;
     },
+
+    //#endregion
   };
 
   return (
