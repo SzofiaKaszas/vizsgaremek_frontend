@@ -67,7 +67,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
   const contextValue = {
     currentUser: user,
     async login(email: string, password: string) {
-      const response = await fetch(API_URL + "/user-login/login", {
+      const response = await fetch(API_URL + "/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
