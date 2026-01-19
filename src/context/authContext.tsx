@@ -100,7 +100,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
       password: string,
       email: string
     ) {
-      /*const response = await fetch(API_URL + "/user/register", {
+      const response = await fetch(API_URL + "/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +120,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
         throw new Error("Registration failed");
       }
       const newUser = await response.json();
-      console.log("Registration response:", newUser);*/
+      console.log("Registration response:", newUser);
     },
   };
 
