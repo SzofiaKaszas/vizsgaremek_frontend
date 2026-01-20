@@ -8,6 +8,7 @@ export function Login() {
   const [password, setPassword] = useState("");
 
   return (
+    <>
     <form onSubmit={(e) => {
       e.preventDefault();
       context.login(email, password);
@@ -27,5 +28,10 @@ export function Login() {
       </div>
       <button type="submit">Login</button>
     </form>
+
+    <div>
+      <a href="/register">Don't have an account? Register here.</a>
+    </div>
+    </>
   );
 }

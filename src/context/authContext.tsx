@@ -1,31 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   createContext,
   useEffect,
   useState,
   type PropsWithChildren,
 } from "react";
-import type { User } from "../interfaces";
+import type { AuthContextType, User } from "../interfaces";
 
 const API_URL = "http://localhost:3000";
 
-//make interface for context
-const defaultAuthContext = {
+const defaultAuthContext: AuthContextType = {
   currentUser: undefined as User | undefined,
   login(email: string, password: string) {},
   logout() {},
-  register(
-    //make interface for register function
-    firstName: string,
-    lastName: string,
-    connectionEmail: string,
-    phoneNumber: string,
-    hasHouse: boolean,
-    lookingForPeople: boolean,
-    password: string,
-    email: string
-  ) {},
+  register() //make interface for register function
+
+  {},
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(defaultAuthContext);
 
 export function AuthContextProvider(props: PropsWithChildren) {
@@ -60,7 +53,9 @@ export function AuthContextProvider(props: PropsWithChildren) {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
-      loadUserData(storedToken);
+      (async () => {
+        await loadUserData(storedToken);
+      })();
     }
   }, []);
 
@@ -85,20 +80,21 @@ export function AuthContextProvider(props: PropsWithChildren) {
       await loadUserData(tokenObj.token);
       console.log("Login response:", tokenObj);
     },
+
     logout() {
       setToken("");
       setUser(undefined);
       localStorage.removeItem("token");
     },
+
     async register(
       firstName: string,
       lastName: string,
-      connectionEmail: string,
       phoneNumber: string,
       hasHouse: boolean,
       lookingForPeople: boolean,
       password: string,
-      email: string
+      email: string,
     ) {
       const response = await fetch(API_URL + "/user/register", {
         method: "POST",
@@ -108,7 +104,6 @@ export function AuthContextProvider(props: PropsWithChildren) {
         body: JSON.stringify({
           firstName,
           lastName,
-          connectionEmail,
           phoneNumber,
           hasHouse,
           lookingForPeople,

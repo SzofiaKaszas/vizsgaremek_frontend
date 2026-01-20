@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import { Login } from "./pages/Login.tsx";
 import { Main } from "./pages/Main.tsx";
 import { AuthContextProvider } from "./context/authContext.tsx";
+import { Register } from "./pages/Register.tsx";
 
 const router = createBrowserRouter([
   {
@@ -14,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, Component: Main },
       { path: "/login", Component: Login },
-      { path: "/register", Component: Login },
+      { path: "/register", Component: Register },
       { path: "/main", Component: Main },
       { path: "/roomatefind", Component: Login },
       { path: "/houselistingfind", Component: Login },
