@@ -7,6 +7,7 @@ import { Login } from "./pages/Login.tsx";
 import { Main } from "./pages/Main.tsx";
 import { AuthContextProvider } from "./context/authContext.tsx";
 import { Register } from "./pages/Register.tsx";
+import { Profile } from "./pages/Profile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
       { path: "/houselistingfind", Component: Login },
       { path: "/houselisting", Component: Login },
       { path: "/addhouselisting", Component: Login },
-      { path: "/profile", Component: Login },
+      { path: "/profile", Component: Profile },
       { path: "/changeprofile", Component: Login },
     ],
   },

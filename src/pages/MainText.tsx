@@ -1,7 +1,6 @@
 export function MainText() {
   return (
     <div>
-        <h1>Welcome to Our Community!</h1>
         <p>
             We are thrilled to have you here. Our platform is dedicated to connecting individuals who are looking for housing solutions and those who have space to share. Whether you're seeking a place to stay or offering a home, you've come to the right place.
         </p>
