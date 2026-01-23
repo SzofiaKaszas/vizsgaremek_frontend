@@ -24,7 +24,7 @@ export interface UserToken{
 }
 
 export interface AuthContextType {
-  currentUser: User | undefined;
+  currentUserId: number | undefined;
   login: (email: string, password: string) => Promise<UserToken[]>;
   logout: () => void;
   register: (user: Omit<User, "idUser">) => Promise<User[]>;

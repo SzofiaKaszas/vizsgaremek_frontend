@@ -8,6 +8,7 @@ import { Main } from "./pages/Main.tsx";
 import { AuthContextProvider } from "./context/authContext.tsx";
 import { Register } from "./pages/Register.tsx";
 import { Profile } from "./pages/Profile.tsx";
+import { UserContextProvider } from "./context/userContext.tsx";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthContextProvider>
-      <RouterProvider router={router} />
+      <UserContextProvider>
+        <RouterProvider router={router} />
+      </UserContextProvider>
     </AuthContextProvider>
   </StrictMode>,
 );

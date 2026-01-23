@@ -10,7 +10,7 @@ import type { AuthContextType, User, UserToken } from "../interfaces";
 const API_URL = "http://localhost:3000";
 
 const defaultAuthContext: AuthContextType = {
-  currentUser: undefined as User | undefined,
+  currentUserId: undefined as number | undefined,
   login: async (_email: string, _password: string) => [] as UserToken[],
   logout: async () => {},
   register: async (_user: Omit<User, "idUser">) => [] as User[],
@@ -21,7 +21,7 @@ export const AuthContext = createContext(defaultAuthContext);
 
 export function AuthContextProvider(props: PropsWithChildren) {
   const [_token, setToken] = useState("");
-  const [user, setUser] = useState<User | undefined>(undefined);
+  const [userid, setUser] = useState<number>(); 
 
   async function loadUserData(token: string) {
     if (!token) {
@@ -29,7 +29,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
       return;
     }
 
-    const response = await fetch(API_URL + "/user/me", {
+    const response = await fetch(API_URL + "/user/getid", { 
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
       localStorage.removeItem("token");
       return;
     }
-    const userData = (await response.json()) as User;
+    const userData = (await response.json()) as number;
     setUser(userData);
 
     console.log(userData);
@@ -58,7 +58,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
   }, []);
 
   const contextValue = {
-    currentUser: user,
+    currentUserId: userid,
     async login(email: string, password: string): Promise<UserToken[]> {
       const response = await fetch(API_URL + "/user-token/login", {
         method: "POST",

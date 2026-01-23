@@ -3,15 +3,15 @@ import { NavLink } from "react-router";
 import { AuthContext } from "../context/authContext";
 
 export function NavBar() {
-  const { currentUser, logout } = useContext(AuthContext);
+  const { currentUserId, logout } = useContext(AuthContext);
 
   return (
     <nav className="navbar">
       <NavLink to="/main">Main</NavLink>
       <NavLink to="/roomatefind">Roomate Find</NavLink>
       <NavLink to="/houselistingfind">House Listing Find</NavLink>
-      {currentUser === undefined && <NavLink to="/login">Login</NavLink>}
-      {currentUser !== undefined && (
+      {currentUserId === undefined && <NavLink to="/login">Login</NavLink>}
+      {currentUserId !== undefined && (
         <>
           <a className="nav-link"
             onClick={() => {

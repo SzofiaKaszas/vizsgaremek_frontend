@@ -4,9 +4,9 @@ import { AuthContext } from "../context/authContext";
 export function Login() {
   const context = useContext(AuthContext);
 
-  const [error, setError] = useState("");
+  const [_error, setError] = useState("");
 
-  if (!context.currentUser) {
+  if (!context.currentUserId) {
     return (
       <>
         <form
