@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import type { User } from "../interfaces";
 
 export function Register() {
   const context = useContext(AuthContext);
@@ -19,15 +20,17 @@ export function Register() {
     const lookingForHouse = formData.get("lookingForHouse") === "on";
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    context.register(
+    const user: Omit<User, "idUser"> = {
       firstName,
       lastName,
       phoneNumber,
       hasHouse,
       lookingForPeople,
-      password,
+      lookingForHouse,
       email,
-    );
+      password,
+    };
+    context.register(user);
   }
 
   return (
