@@ -11,16 +11,16 @@ const API_URL = "http://localhost:3000";
 
 const defaultAuthContext: AuthContextType = {
   currentUser: undefined as User | undefined,
-  login: async (email: string, password: string) => [] as UserToken[],
+  login: async (_email: string, _password: string) => [] as UserToken[],
   logout: async () => {},
-  register: async (user: Omit<User, "idUser">) => [] as User[],
+  register: async (_user: Omit<User, "idUser">) => [] as User[],
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(defaultAuthContext);
 
 export function AuthContextProvider(props: PropsWithChildren) {
-  const [token, setToken] = useState("");
+  const [_token, setToken] = useState("");
   const [user, setUser] = useState<User | undefined>(undefined);
 
   async function loadUserData(token: string) {
