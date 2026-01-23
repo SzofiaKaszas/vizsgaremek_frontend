@@ -16,7 +16,7 @@ export interface User {
 
   hasHouse: boolean;
   lookingForPeople: boolean;
-  //lookingForHouse: boolean
+  lookingForHouse: boolean
 }
 
 export interface UserToken{
@@ -25,7 +25,7 @@ export interface UserToken{
 
 export interface AuthContextType {
   currentUser: User | undefined;
-  login: (email: string, password: string) => Promise<UserToken>;
+  login: (email: string, password: string) => Promise<UserToken[]>;
   logout: () => void;
-  register: (user: Omit<User, "idUser">) => Promise<User>;
+  register: (user: Omit<User, "idUser">) => Promise<User[]>;
 }

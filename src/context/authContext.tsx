@@ -5,17 +5,15 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import type { AuthContextType, User } from "../interfaces";
+import type { AuthContextType, User, UserToken } from "../interfaces";
 
 const API_URL = "http://localhost:3000";
 
 const defaultAuthContext: AuthContextType = {
   currentUser: undefined as User | undefined,
-  login(email: string, password: string) {},
-  logout() {},
-  register() //make interface for register function
-
-  {},
+  login: async (email: string, password: string) => [] as UserToken[],
+  logout: async () => {},
+  register: async (user: Omit<User, "idUser">) => [] as User[],
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -61,7 +59,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
 
   const contextValue = {
     currentUser: user,
-    async login(email: string, password: string) {
+    async login(email: string, password: string): Promise<UserToken[]> {
       const response = await fetch(API_URL + "/user/login", {
         method: "POST",
         headers: {
@@ -79,6 +77,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
 
       await loadUserData(tokenObj.token);
       console.log("Login response:", tokenObj);
+      return tokenObj as UserToken[];
     },
 
     logout() {
@@ -87,28 +86,21 @@ export function AuthContextProvider(props: PropsWithChildren) {
       localStorage.removeItem("token");
     },
 
-    async register(
-      firstName: string,
-      lastName: string,
-      phoneNumber: string,
-      hasHouse: boolean,
-      lookingForPeople: boolean,
-      password: string,
-      email: string,
-    ) {
+    async register(user: Omit<User, "idUser">): Promise<User[]> {
       const response = await fetch(API_URL + "/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          firstName,
-          lastName,
-          phoneNumber,
-          hasHouse,
-          lookingForPeople,
-          password,
-          email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+          hasHouse: user.hasHouse,
+          lookingForPeople: user.lookingForPeople,
+          lookingForHouse: user.lookingForHouse,
+          password: user.password,
+          email: user.email,
         }),
       });
       if (!response.ok) {
@@ -116,6 +108,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
       }
       const newUser = await response.json();
       console.log("Registration response:", newUser);
+      return newUser as User[];
     },
   };
 
