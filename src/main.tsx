@@ -24,8 +24,10 @@ const router = createBrowserRouter([
       { path: "/houselistingfind", Component: Login },
       { path: "/houselisting", Component: Login },
       { path: "/addhouselisting", Component: Login },
+      { path: "/managehouselising", Component: Login },
       { path: "/profile", Component: Profile },
       { path: "/editprofile", Component: EditProfile },
+      { path: "/admin", Component: EditProfile },
     ],
   },
 ]);

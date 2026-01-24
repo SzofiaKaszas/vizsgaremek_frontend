@@ -17,6 +17,8 @@ export interface User {
   hasHouse: boolean;
   lookingForPeople: boolean;
   lookingForHouse: boolean
+
+  role: string;
 }
 
 export interface UserToken{
