@@ -20,7 +20,8 @@ export interface User {
 }
 
 export interface UserToken{
-  //need backend
+  userIdToken: number;
+  token: string;
 }
 
 export interface AuthContextType {
@@ -28,4 +29,9 @@ export interface AuthContextType {
   login: (email: string, password: string) => Promise<UserToken[]>;
   logout: () => void;
   register: (user: Omit<User, "idUser">) => Promise<User[]>;
+}
+
+export interface UserContextType {
+  userData: User | undefined;
+  changeUserData?: (newData: Partial<User>) => void;
 }

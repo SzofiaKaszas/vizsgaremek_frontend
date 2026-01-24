@@ -21,7 +21,7 @@ export const AuthContext = createContext(defaultAuthContext);
 
 export function AuthContextProvider(props: PropsWithChildren) {
   const [_token, setToken] = useState("");
-  const [userid, setUser] = useState<number>(); 
+  const [userid, setUser] = useState<number>();
 
   async function loadUserData(token: string) {
     if (!token) {
@@ -29,7 +29,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
       return;
     }
 
-    const response = await fetch(API_URL + "/user/getid", { 
+    const response = await fetch(API_URL + "/user/getid", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -67,9 +67,16 @@ export function AuthContextProvider(props: PropsWithChildren) {
         },
         body: JSON.stringify({ email, password }),
       });
+
       if (!response.ok) {
-        //check for 403
-        throw new Error("Login failed");
+        switch (response.status) {
+          case 404:
+            throw new Error("User not found");
+          case 403:
+            throw new Error("Invalid credentials");
+          default:
+            throw new Error(`Something went wrong (${response.status})`);
+        }
       }
       const tokenObj = await response.json();
       setToken(tokenObj.token);
@@ -93,19 +100,19 @@ export function AuthContextProvider(props: PropsWithChildren) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          phoneNumber: user.phoneNumber,
-          hasHouse: user.hasHouse,
-          lookingForPeople: user.lookingForPeople,
-          lookingForHouse: user.lookingForHouse,
-          password: user.password,
-          email: user.email,
+          user,
         }),
       });
+
       if (!response.ok) {
-        throw new Error("Registration failed");
+        switch (response.status) {
+          case 409:
+            throw new Error("Email already in use");
+          default:
+            throw new Error("Something went wrong");
+        }
       }
+
       const newUser = await response.json();
       console.log("Registration response:", newUser);
       return newUser as User[];

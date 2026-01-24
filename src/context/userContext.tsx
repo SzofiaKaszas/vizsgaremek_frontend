@@ -5,13 +5,14 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import type { User } from "../interfaces";
+import type { User, UserContextType } from "../interfaces";
 import { AuthContext } from "./authContext";
 
 const API_URL = "http://localhost:3000";
 
-const defaultUserContext = {
+const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
+  changeUserData: async (_newData: Partial<User>) => {},
 };
 
 export const UserContext = createContext(defaultUserContext);
@@ -48,7 +49,31 @@ export function UserContextProvider(props: PropsWithChildren) {
     }
   }, [currentUserId]);
 
-  const contextValue = { userData };
+  const contextValue = {
+    userData: userData,
+
+    async changeUserData(newData: Partial<User>): Promise<void> {
+      const response = await fetch(API_URL + `/user/${userData?.idUser}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(newData),
+      });
+
+      if (!response.ok) {
+        switch (response.status) {
+          case 403:
+            throw new Error("Invalid credentials");
+          default:
+            throw new Error("Something went wrong");
+        }
+      }
+      const updatedUser = (await response.json()) as User;
+      setUserData(updatedUser);
+    },
+  };
 
   return (
     <UserContext.Provider value={contextValue}>

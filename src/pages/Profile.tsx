@@ -18,7 +18,7 @@ export function Profile() {
                 <p><strong>Looking for House:</strong> {userData.lookingForHouse ? "Yes" : "No"}</p>
                 
                 <button onClick={() => {
-                    // Future implementation for editing profile
+                    window.location.href = "/editprofile";
                 }}>Edit Profile</button>
             </div>
 
