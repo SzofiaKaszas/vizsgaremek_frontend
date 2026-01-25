@@ -5,9 +5,9 @@ import type { User } from "../interfaces";
 export function Register() {
   const context = useContext(AuthContext);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
 
     //need check for values
     const formData = new FormData(form);
@@ -29,8 +29,25 @@ export function Register() {
       lookingForHouse,
       email,
       password,
+      role: "user",
     };
-    context.register(user);
+    try {
+      await context.register(user);
+      alert("Registration successful!");
+      context.login(email, password);
+      if(lookingForPeople){
+        window.location.href = "/roomatepreferences";
+      }
+      else if(lookingForHouse){
+        window.location.href = "/housepreferences";
+      }
+      else{
+        window.location.href = "/main";
+      }
+    } catch (error) {
+      alert((error as Error).message);
+    }
+    
   }
 
   return (

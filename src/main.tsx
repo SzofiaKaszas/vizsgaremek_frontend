@@ -10,6 +10,7 @@ import { Register } from "./pages/Register.tsx";
 import { Profile } from "./pages/Profile.tsx";
 import { UserContextProvider } from "./context/userContext.tsx";
 import { EditProfile } from "./pages/EditProfile.tsx";
+import { FindHouse } from "./pages/FindHouse.tsx";
 
 const router = createBrowserRouter([
   {
@@ -19,9 +20,12 @@ const router = createBrowserRouter([
       { index: true, Component: Main },
       { path: "/login", Component: Login },
       { path: "/register", Component: Register },
+      { path: "/roomatepreferences", Component: Register },
+      { path: "/housepreferences", Component: Register },
       { path: "/main", Component: Main },
       { path: "/roomatefind", Component: Login },
-      { path: "/houselistingfind", Component: Login },
+      { path: "/roomate", Component: Login },
+      { path: "/houselistingfind", Component: FindHouse },
       { path: "/houselisting", Component: Login },
       { path: "/addhouselisting", Component: Login },
       { path: "/managehouselising", Component: Login },

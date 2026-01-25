@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 
-export function FindRoomate() {
+export function FindRoommate() {
   const context = useContext(UserContext);
 
   return (
