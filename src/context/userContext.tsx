@@ -5,7 +5,7 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import type { RoommatePref, User, UserContextType } from "../interfaces";
+import type { HousePref, RoommatePref, User, UserContextType } from "../interfaces";
 import { AuthContext } from "./authContext";
 
 const API_URL = "http://localhost:3000";
@@ -14,6 +14,7 @@ const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
   changeUserData: async (_newData: Partial<User>) => {},
   addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  addHousePref: async (_newData: Partial<HousePref>) => {},
 };
 
 export const UserContext = createContext(defaultUserContext);
@@ -54,7 +55,7 @@ export function UserContextProvider(props: PropsWithChildren) {
     userData: userData,
 
     async changeUserData(newData: Partial<User>): Promise<void> {
-      const response = await fetch(API_URL + `?`, { //TODO: link to correct endpoint
+      const response = await fetch(API_URL + `/user/${userData?.idUser}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -77,9 +78,31 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
       const response = await fetch(
-        API_URL + `/roommatePreferences/${userData?.idUser}`,
+        API_URL + `?`, //TODO: add endpoint
         {
-          method: "POST",
+          method: "POST", // or PATCH?
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+          body: JSON.stringify(newData),
+        }
+      );
+      if (!response.ok) {
+        switch (response.status) {
+          case 403:
+            throw new Error("Invalid credentials");
+          default:
+            throw new Error("Something went wrong");
+        }
+      }
+    },
+
+    async addHousePref(newData: Partial<HousePref>): Promise<void> {
+      const response = await fetch(
+        API_URL + `?`, //TODO: add endpoint
+        {
+          method: "POST", // or PATCH?
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,

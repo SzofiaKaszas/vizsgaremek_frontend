@@ -14,10 +14,16 @@ routing
 /chat -> if we make chatting possible
 
 needed:
--context -> remember logged in user, maybe theme?, no CRUD
+-context -> remember logged in user, maybe theme?
+DONE
 -pages done
 -login (context) -> make it secure (dont know if front or backend)
+Kinda done
 -register
+DONE
+-maybe translation
+-look of the website
 -make mobile look -> how to do swiping
 -algorithm for finding roomate and house
 -interfaces
+So Far done

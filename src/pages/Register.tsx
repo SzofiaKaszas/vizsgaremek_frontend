@@ -7,19 +7,18 @@ export function Register() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget;
 
     //need check for values
-    const formData = new FormData(form);
-    const firstName = formData.get("firstName") as string;
-    const lastName = formData.get("lastName") as string;
-    const phoneNumber = formData.get("phoneNumber") as string;
-    const hasHouse = formData.get("hasHouse") === "on";
-    const lookingForPeople = formData.get("lookingForRoommate") === "on";
+    const form = new FormData(e.currentTarget);
+    const firstName = form.get("firstName") as string;
+    const lastName = form.get("lastName") as string;
+    const phoneNumber = form.get("phoneNumber") as string;
+    const hasHouse = form.get("hasHouse") === "on";
+    const lookingForPeople = form.get("lookingForRoommate") === "on";
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const lookingForHouse = formData.get("lookingForHouse") === "on";
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const lookingForHouse = form.get("lookingForHouse") === "on";
+    const email = form.get("email") as string;
+    const password = form.get("password") as string;
     const user: Omit<User, "idUser"> = {
       firstName,
       lastName,

@@ -45,7 +45,11 @@ export function RoommateProfile() {
 
       <div>
         <label>Your Gender:</label>
-        <input type="text" name="gender" />
+        <select name="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
       </div>
 
       <div>
@@ -66,6 +70,14 @@ export function RoommateProfile() {
       </div>
 
       <button type="submit">Save</button>
+      <button
+        type="button"
+        onClick={() => {
+          window.location.href = "/profile";
+        }}
+      >
+        Do later
+      </button>
     </form>
   );
 }

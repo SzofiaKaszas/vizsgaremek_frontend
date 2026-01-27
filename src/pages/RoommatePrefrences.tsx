@@ -19,11 +19,15 @@ export function RoommatePrefrences() {
       await context.addRoommatePref?.({
         minAge: ages[0],
         maxAge: ages[1],
-        preferredGender: form.get("preferredGender") as string,
-        preferredLanguage: form.get("preferredLanguage") as string,
+        gender: form.get("gender") as string,
+        language: form.get("language") as string,
       });
       alert("Preferences saved successfully");
-      window.location.href = "/main";
+      if (context.userData?.lookingForHouse) {
+        window.location.href = "/housepreferences";
+      } else {
+        window.location.href = "/main";
+      }
     } catch (err) {
       alert((err as Error).message);
     }
@@ -62,22 +66,26 @@ export function RoommatePrefrences() {
             {children}
           </div>
         )}
-        renderThumb={({ props }) => (
-          <div
-            {...props}
-            style={{
-              ...props.style,
-              height: "20px",
-              width: "20px",
-              backgroundColor: "#999",
-            }}
-          />
-        )}
+        renderThumb={({ props }) => {
+          const { key, ...restProps } = props;
+          return (
+            <div
+              key={key}
+              {...restProps}
+              style={{
+                ...restProps.style,
+                height: "20px",
+                width: "20px",
+                backgroundColor: "#999",
+              }}
+            />
+          );
+        }}
       />
 
       <div>
         <label>Prefferred gender:</label>
-        <select name="preferredGender">
+        <select name="gender">
           <option value="any">Any</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
@@ -87,7 +95,7 @@ export function RoommatePrefrences() {
 
       <div>
         <label>Prefferred language:</label>
-        <select name="preferredLanguage">
+        <select name="language">
           {Languages.map((lang) => (
             <option key={lang.code} value={lang.code}>
               {lang.label}
@@ -96,6 +104,14 @@ export function RoommatePrefrences() {
         </select>
       </div>
       <button type="submit">Save</button>
+      <button
+        type="button"
+        onClick={() => {
+          window.location.href = "/profile";
+        }}
+      >
+        Do later
+      </button>
     </form>
   );
 }

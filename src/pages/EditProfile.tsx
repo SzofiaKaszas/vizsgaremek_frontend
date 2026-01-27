@@ -16,15 +16,14 @@ export function EditProfile() {
     }
 
     const form = new FormData(e.currentTarget);
-    //check wether they actually changed something
-    //check if any of the required fields are empty
+    //TODO: check wether they actually changed something
+    //TODO: check if any of the required fields are empty
     try {
       await context.changeUserData?.({
         firstName: form.get("firstName") as string,
         lastName: form.get("lastName") as string,
         phoneNumber: form.get("phoneNumber") as string,
         email: form.get("email") as string,
-        password: form.get("password") as string,
         hasHouse: form.get("hasHouse") === "on",
         lookingForPeople: form.get("lookingForPeople") === "on",
         lookingForHouse: form.get("lookingForHouse") === "on",
@@ -88,8 +87,7 @@ export function EditProfile() {
             type="checkbox"
             id="hasHouse"
             name="hasHouse"
-            defaultValue={context.userData?.hasHouse ? "true" : "false"}
-            required
+            defaultChecked={context.userData?.hasHouse}
           />
         </div>
         <div>
@@ -100,8 +98,7 @@ export function EditProfile() {
             type="checkbox"
             id="lookingForPeople"
             name="lookingForPeople"
-            defaultValue={context.userData?.lookingForPeople ? "true" : "false"}
-            required
+            defaultChecked={context.userData?.lookingForPeople}
           />
         </div>
         <div>
@@ -110,8 +107,7 @@ export function EditProfile() {
             type="checkbox"
             id="lookingForHouse"
             name="lookingForHouse"
-            defaultValue={context.userData?.lookingForHouse ? "true" : "false"}
-            required
+            defaultChecked={context.userData?.lookingForHouse}
           />
         </div>
         <a href="#">Change password</a><br/>

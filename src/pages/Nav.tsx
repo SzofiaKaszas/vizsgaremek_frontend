@@ -11,9 +11,9 @@ export function NavBar() {
     <nav className="navbar">
       <NavLink to="/main">Main</NavLink>
       {userData?.role === "admin" && <NavLink to="/admin">Admin</NavLink>}
-      {userData?.lookingForPeople === true || userData === undefined  && <NavLink to="/findroomate">Roomate Find</NavLink>}
-      {userData?.lookingForHouse === true || userData === undefined && <NavLink to="/findhouse">House Listing Find</NavLink>}
-      {userData?.hasHouse === true || userData === undefined &&  <NavLink to="/managehouselising">Your House Listings</NavLink>}
+      {(userData?.lookingForPeople === true || userData === undefined) && <NavLink to="/findroomate">Roomate Find</NavLink>}
+      {(userData?.lookingForHouse === true || userData === undefined) && <NavLink to="/findhouse">House Listing Find</NavLink>}
+      {(userData?.hasHouse === true || userData === undefined) && <NavLink to="/managehouselising">Your House Listings</NavLink>}
       {currentUserId === undefined && <NavLink to="/login">Login</NavLink>}
       {currentUserId !== undefined && (
         <>

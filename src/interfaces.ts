@@ -10,7 +10,7 @@ export interface User {
   userBio?: string;
   age?: number;
   gender?: string; // could be enum
-  language?: string; // could be array of strings
+  language?: string; // could be array of strings, also enum?
   occupation?: string;
   connectionEmail?: string;
 
@@ -27,6 +27,27 @@ export interface UserToken{
 }
 
 export interface RoommatePref {
+  roommatesPrefrencesIdUser: number;
+
+  minAge?: number
+  maxAge?: number
+  gender?: string
+  language?: string
+
+}
+
+export interface HousePref {
+  houseSearchIdUser: number;
+
+  maxRent?: number
+  minSquareMeters?: number
+  minRooms?: number
+  city?: string
+  propertyType?: string
+  heatingType?: string
+  furnishingLevel?: string
+  kitchenLevel?: string
+  minBathrooms?: number
 }
 
 export interface AuthContextType {
@@ -38,6 +59,7 @@ export interface AuthContextType {
 
 export interface UserContextType {
   userData: User | undefined;
-  changeUserData?: (newData: Partial<User>) => void;
-  addRoommatePref?: (newData: Partial<RoommatePref>) => void;
+  changeUserData: (newData: Partial<User>) => void;
+  addRoommatePref: (newData: Partial<RoommatePref>) => void;
+  addHousePref: (newData: Partial<HousePref>) => void;
 }
