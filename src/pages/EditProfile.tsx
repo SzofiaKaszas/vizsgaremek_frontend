@@ -77,17 +77,7 @@ export function EditProfile() {
             id="email"
             name="email"
             defaultValue={context.userData?.email}
-            disabled
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            defaultValue={context.userData?.password}
-            disabled
+            required
           />
         </div>
         <div>
@@ -99,7 +89,7 @@ export function EditProfile() {
             id="hasHouse"
             name="hasHouse"
             defaultValue={context.userData?.hasHouse ? "true" : "false"}
-            disabled
+            required
           />
         </div>
         <div>
@@ -111,7 +101,7 @@ export function EditProfile() {
             id="lookingForPeople"
             name="lookingForPeople"
             defaultValue={context.userData?.lookingForPeople ? "true" : "false"}
-            disabled
+            required
           />
         </div>
         <div>
@@ -121,9 +111,10 @@ export function EditProfile() {
             id="lookingForHouse"
             name="lookingForHouse"
             defaultValue={context.userData?.lookingForHouse ? "true" : "false"}
-            disabled
+            required
           />
         </div>
+        <a href="#">Change password</a><br/>
         <button type="submit">Save Changes</button>
       </form>
     </div>

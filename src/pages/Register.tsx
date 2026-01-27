@@ -36,7 +36,7 @@ export function Register() {
       alert("Registration successful!");
       context.login(email, password);
       if(lookingForPeople){
-        window.location.href = "/roomatepreferences";
+        window.location.href = "/roommateprofile";
       }
       else if(lookingForHouse){
         window.location.href = "/housepreferences";
@@ -71,15 +71,15 @@ export function Register() {
       </div>
       <div>
         <label>Do you want to rent out a house to others?</label>
-        <input type="checkbox" name="hasHouse" />
+        <input type="checkbox" name="hasHouse" required/>
       </div>
       <div>
         <label>Are you looking for a roommate?</label>
-        <input type="checkbox" name="lookingForRoommate" />
+        <input type="checkbox" name="lookingForRoommate" required/>
       </div>
       <div>
         <label>Are you looking for a house?</label>
-        <input type="checkbox" name="lookingForHouse" />
+        <input type="checkbox" name="lookingForHouse" required/>
       </div>
       <div>
         <label>Email:</label>

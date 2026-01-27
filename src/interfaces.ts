@@ -10,7 +10,7 @@ export interface User {
   userBio?: string;
   age?: number;
   gender?: string; // could be enum
-  language?: string;
+  language?: string; // could be array of strings
   occupation?: string;
   connectionEmail?: string;
 
@@ -26,6 +26,9 @@ export interface UserToken{
   token: string;
 }
 
+export interface RoommatePref {
+}
+
 export interface AuthContextType {
   currentUserId: number | undefined;
   login: (email: string, password: string) => Promise<UserToken[]>;
@@ -36,4 +39,5 @@ export interface AuthContextType {
 export interface UserContextType {
   userData: User | undefined;
   changeUserData?: (newData: Partial<User>) => void;
+  addRoommatePref?: (newData: Partial<RoommatePref>) => void;
 }

@@ -19,6 +19,7 @@ export function Login() {
                 form.get("password") as string,
               );
               setError("");
+              window.location.href = "/main";
             } catch (err) {
               setError((err as Error).message);
             }

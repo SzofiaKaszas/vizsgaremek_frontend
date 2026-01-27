@@ -11,6 +11,10 @@ import { Profile } from "./pages/Profile.tsx";
 import { UserContextProvider } from "./context/userContext.tsx";
 import { EditProfile } from "./pages/EditProfile.tsx";
 import { FindHouse } from "./pages/FindHouse.tsx";
+import { FindRoommate } from "./pages/FindRoommate.tsx";
+import { YourHouseListing } from "./pages/YourHouseListing.tsx";
+import { RoommatePrefrences } from "./pages/RoommatePrefrences.tsx";
+import { RoommateProfile } from "./pages/RoommateProfile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,15 +24,16 @@ const router = createBrowserRouter([
       { index: true, Component: Main },
       { path: "/login", Component: Login },
       { path: "/register", Component: Register },
-      { path: "/roomatepreferences", Component: Register },
+      { path: "/roommateprofile", Component: RoommateProfile },
+      { path: "/roommatepreferences", Component: RoommatePrefrences },
       { path: "/housepreferences", Component: Register },
       { path: "/main", Component: Main },
-      { path: "/roomatefind", Component: Login },
+      { path: "/findroomate", Component: FindRoommate },
       { path: "/roomate", Component: Login },
-      { path: "/houselistingfind", Component: FindHouse },
+      { path: "/findhouse", Component: FindHouse },
       { path: "/houselisting", Component: Login },
       { path: "/addhouselisting", Component: Login },
-      { path: "/managehouselising", Component: Login },
+      { path: "/managehouselising", Component: YourHouseListing },
       { path: "/profile", Component: Profile },
       { path: "/editprofile", Component: EditProfile },
       { path: "/admin", Component: EditProfile },
