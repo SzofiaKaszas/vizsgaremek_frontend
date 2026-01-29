@@ -33,7 +33,7 @@ export function Register() {
     try {
       await context.register(user);
       alert("Registration successful!");
-      context.login(email, password);
+      await context.login(email, password);
       if(lookingForPeople){
         window.location.href = "/roommateprofile";
       }
