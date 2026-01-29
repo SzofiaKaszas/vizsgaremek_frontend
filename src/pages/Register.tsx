@@ -27,7 +27,7 @@ export function Register() {
       lookingForPeople,
       lookingForHouse,
       email,
-      password,
+      password, 
       role: "user",
     };
     try {
