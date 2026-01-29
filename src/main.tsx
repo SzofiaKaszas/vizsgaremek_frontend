@@ -21,7 +21,9 @@ const router = createBrowserRouter([
     path: "/",
     Component: App,
     children: [
-      { index: true, Component: Main }, 
+      { index: true, Component: Main },
+      { path: "/login", Component: Login },
+      { path: "/register", Component: Register },
       { path: "/roommateprofile", Component: RoommateProfile },
       { path: "/roommatepreferences", Component: RoommatePrefrences },
       { path: "/housepreferences", Component: Register },
