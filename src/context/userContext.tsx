@@ -17,6 +17,7 @@ const defaultUserContext: UserContextType = {
   addHousePref: async (_newData: Partial<HousePref>) => {},
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const UserContext = createContext(defaultUserContext);
 
 export function UserContextProvider(props: PropsWithChildren) {
@@ -78,9 +79,9 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
       const response = await fetch(
-        API_URL + `?`, //TODO: add endpoint
+        API_URL + `/roommates-prefrences/add`, //TODO: check if right endpoint
         {
-          method: "POST", // or PATCH?
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -100,7 +101,7 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     async addHousePref(newData: Partial<HousePref>): Promise<void> {
       const response = await fetch(
-        API_URL + `?`, //TODO: add endpoint
+        API_URL + `houseSearch-prefrences/add`, //TODO: 
         {
           method: "POST", // or PATCH?
           headers: {
