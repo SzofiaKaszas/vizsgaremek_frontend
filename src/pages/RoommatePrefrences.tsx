@@ -11,32 +11,10 @@ export function RoommatePrefrences() {
   const MIN_AGE = 18;
   const MAX_AGE = 100;
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-
-    try {
-      await context.addRoommatePref?.({
-        minAge: ages[0],
-        maxAge: ages[1],
-        gender: form.get("gender") as string,
-        language: form.get("language") as string,
-      });
-      alert("Preferences saved successfully");
-      if (context.userData?.lookingForHouse) {
-        window.location.href = "/housepreferences";
-      } else {
-        window.location.href = "/main";
-      }
-    } catch (err) {
-      alert((err as Error).message);
-    }
-  }
-
   return (
     <form
       onSubmit={async (e) => {
-        handleSubmit(e);
+        handleSubmit(e, context, ages);
       }}
     >
       <h2>Your Prefrences</h2>
@@ -115,3 +93,48 @@ export function RoommatePrefrences() {
     </form>
   );
 }
+
+async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.ContextType<typeof UserContext>, ages: [number, number]) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+
+    const minAge = ages[0];
+    const maxAge = ages[1];
+
+    switch(true) {
+      case (minAge === undefined || maxAge === undefined):
+        return;
+      case (isNaN(minAge) || isNaN(maxAge)):
+        alert("Ages must be numbers");
+        return;
+      case (minAge < 18):
+        alert("Minimum age must be at least 18");
+        return;
+      case (maxAge > 100):
+        alert("Maximum age must be at most 100");
+        return;
+      case (minAge > maxAge):
+        alert("Minimum age cannot be greater than maximum age");
+        return;
+    }
+
+    const gender = form.get("gender") as string;
+    const language = form.get("language") as string;
+
+    try {
+      await context.addRoommatePref({
+        minAge: minAge,
+        maxAge: maxAge,
+        gender: gender,
+        language: language,
+      });
+      alert("Preferences saved successfully");
+      if (context.userData?.lookingForHouse) {
+        window.location.href = "/housepreferences";
+      } else {
+        window.location.href = "/main";
+      }
+    } catch (err) {
+      alert((err as Error).message);
+    }
+  }

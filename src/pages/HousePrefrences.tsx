@@ -4,38 +4,8 @@ import { UserContext } from "../context/userContext";
 export function HousePrefrences() {
   const context = useContext(UserContext);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const form = new FormData(e.currentTarget);
-    const rent = form.get("rent");
-    const sqmeter = form.get("sqmeter");
-    const rooms = form.get("rooms");
-    const bathrooms = form.get("bathrooms");
-
-    try {
-      await context.addHousePref?.({
-        maxRent: rent ? Number(rent) : undefined,
-        minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
-        minRooms: rooms ? Number(rooms) : undefined,
-        city: form.get("city") as string,
-        propertyType: form.get("propertyType") as string,
-        heatingType: form.get("heatingType") as string,
-        furnishingLevel: form.get("furnishing") as string,
-        kitchenLevel: form.get("kitchenFurnishing") as string,
-        minBathrooms: bathrooms ? Number(bathrooms) : undefined,
-      });
-      alert("Preferences saved successfully");
-      window.location.href = "/main";
-    } catch (err) {
-      alert((err as Error).message);
-    }
-
-    return;
-  }
-
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
+    <form onSubmit={(e) => handleSubmit(e, context)}>
       <h2>House Prefrences</h2>
       <div>
         <label>Max rent:</label>
@@ -102,4 +72,42 @@ export function HousePrefrences() {
       </button>
     </form>
   );
+}
+
+async function handleSubmit(
+  e: React.FormEvent<HTMLFormElement>,
+  context: React.ContextType<typeof UserContext>,
+) {
+  e.preventDefault();
+
+  const form = new FormData(e.currentTarget);
+  const rent = form.get("rent");
+  const sqmeter = form.get("sqmeter");
+  const rooms = form.get("rooms");
+  const city = form.get("city");
+  const propertyType = form.get("propertyType");
+  const heatingType = form.get("heatingType");
+  const furnishing = form.get("furnishing");
+  const kitchenFurnishing = form.get("kitchenFurnishing");
+  const bathrooms = form.get("bathrooms");
+
+  try {
+    await context.addHousePref?.({
+      maxRent: rent ? Number(rent) : undefined,
+      minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
+      minRooms: rooms ? Number(rooms) : undefined,
+      city: city as string,
+      propertyType: propertyType as string,
+      heatingType: heatingType as string,
+      furnishingLevel: furnishing as string,
+      kitchenLevel: kitchenFurnishing as string,
+      minBathrooms: bathrooms ? Number(bathrooms) : undefined,
+    });
+    alert("Preferences saved successfully");
+    window.location.href = "/main";
+  } catch (err) {
+    alert((err as Error).message);
+  }
+
+  return;
 }

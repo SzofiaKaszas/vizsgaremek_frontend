@@ -24,26 +24,26 @@ const router = createBrowserRouter([
       { index: true, Component: Main },
       { path: "/login", Component: Login },
       { path: "/register", Component: Register },
-      { path: "/roommateprofile", Component: RoommateProfile },
-      { path: "/roommatepreferences", Component: RoommatePrefrences },
-      { path: "/housepreferences", Component: Register },
+      { path: "/roommateprofile", Component: RoommateProfile }, // to set own users' profile
+      { path: "/roommatepreferences", Component: RoommatePrefrences }, // to set own preferences
+      { path: "/housepreferences", Component: Register }, // to set house preferences
       { path: "/main", Component: Main },
-      { path: "/findroomate", Component: FindRoommate },
-      { path: "/roomate", Component: Login },
-      { path: "/findhouse", Component: FindHouse },
-      { path: "/houselisting", Component: Login },
-      { path: "/addhouselisting", Component: Login },
-      { path: "/managehouselising", Component: YourHouseListing },
-      { path: "/profile", Component: Profile },
-      { path: "/editprofile", Component: EditProfile },
-      { path: "/admin", Component: EditProfile },
+      { path: "/findroomate", Component: FindRoommate }, //to find roommates
+      { path: "/roomate", Component: Login }, //to see roommates profiles
+      { path: "/findhouse", Component: FindHouse }, //to find houses
+      { path: "/houselisting", Component: Login }, //to see house one listing
+      { path: "/addhouselisting", Component: Login }, //to add own house listing
+      { path: "/managehouselising", Component: YourHouseListing }, //to manage own house listings
+      { path: "/profile", Component: Profile }, // to see own profile
+      { path: "/editprofile", Component: EditProfile }, // to edit own profile
+      { path: "/admin", Component: EditProfile }, // admin page ?? 
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthContextProvider>
+    <AuthContextProvider> 
       <UserContextProvider>
         <RouterProvider router={router} />
       </UserContextProvider>

@@ -1,20 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { AuthContext } from "../context/authContext";
+import { findHouseAlg } from "../algorithm/findHouseAlg";
 
 export function FindHouse() {
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
   const { currentUserId } = useContext(AuthContext);
   const context = useContext(UserContext);
 
+  const isLoggedIn = context.userData !== undefined;
+
   useEffect(() => {
-    if (context.userData == undefined) {
-      setLoggedIn(false);
-    } else {
-      setLoggedIn(true);
-    }
-  }, [currentUserId]);
+    findHouseAlg();
+  }, [context.userData]);
 
   return isLoggedIn === true ? (
     <div>
