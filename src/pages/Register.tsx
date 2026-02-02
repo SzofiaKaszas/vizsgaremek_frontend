@@ -5,54 +5,10 @@ import type { User } from "../interfaces";
 export function Register() {
   const context = useContext(AuthContext);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    //need check for values
-    const form = new FormData(e.currentTarget);
-    const firstName = form.get("firstName") as string;
-    const lastName = form.get("lastName") as string;
-    const phoneNumber = form.get("phoneNumber") as string;
-    const hasHouse = form.get("hasHouse") === "on";
-    const lookingForPeople = form.get("lookingForRoommate") === "on";
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const lookingForHouse = form.get("lookingForHouse") === "on";
-    const email = form.get("email") as string;
-    const password = form.get("password") as string;
-    const user: Omit<User, "idUser"> = {
-      firstName,
-      lastName,
-      phoneNumber,
-      hasHouse,
-      lookingForPeople,
-      lookingForHouse,
-      email,
-      password, 
-      role: "user",
-    };
-    try {
-      await context.register(user);
-      alert("Registration successful!");
-      await context.login(email, password);
-      if(lookingForPeople){
-        window.location.href = "/roommateprofile";
-      }
-      else if(lookingForHouse){
-        window.location.href = "/housepreferences";
-      }
-      else{
-        window.location.href = "/main";
-      }
-    } catch (error) {
-      alert((error as Error).message);
-    }
-    
-  }
-
   return (
     <form
       onSubmit={(e) => {
-        handleSubmit(e);
+        handleSubmit(e, context);
       }}
     >
       <h2>Register</h2>
@@ -70,15 +26,15 @@ export function Register() {
       </div>
       <div>
         <label>Do you want to rent out a house to others?</label>
-        <input type="checkbox" name="hasHouse" required/>
+        <input type="checkbox" name="hasHouse" />
       </div>
       <div>
         <label>Are you looking for a roommate?</label>
-        <input type="checkbox" name="lookingForRoommate" required/>
+        <input type="checkbox" name="lookingForRoommate"/>
       </div>
       <div>
         <label>Are you looking for a house?</label>
-        <input type="checkbox" name="lookingForHouse" required/>
+        <input type="checkbox" name="lookingForHouse"/>
       </div>
       <div>
         <label>Email:</label>
@@ -91,4 +47,67 @@ export function Register() {
       <button type="submit">Register</button>
     </form>
   );
+}
+
+async function handleSubmit(
+  e: React.FormEvent<HTMLFormElement>,
+  context: React.ContextType<typeof AuthContext>,
+) {
+  e.preventDefault();
+
+  const form = new FormData(e.currentTarget);
+  const firstName = form.get("firstName") as string;
+  const lastName = form.get("lastName") as string;
+  const phoneNumber = form.get("phoneNumber") as string;
+  const hasHouse = form.get("hasHouse") === "on";
+  const lookingForPeople = form.get("lookingForRoommate") === "on";
+  const lookingForHouse = form.get("lookingForHouse") === "on";
+  const email = form.get("email") as string;
+  const password = form.get("password") as string;
+
+  // Validation regex patterns
+  const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
+  const regexPhone = /^\+?\d{1,3}[-\s\.]?\(?\d{2,3}\)?[-\s\.]?\d{3}[-\s\.]?\d{4,6}$/; // Simplified phone number regex
+  const regexPassword = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // At least 6 characters, one uppercase letter, one number
+
+  switch (true) {
+    case !firstName || !lastName || !phoneNumber || !email || !password:
+      console.log("Please fill in all fields.");
+      return;
+    case !regexPassword.test(password as string):
+      console.log("Password must be at least 6 characters long and contain an uppercase letter and a number.");
+      return;
+    case !regexEmail.test(email as string):
+      console.log("Please enter a valid email address.");
+      return;
+    case !regexPhone.test(phoneNumber as string):
+      console.log("Please enter a valid phone number.");
+      return;
+  }
+
+  const user: Omit<User, "idUser"> = {
+    firstName,
+    lastName,
+    phoneNumber,
+    hasHouse,
+    lookingForPeople,
+    lookingForHouse,
+    email,
+    password,
+    role: "user",
+  };
+  try {
+    await context.register(user);
+    alert("Registration successful!");
+    await context.login(email, password);
+    if (lookingForPeople) {
+      window.location.href = "/roommateprofile";
+    } else if (lookingForHouse) {
+      window.location.href = "/housepreferences";
+    } else {
+      window.location.href = "/main";
+    }
+  } catch (error) {
+    alert((error as Error).message);
+  }
 }

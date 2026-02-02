@@ -1,3 +1,4 @@
+// User interfaces
 export interface User {
   idUser: number;
   firstName: string;
@@ -36,6 +37,7 @@ export interface RoommatePref {
 
 }
 
+// House interfaces
 export interface HousePref {
   houseSearchIdUser: number;
 
@@ -50,6 +52,7 @@ export interface HousePref {
   minBathrooms?: number
 }
 
+//context interfaces
 export interface AuthContextType {
   currentUserId: number | undefined;
   login: (email: string, password: string) => Promise<UserToken[]>;

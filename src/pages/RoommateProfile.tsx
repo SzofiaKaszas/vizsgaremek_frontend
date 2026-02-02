@@ -5,31 +5,10 @@ import { UserContext } from "../context/userContext";
 export function RoommateProfile() {
   const context = useContext(UserContext);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-
-    try {
-      await context.changeUserData?.({
-        userBio: form.get("userBio") as string,
-        age: Number(form.get("age")),
-        gender: form.get("gender") as string,
-        language: form.get("language") as string,
-        occupation: form.get("occupation") as string,
-        connectionEmail: form.get("connectionEmail") as string,
-      });
-      alert("Preferences saved successfully");
-
-      window.location.href = "/roommatepreferences";
-    } catch (err) {
-      alert((err as Error).message);
-    }
-  }
-
   return (
     <form
       onSubmit={async (e) => {
-        handleSubmit(e);
+        handleSubmit(e, context);
       }}
     >
       <h2>Your Profile</h2>
@@ -57,7 +36,7 @@ export function RoommateProfile() {
         {/*maybe multiple choice*/}
         <select name="language">
           {Languages.map((lang) => (
-            <option key={lang.code} value={lang.code}>
+            <option key={lang.code} value={lang.label}>
               {lang.label}
             </option>
           ))}
@@ -67,6 +46,10 @@ export function RoommateProfile() {
       <div>
         <label>Your Occupation:</label>
         <input type="text" name="occupation" />
+      </div>
+
+      <div> 
+        <label id="error"></label>
       </div>
 
       <button type="submit">Save</button>
@@ -81,3 +64,43 @@ export function RoommateProfile() {
     </form>
   );
 }
+
+async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.ContextType<typeof UserContext>) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+
+    const userBio = form.get("userBio"); //check if normal later
+    const age = form.get("age");
+
+    if (age && isNaN(Number(age)) || age && Number(age) <= 0) {
+      console.log("Invalid age input");
+      return;
+    }
+
+    const gender = form.get("gender"); //check if normal later
+    const language = form.get("language");
+    const occupation = form.get("occupation"); //check if normal later
+
+    const connectionEmail = form.get("connectionEmail");
+    const regex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
+    if (connectionEmail && !regex.test(connectionEmail as string)) {
+      console.log("Invalid email format");
+      return;
+    }
+
+    try {
+      await context.changeUserData({ //delete ? later
+        userBio: userBio as string,
+        age: Number(age),
+        gender: gender as string,
+        language: language as string,
+        occupation: occupation as string,
+        connectionEmail: connectionEmail as string,
+      });
+      alert("Preferences saved successfully");
+
+      window.location.href = "/roommatepreferences";
+    } catch (err) {
+      alert((err as Error).message);
+    }
+  }

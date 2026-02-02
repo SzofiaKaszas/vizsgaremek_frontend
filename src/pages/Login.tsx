@@ -10,19 +10,8 @@ export function Login() {
     return (
       <>
         <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const form = new FormData(e.currentTarget);
-            try {
-              await context.login(
-                form.get("email") as string,
-                form.get("password") as string,
-              );
-              setError("");
-              window.location.href = "/main";
-            } catch (err) {
-              setError((err as Error).message);
-            }
+          onSubmit={(e) => {
+            handleSubmit(e, context, setError);
           }}
         >
           <h1>Login Page</h1>
@@ -42,5 +31,31 @@ export function Login() {
         </div>
       </>
     );
+  }
+}
+
+async function handleSubmit(
+  e: React.FormEvent<HTMLFormElement>,
+  context: React.ContextType<typeof AuthContext>,
+  setError: React.Dispatch<React.SetStateAction<string>>,
+) {
+  e.preventDefault();
+
+  const form = new FormData(e.currentTarget);
+
+  const email = form.get("email") as string;
+  const password = form.get("password") as string;
+
+  if (!email || !password) {
+    setError("Please fill in all fields.");
+    return;
+  }
+
+  try {
+    await context.login(email, password);
+    setError("");
+    window.location.href = "/main";
+  } catch (err) {
+    setError((err as Error).message);
   }
 }
