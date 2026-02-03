@@ -91,6 +91,28 @@ async function handleSubmit(
   const kitchenFurnishing = form.get("kitchenFurnishing");
   const bathrooms = form.get("bathrooms");
 
+  if(rent && Number(rent) < 0){
+    console.log("Rent must be positive");
+    return;
+  }
+
+  switch (true) {
+    case rent && Number(rent) < 0:
+      console.log("Rent must be positive");
+      return;
+    case sqmeter && Number(sqmeter) < 0: 
+    console.log("squaremeter cant be negative");
+    return;
+    case rooms && Number(rooms) < 0:
+      console.log("room number cant be negative")
+      return;
+    case bathrooms && Number(bathrooms) < 0:
+      console.log("bathroom number cant be negative")
+      return;
+    default:
+      break;
+  }
+
   try {
     await context.addHousePref?.({
       maxRent: rent ? Number(rent) : undefined,

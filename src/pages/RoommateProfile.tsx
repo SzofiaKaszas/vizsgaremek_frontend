@@ -69,7 +69,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.
     e.preventDefault();
     const form = new FormData(e.currentTarget);
 
-    const userBio = form.get("userBio"); //check if normal later
+    const userBio = form.get("userBio") as string || undefined; //check if normal later
     const age = form.get("age");
 
     if (age && isNaN(Number(age)) || age && Number(age) <= 0) {
@@ -77,11 +77,12 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.
       return;
     }
 
-    const gender = form.get("gender"); //check if normal later
-    const language = form.get("language");
-    const occupation = form.get("occupation"); //check if normal later
+    const gender = form.get("gender") as string || undefined; //check if normal later
+    const language = form.get("language") as string || undefined;
+    const occupation = form.get("occupation") as string || undefined; //check if normal later
 
-    const connectionEmail = form.get("connectionEmail");
+    const connectionEmail = form.get("connectionEmail") as string || undefined;
+    
     const regex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
     if (connectionEmail && !regex.test(connectionEmail as string)) {
       console.log("Invalid email format");

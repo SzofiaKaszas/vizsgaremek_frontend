@@ -56,14 +56,14 @@ async function handleSubmit(
   e.preventDefault();
 
   const form = new FormData(e.currentTarget);
-  const firstName = form.get("firstName") as string;
-  const lastName = form.get("lastName") as string;
-  const phoneNumber = form.get("phoneNumber") as string;
+  const firstName = form.get("firstName") as string || undefined;
+  const lastName = form.get("lastName") as string || undefined;
+  const phoneNumber = form.get("phoneNumber") as string || undefined;
   const hasHouse = form.get("hasHouse") === "on";
   const lookingForPeople = form.get("lookingForRoommate") === "on";
   const lookingForHouse = form.get("lookingForHouse") === "on";
-  const email = form.get("email") as string;
-  const password = form.get("password") as string;
+  const email = form.get("email") as string || undefined;
+  const password = form.get("password") as string || undefined;
 
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
