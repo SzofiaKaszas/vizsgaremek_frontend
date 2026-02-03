@@ -112,26 +112,19 @@ async function handleSubmit(
   const firstName = (form.get("firstName") as string) || undefined;
   const lastName = (form.get("lastName") as string) || undefined;
   const phoneNumber = (form.get("phoneNumber") as string) || undefined;
-  const hasHouse = form.get("hasHouse") === "on";
-  const lookingForPeople = form.get("lookingForRoommate") === "on";
-  const lookingForHouse = form.get("lookingForHouse") === "on";
+  const hasHouse = form.has("hasHouse");
+  const lookingForPeople = form.has("lookingForPeople");
+  const lookingForHouse = form.has("lookingForHouse");
   const email = (form.get("email") as string) || undefined;
-  const password = (form.get("password") as string) || undefined;
 
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
   const regexPhone =
     /^\+?\d{1,3}[-\s\.]?\(?\d{2,3}\)?[-\s\.]?\d{3}[-\s\.]?\d{4,6}$/; // Simplified phone number regex
-  const regexPassword = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // At least 6 characters, one uppercase letter, one number
 
   switch (true) {
-    case !firstName || !lastName || !phoneNumber || !email || !password:
+    case !firstName || !lastName || !phoneNumber || !email:
       console.log("Please fill in all fields.");
-      return;
-    case !regexPassword.test(password as string):
-      console.log(
-        "Password must be at least 6 characters long and contain an uppercase letter and a number.",
-      );
       return;
     case !regexEmail.test(email as string):
       console.log("Please enter a valid email address.");

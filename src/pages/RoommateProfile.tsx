@@ -72,7 +72,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.
     const userBio = form.get("userBio") as string || undefined; //check if normal later
     const age = form.get("age");
 
-    if (age && isNaN(Number(age)) || age && Number(age) <= 0) {
+    if (age && isNaN(Number(age)) || age && Number(age) <= 17) {
       console.log("Invalid age input");
       return;
     }
@@ -82,7 +82,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.
     const occupation = form.get("occupation") as string || undefined; //check if normal later
 
     const connectionEmail = form.get("connectionEmail") as string || undefined;
-    
+
     const regex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
     if (connectionEmail && !regex.test(connectionEmail as string)) {
       console.log("Invalid email format");
@@ -90,9 +90,9 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.
     }
 
     try {
-      await context.changeUserData({ //delete ? later
+      await context.changeUserData({
         userBio: userBio as string,
-        age: Number(age),
+        age: age ? Number(age) : undefined,
         gender: gender as string,
         language: language as string,
         occupation: occupation as string,
