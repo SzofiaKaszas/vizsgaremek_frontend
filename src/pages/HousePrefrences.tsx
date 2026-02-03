@@ -28,33 +28,34 @@ export function HousePrefrences() {
         <select name="propertyType" onChange={() => {}}>
           {" "}
           {/*TODO: handle change*/}
-          <option value="apartment">Apartment</option>
-          <option value="house">Flat</option>
-          <option value="studio">Skyscraper</option>
+          <option value="house">House</option>
+          <option value="flat">Flat</option>
+          <option value="skyscraper">Skyscraper</option>
         </select>
       </div>
       <div>
         <label>Heating type:</label>
         <select name="heatingType">
-          <option value="central">Central</option>
-          <option value="gas">Gas</option>
-          <option value="electric">Electric</option>
+          <option value="radiator">Radiator</option>
+          <option value="airconditioner">Air Conditioner</option>
+          <option value="convector">Convector</option>
+          <option value="floor">Floor</option>
         </select>
       </div>
       <div>
         <label>Furnishing:</label>
         <select name="furnishing">
-          <option value="furnished">Furnished</option>
-          <option value="unfurnished">Unfurnished</option>
-          <option value="partiallyFurnished">Partially Furnished</option>
+          <option value="none">None</option>
+          <option value="partial">Partial</option>
+          <option value="full">Full</option>
         </select>
       </div>
       <div>
         <label>kitchen furnishing:</label>
         <select name="kitchenFurnishing">
-          <option value="furnished">Furnished</option>
-          <option value="unfurnished">Unfurnished</option>
-          <option value="partiallyFurnished">Partially Furnished</option>
+          <option value="none">None</option>
+          <option value="partial">Partial</option>
+          <option value="full">Full</option>
         </select>
       </div>
       <div>
@@ -115,21 +116,21 @@ async function handleSubmit(
 
   try {
     await context.addHousePref({
-      houseSearchIdUser: context.userData?.idUser,
       maxRent: rent ? Number(rent) : undefined,
       minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
       minRooms: rooms ? Number(rooms) : undefined,
-      city: city as string,
-      propertyType: propertyType as string,
-      heatingType: heatingType as string,
-      furnishingLevel: furnishing as string,
-      kitchenLevel: kitchenFurnishing as string,
+      city: city && city !== "" ? (city as string) : undefined,
+      propertyType: propertyType && propertyType !== "" ? (propertyType as string) : undefined,
+      heatingType: heatingType && heatingType !== "" ? (heatingType as string) : undefined,
+      furnishingLevel: furnishing && furnishing !== "" ? (furnishing as string) : undefined,
+      kitchenLevel: kitchenFurnishing && kitchenFurnishing !== "" ? (kitchenFurnishing as string) : undefined,
       minBathrooms: bathrooms ? Number(bathrooms) : undefined,
     });
     alert("Preferences saved successfully");
     window.location.href = "/main";
   } catch (err) {
     alert((err as Error).message);
+    console.error("Error details:", err);
   }
 
   return;

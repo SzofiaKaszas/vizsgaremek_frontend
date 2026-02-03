@@ -101,9 +101,9 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     async addHousePref(newData: Partial<HousePref>): Promise<void> {
       const response = await fetch(
-        API_URL + `houseSearch-prefrences/add`, //TODO: 
+        API_URL + `/house-search-prefrences/add`,
         {
-          method: "POST", // or PATCH?
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
