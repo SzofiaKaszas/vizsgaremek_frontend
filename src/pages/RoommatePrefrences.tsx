@@ -123,8 +123,9 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>, context: React.
 
     try {
       await context.addRoommatePref({
-        minAge: minAge,
-        maxAge: maxAge,
+        roommatesPrefrencesIdUser: context.userData?.idUser,
+        minAge: minAge ? Number(minAge) : undefined,
+        maxAge: maxAge ? Number(maxAge) : undefined,
         gender: gender,
         language: language,
       });

@@ -15,6 +15,7 @@ import { FindRoommate } from "./pages/FindRoommate.tsx";
 import { YourHouseListing } from "./pages/YourHouseListing.tsx";
 import { RoommatePrefrences } from "./pages/RoommatePrefrences.tsx";
 import { RoommateProfile } from "./pages/RoommateProfile.tsx";
+import { HousePrefrences } from "./pages/HousePrefrences.tsx";
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,7 @@ const router = createBrowserRouter([
       { path: "/register", Component: Register },
       { path: "/roommateprofile", Component: RoommateProfile }, // to set own users' profile
       { path: "/roommatepreferences", Component: RoommatePrefrences }, // to set own preferences
-      { path: "/housepreferences", Component: Register }, // to set house preferences
+      { path: "/housepreferences", Component: HousePrefrences }, // to set house preferences
       { path: "/main", Component: Main },
       { path: "/findroomate", Component: FindRoommate }, //to find roommates
       { path: "/roomate", Component: Login }, //to see roommates profiles
