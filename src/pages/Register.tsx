@@ -4,12 +4,14 @@ import type { User } from "../interfaces";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card"
 
 export function Register() {
   const context = useContext(AuthContext);
 
   return (
+    <Card>
     <div className="w-full max-w-md">
     <form
       onSubmit={(e) => {
@@ -107,6 +109,7 @@ export function Register() {
       <Button variant={"default"} type="submit">Register</Button>
     </form>
     </div>
+    </Card>
   );
 }
 
