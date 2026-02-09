@@ -13,7 +13,7 @@ export function RoommateProfile() {
     >
       <h2>Your Profile</h2>
       <div>
-        <label>Description about you:</label>
+        <label>Description about you:</label> {/*use textarea*/}
         <input type="text" name="userBio" />
       </div>
 

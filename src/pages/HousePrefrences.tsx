@@ -116,6 +116,7 @@ async function handleSubmit(
 
   try {
     await context.addHousePref({
+      houseSearchIdUser: context.userData?.idUser,
       maxRent: rent ? Number(rent) : undefined,
       minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
       minRooms: rooms ? Number(rooms) : undefined,
