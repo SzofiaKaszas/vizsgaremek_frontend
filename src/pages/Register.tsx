@@ -26,6 +26,7 @@ export function Register() {
           handleSubmit(e, context);
         }}
       >
+        <FieldSeparator/>
         <FieldGroup className="grid max-w-sm grid-cols-2">
           <Field>
             <FieldLabel htmlFor="first-name">
@@ -152,17 +153,17 @@ async function handleSubmit(
   let hasError = false;
 
   if (!firstName || !lastName) {
-    document.getElementById("nameErr").innerHTML = "";
+    document.getElementById("nameErr")!.innerHTML = "";
     document.getElementById("nameErr")?.append("Please fill in all fields");
     hasError = true;
   }
 
   if (!password) {
-    document.getElementById("passwordErr").innerHTML = "";
+    document.getElementById("passwordErr")!.innerHTML = "";
     document.getElementById("passwordErr")?.append("Give password");
     hasError = true;
   } else if (!regexPassword.test(password as string)) {
-    document.getElementById("passwordErr").innerHTML = "";
+    document.getElementById("passwordErr")!.innerHTML = "";
     document
       .getElementById("passwordErr")
       ?.append(
@@ -172,23 +173,23 @@ async function handleSubmit(
   }
 
   if(!email){
-    document.getElementById("emailErr").innerHTML = "";
+    document.getElementById("emailErr")!.innerHTML = "";
     document.getElementById("emailErr")?.append("Give Email");
     hasError = true;
   }
   else if (!regexEmail.test(email as string)) {
-    document.getElementById("emailErr").innerHTML = "";
+    document.getElementById("emailErr")!.innerHTML = "";
     document.getElementById("emailErr")?.append("Invalid Email");
     hasError = true;
   }
 
   if(!phoneNumber){
-    document.getElementById("phoneErr").innerHTML = "";
+    document.getElementById("phoneErr")!.innerHTML = "";
     document.getElementById("phoneErr")?.append("Give Phonenumber");
     hasError = true;
   }
   else if (!regexPhone.test(phoneNumber as string)) {
-    document.getElementById("phoneErr").innerHTML = "";
+    document.getElementById("phoneErr")!.innerHTML = "";
     document.getElementById("phoneErr")?.append("Invalid Phonenumber");
     hasError = true;
   }

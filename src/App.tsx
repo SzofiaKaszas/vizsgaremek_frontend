@@ -6,6 +6,8 @@ import './App.css'
 
 function App() {
   const context = useContext(AuthContext)
+  document.documentElement.setAttribute("data-theme", "sunset");
+
 
   return (
     <div>

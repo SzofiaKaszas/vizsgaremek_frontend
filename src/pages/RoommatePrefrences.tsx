@@ -3,68 +3,103 @@ import Languages from "../assets/languages";
 import { UserContext } from "../context/userContext";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
+import { Field, FieldLabel } from "@/components/ui/field";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+import { GendersForPref } from "@/assets/genders";
+import { Card, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export function RoommatePrefrences() {
   const context = useContext(UserContext);
   const [ages, setAges] = useState<[number, number]>([25, 40]);
 
   const MIN_AGE = 18;
-  const MAX_AGE = 100;
+  const MAX_AGE = 80;
 
   return (
-    <form
-      onSubmit={async (e) => {
-        handleSubmit(e, context, ages);
-      }}
-    >
-      <h2>Your Prefrences</h2>
-      <label>
-        Age range:
-        <strong>
-          {ages[0]} – {ages[1]}
-        </strong>
-      </label>
-      <Slider
-        defaultValue={[25, 50]}
-        min={MIN_AGE}
-        max={MAX_AGE}
-        step={1}
-        className="mx-auto w-full max-w-xs"
-        value={ages}
-        onValueChange={(value) => {
-          setAges(value as [number, number]);
-        }}
-      />
-      <div>
-        <label>Prefferred gender:</label>
-        <select name="gender">
-          <option value="any">Any</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
+    <div className="flex justify-center mt-10">
+      <Card className="w-full max-w-sm p-4">
+        <form
+          onSubmit={async (e) => {
+            handleSubmit(e, context, ages);
+          }}
+        >
+          <CardTitle className="text-center text-xl font-bold p-2">
+            Your Prefrences
+          </CardTitle>
+          <Field className="m-2">
+            <FieldLabel>
+              Age range: {" "}
+              {ages[0]} – {ages[1]}
+            </FieldLabel>
+            <Slider
+              defaultValue={[25, 50]}
+              min={MIN_AGE}
+              max={MAX_AGE}
+              step={1}
+              className="mx-auto w-full max-w-xs"
+              value={ages}
+              onValueChange={(value) => {
+                setAges(value as [number, number]);
+              }}
+            />
+          </Field>
+          <Field className="m-2">
+            <FieldLabel>Language you speak:</FieldLabel>
+            <Combobox items={GendersForPref}>
+              <ComboboxInput placeholder="Select a gender" />
+              <ComboboxContent>
+                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item} value={item}>
+                      {item}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+          </Field>
 
-      <div>
-        <label>Prefferred language:</label>
-        <select name="language">
-          {Languages.map((lang) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button type="submit">Save</button>
-      <button
-        type="button"
-        onClick={() => {
-          window.location.href = "/profile";
-        }}
-      >
-        Do later
-      </button>
-    </form>
+          <Field className="m-2">
+            <FieldLabel>Language you speak:</FieldLabel>
+            <Combobox items={Languages}>
+              <ComboboxInput placeholder="Select a language" />
+              <ComboboxContent>
+                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item} value={item}>
+                      {item}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+          </Field>
+          <Button variant={"default"} type="submit" className="m-1">
+            Next
+          </Button>
+          <Button
+            variant={"outline"}
+            type="button"
+            className="m-1"
+            onClick={() => {
+              window.location.href = "/main";
+            }}
+          >
+            Do later
+          </Button>
+        </form>
+      </Card>
+    </div>
   );
 }
 

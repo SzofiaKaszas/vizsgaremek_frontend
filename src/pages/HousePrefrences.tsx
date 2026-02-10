@@ -1,5 +1,15 @@
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
+import { Field, FieldLabel } from "@/components/ui/field";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+import { KitchenFurnishing } from "@/assets/housePref";
 
 export function HousePrefrences() {
   const context = useContext(UserContext);
@@ -50,14 +60,22 @@ export function HousePrefrences() {
           <option value="full">Full</option>
         </select>
       </div>
-      <div>
-        <label>kitchen furnishing:</label>
-        <select name="kitchenFurnishing">
-          <option value="none">None</option>
-          <option value="partial">Partial</option>
-          <option value="full">Full</option>
-        </select>
-      </div>
+      <Field className="m-2">
+        <FieldLabel>Kitchen furnishing:</FieldLabel>
+        <Combobox items={KitchenFurnishing}>
+          <ComboboxInput placeholder="Select a kitchen furnishing" />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </Field>
       <div>
         <label>Minimum bathrooms:</label>
         <input type="number" id="bathrooms" name="bathrooms" />
@@ -92,7 +110,7 @@ async function handleSubmit(
   const kitchenFurnishing = form.get("kitchenFurnishing");
   const bathrooms = form.get("bathrooms");
 
-  if(rent && Number(rent) < 0){
+  if (rent && Number(rent) < 0) {
     console.log("Rent must be positive");
     return;
   }
@@ -101,14 +119,14 @@ async function handleSubmit(
     case rent && Number(rent) < 0:
       console.log("Rent must be positive");
       return;
-    case sqmeter && Number(sqmeter) < 0: 
-    console.log("squaremeter cant be negative");
-    return;
+    case sqmeter && Number(sqmeter) < 0:
+      console.log("squaremeter cant be negative");
+      return;
     case rooms && Number(rooms) < 0:
-      console.log("room number cant be negative")
+      console.log("room number cant be negative");
       return;
     case bathrooms && Number(bathrooms) < 0:
-      console.log("bathroom number cant be negative")
+      console.log("bathroom number cant be negative");
       return;
     default:
       break;
@@ -121,10 +139,18 @@ async function handleSubmit(
       minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
       minRooms: rooms ? Number(rooms) : undefined,
       city: city && city !== "" ? (city as string) : undefined,
-      propertyType: propertyType && propertyType !== "" ? (propertyType as string) : undefined,
-      heatingType: heatingType && heatingType !== "" ? (heatingType as string) : undefined,
-      furnishingLevel: furnishing && furnishing !== "" ? (furnishing as string) : undefined,
-      kitchenLevel: kitchenFurnishing && kitchenFurnishing !== "" ? (kitchenFurnishing as string) : undefined,
+      propertyType:
+        propertyType && propertyType !== ""
+          ? (propertyType as string)
+          : undefined,
+      heatingType:
+        heatingType && heatingType !== "" ? (heatingType as string) : undefined,
+      furnishingLevel:
+        furnishing && furnishing !== "" ? (furnishing as string) : undefined,
+      kitchenLevel:
+        kitchenFurnishing && kitchenFurnishing !== ""
+          ? (kitchenFurnishing as string)
+          : undefined,
       minBathrooms: bathrooms ? Number(bathrooms) : undefined,
     });
     alert("Preferences saved successfully");

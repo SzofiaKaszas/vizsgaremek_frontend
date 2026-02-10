@@ -15,6 +15,13 @@ export function FindHouse() {
       {/* Implement house listing display logic here */}
     </div>
   ) : (
-    <a href="/login">Please log in to view house listings.</a>
+    <div>
+      <a
+        href="/login"
+        className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors p-2"
+      >
+        Please log in to view house listings.
+      </a>
+    </div>
   );
 }
