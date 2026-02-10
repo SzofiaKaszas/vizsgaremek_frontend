@@ -26,7 +26,6 @@ export function Register() {
           handleSubmit(e, context);
         }}
       >
-        <FieldSeparator/>
         <FieldGroup className="grid max-w-sm grid-cols-2">
           <Field>
             <FieldLabel htmlFor="first-name">

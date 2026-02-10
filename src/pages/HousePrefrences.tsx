@@ -9,61 +9,53 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { KitchenFurnishing } from "@/assets/housePref";
+import {
+  Furnishing,
+  HeatingType,
+  KitchenFurnishing,
+  PropertyType,
+} from "@/assets/housePref";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardTitle } from "@/components/ui/card";
 
 export function HousePrefrences() {
   const context = useContext(UserContext);
 
   return (
+    <div className="flex justify-center mt-10">
+    <Card className="w-full max-w-sm p-4">
     <form onSubmit={(e) => handleSubmit(e, context)}>
-      <h2>House Prefrences</h2>
-      <div>
-        <label>Max rent:</label>
-        <input type="number" id="rent" name="rent" />
-      </div>
-      <div>
-        <label>Minimum square meters:</label>
-        <input type="number" id="sqmeter" name="sqmeter" />
-      </div>
-      <div>
-        <label>Min rooms:</label>
-        <input type="number" id="rooms" name="rooms" />
-      </div>
-      <div>
-        <label>City:</label>
-        <input type="text" id="city" name="city" />
-      </div>
-      <div>
-        <label>Property type:</label>
-        <select name="propertyType" onChange={() => {}}>
-          {" "}
-          {/*TODO: handle change*/}
-          <option value="house">House</option>
-          <option value="flat">Flat</option>
-          <option value="skyscraper">Skyscraper</option>
-        </select>
-      </div>
-      <div>
-        <label>Heating type:</label>
-        <select name="heatingType">
-          <option value="radiator">Radiator</option>
-          <option value="airconditioner">Air Conditioner</option>
-          <option value="convector">Convector</option>
-          <option value="floor">Floor</option>
-        </select>
-      </div>
-      <div>
-        <label>Furnishing:</label>
-        <select name="furnishing">
-          <option value="none">None</option>
-          <option value="partial">Partial</option>
-          <option value="full">Full</option>
-        </select>
-      </div>
+      <CardTitle className="text-center text-xl font-bold">House Prefrences</CardTitle>
+
       <Field className="m-2">
-        <FieldLabel>Kitchen furnishing:</FieldLabel>
-        <Combobox items={KitchenFurnishing}>
-          <ComboboxInput placeholder="Select a kitchen furnishing" />
+        <FieldLabel htmlFor="rent">Max rent:</FieldLabel>
+        <Input type="number" id="rent" name="rent" placeholder="300 000"></Input>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="sqmeter">Minimum square meters:</FieldLabel>
+        <Input type="number" id="sqmeter" name="sqmeter" placeholder="5"></Input>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="minRoom">Minimum rooms:</FieldLabel>
+        <Input type="number" id="minRooms" name="rooms" placeholder="3"></Input>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="city">City:</FieldLabel>
+        <Input type="text" id="city" name="city" placeholder="Budapest"></Input>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="property">Property type:</FieldLabel>
+        <Combobox items={PropertyType}>
+          <ComboboxInput
+            placeholder="Select property type"
+            id="property"
+            name="propertyType"
+          />
           <ComboboxContent>
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>
@@ -76,20 +68,91 @@ export function HousePrefrences() {
           </ComboboxContent>
         </Combobox>
       </Field>
-      <div>
-        <label>Minimum bathrooms:</label>
-        <input type="number" id="bathrooms" name="bathrooms" />
-      </div>
-      <button type="submit">Save</button>
-      <button
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="heating">Heating type:</FieldLabel>
+        <Combobox items={HeatingType}>
+          <ComboboxInput
+            placeholder="Select heating type"
+            id="heating"
+            name="heatingType"
+          />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="furnishing">Furnishing:</FieldLabel>
+        <Combobox items={Furnishing}>
+          <ComboboxInput
+            placeholder="Select furnishing"
+            id="furnishing"
+            name="furnishing"
+          />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="kitchen">Kitchen furnishing:</FieldLabel>
+        <Combobox items={KitchenFurnishing}>
+          <ComboboxInput
+            placeholder="Select a kitchen furnishing"
+            id="kitchen"
+            name="kitchenFurnishing"
+          />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="bathrooms">Minimum bathrooms:</FieldLabel>
+        <Input type="number" id="bathrooms" name="bathrooms" placeholder="1"></Input>
+      </Field>
+
+      <Button variant={"default"} type="submit" className="m-1">
+        Next
+      </Button>
+      <Button
+        variant={"outline"}
         type="button"
+        className="m-1"
         onClick={() => {
-          window.location.href = "/profile";
+          window.location.href = "/main";
         }}
       >
         Do later
-      </button>
+      </Button>
     </form>
+    </Card>
+    </div>
   );
 }
 

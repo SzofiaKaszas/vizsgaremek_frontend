@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Outlet } from 'react-router'
 import { NavBar } from './pages/Nav'
 import { useContext } from 'react'
@@ -6,8 +7,6 @@ import './App.css'
 
 function App() {
   const context = useContext(AuthContext)
-  document.documentElement.setAttribute("data-theme", "sunset");
-
 
   return (
     <div>
