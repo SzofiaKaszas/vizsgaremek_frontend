@@ -16,11 +16,11 @@ export function NavBar() {
 
   return (
     <nav className="w-full border-b bg-white">
-      <div className="mx-auto max-w-screen-lg flex items-center justify-between p-2 md:p-3">
+      <div className="mx-auto flex items-center justify-between p-2 md:p-3">
         {/**mobile */}
         <Sheet>
-          <SheetTrigger asChild className="md:hidden">
-            <Button className="md:hidden" variant={"outline"}>
+          <SheetTrigger asChild className="sm:hidden">
+            <Button className="sm:hidden" variant={"outline"}>
               <Menu size={30} />
             </Button>
           </SheetTrigger>
@@ -59,7 +59,7 @@ export function NavBar() {
         </Sheet>
 
         {/**desktop */}
-        <NavigationMenu className="hidden md:flex gap-3">
+        <NavigationMenu className="hidden sm:flex gap-3">
           <NavigationMenuLink asChild>
             <NavLink to="/main">Main</NavLink>
           </NavigationMenuLink>

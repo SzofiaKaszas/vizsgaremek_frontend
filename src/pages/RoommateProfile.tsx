@@ -36,7 +36,7 @@ export function RoommateProfile() {
             <Textarea
               name="userBio"
               id="userBio"
-              placeholder="Im 20. I have a dog. I love skating <3"
+              placeholder="Im 20. I have a dog. I love stalking <3"
             ></Textarea>
           </Field>
 
