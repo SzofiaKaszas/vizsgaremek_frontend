@@ -52,6 +52,10 @@ export interface HousePref {
   minBathrooms?: number
 }
 
+export interface GoNextProp{
+  goNext : () => void
+}
+
 //context interfaces
 export interface AuthContextType {
   currentUserId: number | undefined;

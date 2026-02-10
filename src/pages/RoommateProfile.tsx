@@ -15,16 +15,15 @@ import {
 } from "@/components/ui/combobox";
 import { Textarea } from "@/components/ui/textarea";
 import { Genders } from "@/assets/genders";
+import type { GoNextProp } from "@/interfaces";
 
-export function RoommateProfile() {
+export function RoommateProfile({ goNext } : GoNextProp) {
   const context = useContext(UserContext);
 
   return (
-    <div className="flex justify-center mt-10">
-      <Card className="w-full max-w-sm p-4">
         <form
           onSubmit={async (e) => {
-            handleSubmit(e, context);
+            handleSubmit(e, context, goNext);
           }}
         >
           <CardTitle className="text-center text-xl font-bold p-2">
@@ -104,14 +103,13 @@ export function RoommateProfile() {
             Do later
           </Button>
         </form>
-      </Card>
-    </div>
   );
 }
 
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof UserContext>,
+  goNext: () => void
 ) {
   e.preventDefault();
   const form = new FormData(e.currentTarget);
@@ -147,7 +145,7 @@ async function handleSubmit(
     });
     alert("Preferences saved successfully");
 
-    window.location.href = "/roommatepreferences";
+    goNext();
   } catch (err) {
     alert((err as Error).message);
   }

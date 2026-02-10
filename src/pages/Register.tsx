@@ -62,7 +62,6 @@ export function Register() {
             id="phone-number"
             name="phoneNumber"
             placeholder="000-000-0000"
-            pattern="/^\+?\d{1,3}[-\s\.]?\(?\d{2,3}\)?[-\s\.]?\d{3}[-\s\.]?\d{4,6}$/"
             required
           />
           <FieldDescription id="phoneErr" className="text-red-600 text-sm mt-1"></FieldDescription>
@@ -98,7 +97,7 @@ export function Register() {
           <FieldLabel htmlFor="has-house">
             Do you want to rent out a house to others?
             <span className="text-destructive">*</span>
-            <Checkbox id="has-house" name="haHouse"></Checkbox>
+            <Checkbox id="has-house" name="hasHouse"></Checkbox>
           </FieldLabel>
         </Field>
         <Field className="m-1">
@@ -211,10 +210,8 @@ async function handleSubmit(
     await context.register(user);
     alert("Registration successful!");
     await context.login(email, password);
-    if (lookingForPeople) {
-      window.location.href = "/roommateprofile";
-    } else if (lookingForHouse) {
-      window.location.href = "/housepreferences";
+    if (lookingForPeople || lookingForHouse || hasHouse) {
+      window.location.href = "/setupprofile"
     } else {
       window.location.href = "/main";
     }

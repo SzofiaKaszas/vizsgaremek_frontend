@@ -15,8 +15,9 @@ import {
 import { GendersForPref } from "@/assets/genders";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import type { GoNextProp } from "@/interfaces";
 
-export function RoommatePrefrences() {
+export function RoommatePrefrences({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
   const [ages, setAges] = useState<[number, number]>([25, 40]);
 
@@ -28,7 +29,7 @@ export function RoommatePrefrences() {
       <Card className="w-full max-w-sm p-4">
         <form
           onSubmit={async (e) => {
-            handleSubmit(e, context, ages);
+            handleSubmit(e, context, ages, goNext);
           }}
         >
           <CardTitle className="text-center text-xl font-bold p-2">
@@ -36,8 +37,7 @@ export function RoommatePrefrences() {
           </CardTitle>
           <Field className="m-2">
             <FieldLabel>
-              Age range: {" "}
-              {ages[0]} – {ages[1]}
+              Age range: {ages[0]} – {ages[1]}
             </FieldLabel>
             <Slider
               defaultValue={[25, 50]}
@@ -52,9 +52,9 @@ export function RoommatePrefrences() {
             />
           </Field>
           <Field className="m-2">
-            <FieldLabel>Language you speak:</FieldLabel>
+            <FieldLabel htmlFor="gender">Language you speak:</FieldLabel>
             <Combobox items={GendersForPref}>
-              <ComboboxInput placeholder="Select a gender" />
+              <ComboboxInput placeholder="Select a gender" name="gender" id="gender"/>
               <ComboboxContent>
                 <ComboboxEmpty>No items found.</ComboboxEmpty>
                 <ComboboxList>
@@ -69,9 +69,9 @@ export function RoommatePrefrences() {
           </Field>
 
           <Field className="m-2">
-            <FieldLabel>Language you speak:</FieldLabel>
+            <FieldLabel htmlFor="language">Language you speak:</FieldLabel>
             <Combobox items={Languages}>
-              <ComboboxInput placeholder="Select a language" />
+              <ComboboxInput placeholder="Select a language" name="language" id="language"/>
               <ComboboxContent>
                 <ComboboxEmpty>No items found.</ComboboxEmpty>
                 <ComboboxList>
@@ -107,6 +107,7 @@ async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof UserContext>,
   ages: [number, number],
+  goNext: () => void,
 ) {
   e.preventDefault();
   const form = new FormData(e.currentTarget);
@@ -144,7 +145,7 @@ async function handleSubmit(
     });
     alert("Preferences saved successfully");
     if (context.userData?.lookingForHouse) {
-      window.location.href = "/housepreferences";
+      goNext();
     } else {
       window.location.href = "/main";
     }
