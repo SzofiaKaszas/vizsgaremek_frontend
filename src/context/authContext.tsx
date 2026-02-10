@@ -99,9 +99,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(
-          user
-        ),
+        body: JSON.stringify(user),
       });
 
       if (!response.ok) {
@@ -113,8 +111,12 @@ export function AuthContextProvider(props: PropsWithChildren) {
         }
       }
 
-      const newUser = await response.json();
-      console.log("Registration response:", newUser);
+      let newUser;
+      try {
+        newUser = await response.json();
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
       return newUser as User[];
     },
   };

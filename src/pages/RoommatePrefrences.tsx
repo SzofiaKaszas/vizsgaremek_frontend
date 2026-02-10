@@ -25,8 +25,6 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
   const MAX_AGE = 80;
 
   return (
-    <div className="flex justify-center mt-10">
-      <Card className="w-full max-w-sm p-4">
         <form
           onSubmit={async (e) => {
             handleSubmit(e, context, ages, goNext);
@@ -98,8 +96,6 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
             Do later
           </Button>
         </form>
-      </Card>
-    </div>
   );
 }
 

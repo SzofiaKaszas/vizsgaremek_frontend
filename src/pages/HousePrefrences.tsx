@@ -23,8 +23,6 @@ export function HousePrefrences() {
   const context = useContext(UserContext);
 
   return (
-    <div className="flex justify-center mt-10">
-    <Card className="w-full max-w-sm p-4">
     <form onSubmit={(e) => handleSubmit(e, context)}>
       <CardTitle className="text-center text-xl font-bold">House Prefrences</CardTitle>
 
@@ -151,8 +149,6 @@ export function HousePrefrences() {
         Do later
       </Button>
     </form>
-    </Card>
-    </div>
   );
 }
 
