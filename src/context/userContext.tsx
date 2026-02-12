@@ -14,6 +14,7 @@ const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
   changeUserData: async (_newData: Partial<User>) => {},
   addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  changeRoommatePref: async (_newData : Partial<RoommatePref>) => {},
   addHousePref: async (_newData: Partial<HousePref>) => {},
 };
 
@@ -76,6 +77,15 @@ export function UserContextProvider(props: PropsWithChildren) {
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
     },
+/*
+    async getRoommatePref() : Promise<void>{
+
+    },
+    
+    async getHousePref() : Promise<void>{
+
+    },
+    */
 
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
       const response = await fetch(
@@ -97,6 +107,28 @@ export function UserContextProvider(props: PropsWithChildren) {
             throw new Error("Something went wrong");
         }
       }
+    },
+
+    async changeRoommatePref(newData: Partial<RoommatePref>) : Promise<void>{
+      const response = await fetch(API_URL + `/roommates-prefrences/${userData?.idUser}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(newData),
+      });
+
+      if (!response.ok) {
+        switch (response.status) {
+          case 403:
+            throw new Error("Invalid credentials");
+          default:
+            throw new Error("Something went wrong");
+        }
+      }
+      const updatedUser = (await response.json()) as User;
+      setUserData(updatedUser);
     },
 
     async addHousePref(newData: Partial<HousePref>): Promise<void> {

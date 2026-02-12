@@ -68,5 +68,6 @@ export interface UserContextType {
   userData: User | undefined;
   changeUserData: (newData: Partial<User>) => void;
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
+  changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addHousePref: (newData: Partial<HousePref>) => void;
 }
