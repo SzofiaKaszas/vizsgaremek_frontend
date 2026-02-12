@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RoommateProfile } from "./RoommateProfile";
 import { RoommatePrefrences } from "./RoommatePrefrences";
 import { HousePrefrences } from "./HousePrefrences";
 import { Card } from "@/components/ui/card";
 import { FieldSeparator } from "@/components/ui/field";
+import { UserContext } from "@/context/userContext";
 
 export function SetUpProfile() {
   const [step, setStep] = useState("account");
 
-  const steps = ["account", "accPref", "housePref"];
+  const {userData} = useContext(UserContext)
+
+  const steps = ["account"];  
+
+  if(userData?.lookingForPeople){
+    steps.push("accPref")
+  }
+
+  if(userData?.lookingForHouse){
+    steps.push("housePref")
+  }
 
   function isCompleted(currentStep: string, step: string) {
     return steps.indexOf(step) < steps.indexOf(currentStep);
@@ -70,44 +81,6 @@ export function SetUpProfile() {
                   {i + 1}
                 </TabsTrigger>
               ))}
-              {/** 
-              <TabsTrigger
-                value="account"
-                disabled={step !== "account"}
-                className={`
-    w-12 h-12 flex items-center justify-center rounded-full relative z-10 data-[disabled]:opacity-100
-    ${isCompleted(step, "account") ? "bg-blue-600 text-white" : ""}
-    data-[state=active]:bg-blue-500 data-[state=active]:text-white
-    data-[disabled]:opacity-100 data-[disabled]:cursor-default
-    ${!isCompleted(step, "account") && step !== "account" ? "bg-gray-300 text-gray-600" : ""}
-  `}
-              >
-                1
-              </TabsTrigger>
-              <TabsTrigger
-                value="accPref"
-                disabled={step !== "accPref"}
-                className={`
-    w-12 h-12 flex items-center justify-center rounded-full relative z-10 data-[disabled]:opacity-100
-    ${isCompleted(step, "accPref") ? "bg-green-600 text-white" : ""}
-    data-[state=active]:bg-blue-500 data-[state=active]:text-white
-    ${!isCompleted(step, "accPref") && step !== "accPref" ? "bg-gray-300 text-gray-600" : ""}
-  `}
-              >
-                2
-              </TabsTrigger>
-              <TabsTrigger
-                value="housePref"
-                disabled={step !== "housePref"}
-                className={`
-    w-12 h-12 flex items-center justify-center rounded-full relative z-10 data-[disabled]:opacity-100
-    ${isCompleted(step, "housePref") ? "bg-green-600 text-white" : ""}
-    data-[state=active]:bg-blue-500 data-[state=active]:text-white
-    ${!isCompleted(step, "housePref") && step !== "housePref" ? "bg-gray-300 text-gray-600" : ""}
-  `}
-              >
-                3
-              </TabsTrigger>*/}
             </div>
           </TabsList>
 
@@ -122,7 +95,6 @@ export function SetUpProfile() {
 
           <TabsContent value="housePref">
             <HousePrefrences />
-            {/**TODO: onclick */}
           </TabsContent>
         </Tabs>
       </Card>
