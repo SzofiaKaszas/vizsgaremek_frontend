@@ -24,23 +24,20 @@ export function EditProfile() {
   const context = useContext(UserContext);
 
   return (
-    
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline">Edit Profile</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-">
-          <form
-      onSubmit={async (e) => {
-        handleSubmit(e, context);
-      }}
-    >
-          <DialogHeader>
-            <DialogTitle>Edit Profile</DialogTitle>
-            <DialogDescription>
-              You can edit your profile here
-            </DialogDescription>
-          </DialogHeader>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Edit Profile</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-">
+        <DialogHeader>
+          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogDescription>You can edit your profile here</DialogDescription>
+        </DialogHeader>
+        <form
+          onSubmit={async (e) => {
+            handleSubmit(e, context);
+          }}
+        >
           <FieldGroup className="gap-1">
             <Field>
               <FieldLabel htmlFor="firstName">First Name</FieldLabel>
@@ -150,9 +147,9 @@ export function EditProfile() {
             <Button type="submit">Save changes</Button>
             {/*</DialogClose>*/}
           </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 

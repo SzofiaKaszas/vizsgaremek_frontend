@@ -6,7 +6,7 @@ import {
   NavigationMenu,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,6 +26,8 @@ export function NavBar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            <SheetDescription className="sr-only">Mobile navigation</SheetDescription>
             <div className="flex flex-col gap-4 mt-6">
               <NavLink to="/main">Main</NavLink>
 
@@ -48,23 +50,7 @@ export function NavBar() {
               {currentUserId === undefined && (
                 <NavLink to="/login">Login</NavLink>
               )}
-
-              {currentUserId !== undefined && (
-                <>
-                  <NavLink to="/profile">
-              <Avatar>
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                  className="grayscale"
-                />
-                <AvatarFallback>Profile</AvatarFallback>
-              </Avatar>
-                </NavLink>
-                </>
-              )}
             </div>
-            <SheetDescription></SheetDescription>
           </SheetContent>
         </Sheet>
 
@@ -102,11 +88,11 @@ export function NavBar() {
               <NavLink to="/login">Login</NavLink>
             </NavigationMenuLink>
           )}
+        </NavigationMenu>
 
-          {currentUserId !== undefined && (
-            <>
-              <NavigationMenuLink asChild>
-                <NavLink to="/profile">
+        {currentUserId !== undefined && (
+                <>
+                  <NavLink to="/profile">
               <Avatar>
                 <AvatarImage
                   src="https://github.com/shadcn.png"
@@ -116,10 +102,8 @@ export function NavBar() {
                 <AvatarFallback>Profile</AvatarFallback>
               </Avatar>
                 </NavLink>
-              </NavigationMenuLink>
-            </>
-          )}
-        </NavigationMenu>
+                </>
+              )}
       </div>
     </nav>
   );
