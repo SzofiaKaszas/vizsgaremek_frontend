@@ -90,10 +90,10 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
             type="button"
             className="m-1"
             onClick={() => {
-              window.location.href = "/main";
+              goNext();
             }}
           >
-            Do later
+            Skip
           </Button>
         </form>
   );

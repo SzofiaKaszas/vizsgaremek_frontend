@@ -143,10 +143,10 @@ export function HousePrefrences() {
         type="button"
         className="m-1"
         onClick={() => {
-          window.location.href = "/main";
+          window.location.href = "/profile";
         }}
       >
-        Do later
+        Skip
       </Button>
     </form>
   );
