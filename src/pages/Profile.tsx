@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
+import { EditProfile } from "./EditProfile";
 
 export function Profile() {
     const {userData} = useContext(UserContext);
@@ -14,12 +15,11 @@ export function Profile() {
                 <p><strong>Email:</strong> {userData.email}</p>
                 <p><strong>Phone Number:</strong> {userData.phoneNumber}</p>
                 <p><strong>Has House to Rent:</strong> {userData.hasHouse ? "Yes" : "No"}</p>
-                <p><strong>Looking for Roommate:</strong> {userData.lookingForPeople ? "Yes" : "No"}</p>
                 <p><strong>Looking for House:</strong> {userData.lookingForHouse ? "Yes" : "No"}</p>
+                <p><strong>Looking for Roommate:</strong> {userData.lookingForPeople ? "Yes" : "No"}</p>
                 
-                <button onClick={() => {
-                    window.location.href = "/editprofile";
-                }}>Edit Profile</button>
+                <EditProfile/>
+
                 <button onClick={() => {
                     window.location.href = "/setupprofile"
                 }}>Setup profile</button>
