@@ -1,93 +1,158 @@
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function EditProfile() {
   const context = useContext(UserContext);
 
   return (
-    <div>
-      <h1>Edit Profile Page</h1>
-      <form
-        onSubmit={async (e) => {
-          handleSubmit(e, context);
-        }}
-      >
-        <div>
-          <label htmlFor="firstName">First Name:</label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            defaultValue={context.userData?.firstName}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="lastName">Last Name:</label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            defaultValue={context.userData?.lastName}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="phoneNumber">Phone Number:</label>
-          <input
-            type="text"
-            id="phoneNumber"
-            name="phoneNumber"
-            defaultValue={context.userData?.phoneNumber}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            defaultValue={context.userData?.email}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="hasHouse">
-            Do you wanna rent house out for others:
-          </label>
-          <input
-            type="checkbox"
-            id="hasHouse"
-            name="hasHouse"
-            defaultChecked={context.userData?.hasHouse}
-          />
-        </div>
-        <div>
-          <label htmlFor="lookingForPeople">
-            Are you looking for a roommate:
-          </label>
-          <input
-            type="checkbox"
-            id="lookingForPeople"
-            name="lookingForPeople"
-            defaultChecked={context.userData?.lookingForPeople}
-          />
-        </div>
-        <div>
-          <label htmlFor="lookingForHouse">Are you looking for a house:</label>
-          <input
-            type="checkbox"
-            id="lookingForHouse"
-            name="lookingForHouse"
-            defaultChecked={context.userData?.lookingForHouse}
-          />
-        </div>
-        <a href="#">Change password</a>
-        <br />
-        <button type="submit">Save Changes</button>
-      </form>
-    </div>
+    
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline">Edit Profile</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-">
+          <form
+      onSubmit={async (e) => {
+        handleSubmit(e, context);
+      }}
+    >
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogDescription>
+              You can edit your profile here
+            </DialogDescription>
+          </DialogHeader>
+          <FieldGroup className="gap-1">
+            <Field>
+              <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+              <Input
+                type="text"
+                id="firstName"
+                name="firstName"
+                defaultValue={context.userData?.firstName}
+                required
+              />
+              <FieldDescription
+                id="firstNameErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+              <Input
+                type="text"
+                id="lastName"
+                name="lastName"
+                defaultValue={context.userData?.lastName}
+                required
+              />
+              <FieldDescription
+                id="lastNameErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="phoneNumber">Phone Number</FieldLabel>
+              <Input
+                type="text"
+                id="phoneNumber"
+                name="phoneNumber"
+                defaultValue={context.userData?.phoneNumber}
+                required
+              />
+              <FieldDescription
+                id="phoneErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                defaultValue={context.userData?.email}
+                required
+              />
+            </Field>
+            <Field>
+              <div className="flex items-center gap-2">
+                <FieldLabel htmlFor="hasHouse">
+                  Do you wanna rent house out for others
+                </FieldLabel>
+                <Checkbox
+                  id="hasHouse"
+                  name="hasHouse"
+                  defaultChecked={context.userData?.hasHouse}
+                />
+              </div>
+              <FieldDescription
+                id="hasHouseErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+
+            <Field>
+              <div className="flex items-center gap-2">
+                <FieldLabel htmlFor="lookingForHouse">
+                  Are you looking for a house
+                </FieldLabel>
+                <Checkbox
+                  id="lookingForHouse"
+                  name="lookingForHouse"
+                  defaultChecked={context.userData?.lookingForHouse}
+                />
+              </div>
+              <FieldDescription
+                id="lookingForPeopleErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+
+            <Field>
+              <div className="flex items-center gap-2">
+                <FieldLabel htmlFor="lookingForPeople">
+                  Are you looking for a roommate
+                </FieldLabel>
+                <Checkbox
+                  id="lookingForPeople"
+                  name="lookingForPeople"
+                  defaultChecked={context.userData?.lookingForHouse}
+                />
+              </div>
+              <FieldDescription
+                id="lookingForPeopleErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+          </FieldGroup>
+          <DialogFooter>
+            {/*<DialogClose asChild>*/}
+            <Button type="submit">Save changes</Button>
+            {/*</DialogClose>*/}
+          </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
   );
 }
 
@@ -96,6 +161,8 @@ async function handleSubmit(
   context: React.ContextType<typeof UserContext>,
 ) {
   e.preventDefault();
+
+  console.log(context.userData);
 
   const confirmed = window.confirm(
     "Are you sure you want to change your data?",

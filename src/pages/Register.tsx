@@ -101,6 +101,13 @@ export function Register() {
           </FieldLabel>
         </Field>
         <Field className="m-1">
+          <FieldLabel htmlFor="looking-for-house">
+            Are you looking for a house?
+            <span className="text-destructive">*</span>
+            <Checkbox id="looking-for-house" name="lookingForHouse"></Checkbox>
+          </FieldLabel>
+        </Field>
+        <Field className="m-1">
           <FieldLabel htmlFor="looking-for-roommate">
             Are you looking for a roommate?
             <span className="text-destructive">*</span>
@@ -108,13 +115,6 @@ export function Register() {
               id="looking-for-roommate"
               name="lookingForRoommate"
             ></Checkbox>
-          </FieldLabel>
-        </Field>
-        <Field className="m-1">
-          <FieldLabel htmlFor="looking-for-house">
-            Are you looking for a house?
-            <span className="text-destructive">*</span>
-            <Checkbox id="looking-for-house" name="lookingForHouse"></Checkbox>
           </FieldLabel>
         </Field>
         <Button variant={"default"} type="submit" className="m-1">

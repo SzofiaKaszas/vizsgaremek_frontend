@@ -6,9 +6,10 @@ import {
   NavigationMenu,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function NavBar() {
   const { currentUserId } = useContext(AuthContext);
@@ -50,11 +51,20 @@ export function NavBar() {
 
               {currentUserId !== undefined && (
                 <>
-                  <NavLink to="/logout">Logout</NavLink>
-                  <NavLink to="/profile">Profile</NavLink>
+                  <NavLink to="/profile">
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                  className="grayscale"
+                />
+                <AvatarFallback>Profile</AvatarFallback>
+              </Avatar>
+                </NavLink>
                 </>
               )}
             </div>
+            <SheetDescription></SheetDescription>
           </SheetContent>
         </Sheet>
 
@@ -96,10 +106,16 @@ export function NavBar() {
           {currentUserId !== undefined && (
             <>
               <NavigationMenuLink asChild>
-                <NavLink to="/logout">Logout</NavLink>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <NavLink to="/profile">Profile</NavLink>
+                <NavLink to="/profile">
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                  className="grayscale"
+                />
+                <AvatarFallback>Profile</AvatarFallback>
+              </Avatar>
+                </NavLink>
               </NavigationMenuLink>
             </>
           )}
