@@ -21,12 +21,7 @@ export function Profile() {
                     window.location.href = "/editprofile";
                 }}>Edit Profile</button>
                 <button onClick={() => {
-                    if(userData.lookingForPeople){ {/* TODO make a check wether its already done (maybe not possible)*/}
-                        window.location.href = "/roommateprofile";
-                    }
-                    else if(userData.lookingForHouse){
-                        window.location.href = "/housepreferences";
-                    }
+                    window.location.href = "/setupprofile"
                 }}>Setup profile</button>
             </div>
 
