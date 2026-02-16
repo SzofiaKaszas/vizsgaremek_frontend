@@ -52,6 +52,10 @@ export interface HousePref {
   minBathrooms?: number
 }
 
+export interface PleaseLoginProps{
+    text : string
+}
+
 export interface GoNextProp{
   goNext : () => void
 }

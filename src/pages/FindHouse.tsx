@@ -1,27 +1,29 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { AuthContext } from "../context/authContext";
+import { PleaseLogin } from "./PleaseLogin";
 
 export function FindHouse() {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
   const { currentUserId } = useContext(AuthContext);
   const context = useContext(UserContext);
 
-  const isLoggedIn = context.userData !== undefined;
+  useEffect(() => {
+    if (context.userData == undefined) {
+      setLoggedIn(false);
+    } else {
+      setLoggedIn(true);
+    }
+  }, [context.userData, currentUserId]);
 
   return isLoggedIn === true ? (
-    <div>
+    <div className="bg-warning text-warning-foreground">
       <h1>Find House Page</h1>
       <p>Here you can find house listings based on your preferences.</p>
       {/* Implement house listing display logic here */}
     </div>
   ) : (
-    <div>
-      <a
-        href="/login"
-        className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors p-2"
-      >
-        Please log in to view house listings.
-      </a>
-    </div>
+    <PleaseLogin text="Please login to find a house" />
   );
 }
