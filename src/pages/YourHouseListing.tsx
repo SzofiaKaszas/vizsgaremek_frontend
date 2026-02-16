@@ -19,7 +19,7 @@ export function YourHouseListing() {
       
   return (
     isLoggedIn === true ? (
-      <div className="bg-warning text-warning-foreground">
+      <div>
         <h1>Your House Listing Page</h1>
         <p>Here you can manage your house listings.</p>
         {/* Implement your house listing management logic here */}
