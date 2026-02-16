@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
 import { AuthContext } from "../context/authContext";
+import { PleaseLogin } from "./PleaseLogin";
 
 export function FindRoommate() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -14,7 +15,7 @@ export function FindRoommate() {
       } else {
         setLoggedIn(true);
       }
-    }, [currentUserId]);
+    }, [context.userData, currentUserId]);
 
   return (
     isLoggedIn === true ? (
@@ -23,14 +24,7 @@ export function FindRoommate() {
         {/* Implement roomate listing display logic here */}
       </div>
     ) : (
-      <div>
-      <a
-        href="/login"
-        className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors p-2"
-      >
-        Please log in to view house listings.
-      </a>
-    </div>
+      <PleaseLogin text="Please login to find a roommate"/>
     )
   );
 }
