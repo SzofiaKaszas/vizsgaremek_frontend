@@ -146,6 +146,13 @@
   --shadow-2xl: 4px 4px 0px 0px oklch(0.427 0.149 277.089 / 0.5);
 }
 
+@theme{
+  --color-navy: oklch(0.3271 0.0917 262.76);
+  --color-sky: oklch(0.6114 0.1125 249.1);
+  --color-canari: oklch(0.8284 0.1332 74.11);
+  --color-main: oklch(0.9156 0.0115 71.89);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
