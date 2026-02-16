@@ -146,11 +146,6 @@
   --shadow-2xl: 4px 4px 0px 0px oklch(0.427 0.149 277.089 / 0.5);
 }
 
-@theme inline {
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
