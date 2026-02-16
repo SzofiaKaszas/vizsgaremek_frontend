@@ -1,6 +1,46 @@
 #passwordErr { white-space: pre-line; }
 
 body{
-    background-color: var(--color-main);
-    color: var(--color-navy);
+    background-color: var(--color-peachglow);
+    color: var(--color-inkblack);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    nav {
+        background-color: var(--color-inkblack);
+        color: var(--color-emerald);
+        font-weight: bold;
+        font-size: large;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+        .navigation-menu_link:hover{
+            background-color: var(--color-inkblack);
+            color: var(--color-peachglow);
+        }
+
+        .navigation-menu_link.active{
+            background-color: var(--color-inkblack);
+            color: var(--color-peachglow);
+        }
+
+        .navigation-menu_link:active{
+            background-color: var(--color-inkblack);
+            color: var(--color-peachglow);
+        }
+
+        .navigation-menu_link::selection{
+            background-color: var(--color-peachglow);
+            color: var(--color-inkblack);
+        }
+    }
+
+    .card{
+        background-color: var(--color-peachglow);
+        border: none;
+        box-shadow: none;
+
+        button{
+            background-color: var(--color-emerald);
+            box-shadow: 5px 5px 1px var(--color-deepocean);
+        }
+    }
 }

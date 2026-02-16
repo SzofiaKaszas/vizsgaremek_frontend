@@ -28,7 +28,7 @@ export function EditProfile() {
       <DialogTrigger asChild>
         <Button variant="outline">Edit Profile</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-">
+      <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>You can edit your profile here</DialogDescription>
