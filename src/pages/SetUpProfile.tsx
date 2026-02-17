@@ -30,11 +30,11 @@ export function SetUpProfile() {
 
   function circleClass(stepName: string) {
   if (step === stepName) {
-    return "bg-emerald text-white";
+    return "bg-amber text-white";
   }
 
   if (isCompleted(step, stepName)) {
-    return "bg-inkblack text-white";
+    return "bg-deepamber text-white";
   }
 
   return "bg-gray-300 text-gray-600";
@@ -59,7 +59,7 @@ export function SetUpProfile() {
             <div className="relative flex items-center gap-10 sm:gap-20">
               <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-gray-300 -translate-y-1/2" />
               <div
-                className="absolute top-1/2 left-0 h-[2px] bg-emerald -translate-y-1/2 transition-all duration-300"
+                className="absolute top-1/2 left-0 h-[2px] bg-deepamber -translate-y-1/2 transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
 
@@ -74,7 +74,7 @@ export function SetUpProfile() {
           flex items-center justify-center rounded-full
           text-sm sm:text-base
           data-[disabled]:opacity-100 data-[disabled]:cursor-default
-          data-[state=active]:bg-blue-500 data-[state=active]:text-white
+          data-[state=active]:bg-amber data-[state=active]:text-white
           ${circleClass(s)}
         `}
                 >

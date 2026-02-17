@@ -146,12 +146,15 @@
   --shadow-2xl: 4px 4px 0px 0px oklch(0% 0 0 / 0.5);
 }
 
-@theme{
-  --color-inkblack: oklch(0.2188 0.0297 210.56);
-  --color-deepocean: oklch(0.521 0.0815 190.53);
-  --color-emerald: oklch(0.7881 0.1743 160.3);
-  --color-peachglow: oklch(0.8441 0.0824 60.94);
-  --color-racingred: oklch(0.6155 0.2252 26.4);
+@theme {
+  --color-charcoal: oklch(0.235 0 0);
+  --color-coolwhite: oklch(0.9612 0 0);
+  --color-grey: oklch(0.8545 0 0);
+  --color-amber: oklch(0.8179 0.1705 77.95);
+  --color-deepamber: oklch(0.7559 0.1653 77.95);
+
+  --color-purple: oklch(0.6239 0.2251 318.91);
+  --color-deeppurple: oklch(0.5692 0.2289 288.56);
 }
 
 @layer base {

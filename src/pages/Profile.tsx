@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Logout } from "./Logout";
 
 export function Profile() {
   const { userData } = useContext(UserContext);
@@ -50,14 +51,19 @@ export function Profile() {
               {userData.lookingForPeople ? "Yes" : "No"}
             </div>
 
-            <EditProfile />
-            <Button
-              onClick={() => {
-                window.location.href = "/setupprofile";
-              }}
-            >
-              Setup profile
-            </Button>
+            <div className="my-button-scope">
+              <Field>
+              <EditProfile />
+              <Button
+                onClick={() => {
+                  window.location.href = "/setupprofile";
+                }}
+              >
+                Setup profile
+              </Button>
+              <Logout />
+              </Field>
+            </div>
           </Card>
         </div>
       ) : (

@@ -19,7 +19,7 @@ export function Register() {
 
   return (
     <div className="flex justify-center mt-10">
-    <Card className="w-full max-w-sm p-4">
+    <Card className="card w-full max-w-sm p-4">
       <CardTitle className="text-center text-xl font-bold">Register</CardTitle>
       <form
         onSubmit={(e) => {
@@ -117,9 +117,11 @@ export function Register() {
             ></Checkbox>
           </FieldLabel>
         </Field>
+        <div className="my-button-scope">
         <Button variant={"default"} type="submit" className="m-1">
           Register
         </Button>
+        </div>
       </form>
     </Card>
     </div>

@@ -1,16 +1,20 @@
-import { AuthContext } from "@/context/authContext"
-import { useContext, useEffect } from "react"
+import { Button } from "@/components/ui/button";
+import { Field } from "@/components/ui/field";
+import { AuthContext } from "@/context/authContext";
+import { useContext } from "react";
 
 export function Logout() {
-    const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
 
-    useEffect(() => {
-        async function logout() {
-            await context.logout();
-        }
-        logout()
-        window.location.href = "/main"
-    }, [])
+  async function logout() {
+    await context.logout();
+  }
 
-    return(<></>)
+  return (
+    <div className="my-button-scope">
+        <Field>
+      <Button onClick={logout}>Logout</Button>
+      </Field>
+    </div>
+  );
 }

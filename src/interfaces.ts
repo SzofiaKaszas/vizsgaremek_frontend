@@ -28,7 +28,7 @@ export interface UserToken{
 }
 
 export interface RoommatePref {
-  roommatesPrefrencesIdUser: number;
+  //roommatesPrefrencesIdUser: number;
 
   minAge?: number
   maxAge?: number

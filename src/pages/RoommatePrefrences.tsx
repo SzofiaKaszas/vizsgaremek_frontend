@@ -82,6 +82,8 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
               </ComboboxContent>
             </Combobox>
           </Field>
+
+          <div className="my-button-scope">
           <Button variant={"default"} type="submit" className="m-1">
             Next
           </Button>
@@ -95,6 +97,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
           >
             Skip
           </Button>
+          </div>
         </form>
   );
 }
@@ -133,7 +136,6 @@ async function handleSubmit(
 
   try {
     await context.addRoommatePref({
-      roommatesPrefrencesIdUser: context.userData?.idUser,
       minAge: minAge ? Number(minAge) : undefined,
       maxAge: maxAge ? Number(maxAge) : undefined,
       gender: gender,

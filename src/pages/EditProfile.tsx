@@ -144,7 +144,9 @@ export function EditProfile() {
           </FieldGroup>
           <DialogFooter>
             {/*<DialogClose asChild>*/}
-            <Button type="submit">Save changes</Button>
+            <div className="my-button-scope">
+              <Button type="submit">Save changes</Button>
+            </div>
             {/*</DialogClose>*/}
           </DialogFooter>
         </form>

@@ -24,16 +24,28 @@ export function HousePrefrences() {
 
   return (
     <form onSubmit={(e) => handleSubmit(e, context)}>
-      <CardTitle className="text-center text-xl font-bold">House Prefrences</CardTitle>
+      <CardTitle className="text-center text-xl font-bold">
+        House Prefrences
+      </CardTitle>
 
       <Field className="m-2">
         <FieldLabel htmlFor="rent">Max rent:</FieldLabel>
-        <Input type="number" id="rent" name="rent" placeholder="300 000"></Input>
+        <Input
+          type="number"
+          id="rent"
+          name="rent"
+          placeholder="300 000"
+        ></Input>
       </Field>
 
       <Field className="m-2">
         <FieldLabel htmlFor="sqmeter">Minimum square meters:</FieldLabel>
-        <Input type="number" id="sqmeter" name="sqmeter" placeholder="5"></Input>
+        <Input
+          type="number"
+          id="sqmeter"
+          name="sqmeter"
+          placeholder="5"
+        ></Input>
       </Field>
 
       <Field className="m-2">
@@ -132,22 +144,29 @@ export function HousePrefrences() {
 
       <Field className="m-2">
         <FieldLabel htmlFor="bathrooms">Minimum bathrooms:</FieldLabel>
-        <Input type="number" id="bathrooms" name="bathrooms" placeholder="1"></Input>
+        <Input
+          type="number"
+          id="bathrooms"
+          name="bathrooms"
+          placeholder="1"
+        ></Input>
       </Field>
 
-      <Button variant={"default"} type="submit" className="m-1">
-        Next
-      </Button>
-      <Button
-        variant={"outline"}
-        type="button"
-        className="m-1"
-        onClick={() => {
-          window.location.href = "/profile";
-        }}
-      >
-        Skip
-      </Button>
+      <div className="my-button-scope">
+        <Button variant={"default"} type="submit" className="m-1">
+          Next
+        </Button>
+        <Button
+          variant={"outline"}
+          type="button"
+          className="m-1"
+          onClick={() => {
+            window.location.href = "/profile";
+          }}
+        >
+          Skip
+        </Button>
+      </div>
     </form>
   );
 }
