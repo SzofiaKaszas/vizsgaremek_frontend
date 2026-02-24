@@ -1,10 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import {
   Field,
   FieldDescription,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ export function Login() {
   if (!context.currentUserId) {
     return (
       <div className="flex justify-center mt-10">
-        <Card className="w-full max-w-sm p-4">
+        <Card className="card w-full max-w-sm p-4">
           <CardTitle className="text-center text-xl font-bold">
             Login
           </CardTitle>
@@ -57,9 +56,11 @@ export function Login() {
                 className="text-red-600 text-sm mt-1"
               ></FieldDescription>
             </Field>
+            <div className="my-button-scope">
             <Button variant={"default"} type="submit" className="m-1">
               Login
             </Button>
+            </div>
           </form>
 
           <div>

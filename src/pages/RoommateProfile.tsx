@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import Languages from "../assets/languages";
 import { UserContext } from "../context/userContext";
-import { Card, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -17,99 +17,101 @@ import { Textarea } from "@/components/ui/textarea";
 import { Genders } from "@/assets/genders";
 import type { GoNextProp } from "@/interfaces";
 
-export function RoommateProfile({ goNext } : GoNextProp) {
+export function RoommateProfile({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
 
   return (
-        <form
-          onSubmit={async (e) => {
-            handleSubmit(e, context, goNext);
+    <form
+      onSubmit={async (e) => {
+        handleSubmit(e, context, goNext);
+      }}
+    >
+      <CardTitle className="text-center text-xl font-bold p-2">
+        Your Profile
+      </CardTitle>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="userBio">Description about you:</FieldLabel>
+        <Textarea
+          name="userBio"
+          id="userBio"
+          placeholder="Im 20. I have a dog. I love stalking <3"
+        ></Textarea>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="age">Your age:</FieldLabel>
+        {/**maybe datepicker as birthday */}
+        <Input type="number" name="age" placeholder="20" id="age"></Input>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel>Language you speak:</FieldLabel>
+        <Combobox items={Genders}>
+          <ComboboxInput placeholder="Select a gender" />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel>Language you speak:</FieldLabel>
+        <Combobox items={Languages}>
+          <ComboboxInput placeholder="Select a language" />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </Field>
+
+      <Field className="m-2">
+        <FieldLabel htmlFor="occupation">Your Occupation:</FieldLabel>
+        <Input
+          type="text"
+          name="occupation"
+          id="occupation"
+          placeholder="teacher"
+        />
+      </Field>
+
+      <div className="my-button-scope">
+        <Button variant={"default"} type="submit" className="m-1">
+          Next
+        </Button>
+        <Button
+          variant={"outline"}
+          type="button"
+          className="m-1"
+          onClick={() => {
+            goNext();
           }}
         >
-          <CardTitle className="text-center text-xl font-bold p-2">
-            Your Profile
-          </CardTitle>
-
-          <Field className="m-2">
-            <FieldLabel htmlFor="userBio">Description about you:</FieldLabel>
-            <Textarea
-              name="userBio"
-              id="userBio"
-              placeholder="Im 20. I have a dog. I love stalking <3"
-            ></Textarea>
-          </Field>
-
-          <Field className="m-2">
-            <FieldLabel htmlFor="age">Your age:</FieldLabel>
-            {/**maybe datepicker as birthday */}
-            <Input type="number" name="age" placeholder="20" id="age"></Input>
-          </Field>
-
-          <Field className="m-2">
-            <FieldLabel>Language you speak:</FieldLabel>
-            <Combobox items={Genders}>
-              <ComboboxInput placeholder="Select a gender" />
-              <ComboboxContent>
-                <ComboboxEmpty>No items found.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item) => (
-                    <ComboboxItem key={item} value={item}>
-                      {item}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-          </Field>
-
-          <Field className="m-2">
-            <FieldLabel>Language you speak:</FieldLabel>
-            <Combobox items={Languages}>
-              <ComboboxInput placeholder="Select a language" />
-              <ComboboxContent>
-                <ComboboxEmpty>No items found.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item) => (
-                    <ComboboxItem key={item} value={item}>
-                      {item}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-          </Field>
-
-          <Field className="m-2">
-            <FieldLabel htmlFor="occupation">Your Occupation:</FieldLabel>
-            <Input
-              type="text"
-              name="occupation"
-              id="occupation"
-              placeholder="teacher"
-            />
-          </Field>
-
-          <Button variant={"default"} type="submit" className="m-1">
-            Next
-          </Button>
-          <Button
-            variant={"outline"}
-            type="button"
-            className="m-1"
-            onClick={() => {
-              goNext();
-            }}
-          >
-            Skip
-          </Button>
-        </form>
+          Skip
+        </Button>
+      </div>
+    </form>
   );
 }
 
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof UserContext>,
-  goNext: () => void
+  goNext: () => void,
 ) {
   e.preventDefault();
   const form = new FormData(e.currentTarget);

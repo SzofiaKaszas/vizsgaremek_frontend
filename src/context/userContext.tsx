@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   createContext,
   useContext,
@@ -5,7 +6,12 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import type { HousePref, RoommatePref, User, UserContextType } from "../interfaces";
+import type {
+  HousePref,
+  RoommatePref,
+  User,
+  UserContextType,
+} from "../interfaces";
 import { AuthContext } from "./authContext";
 
 const API_URL = "http://localhost:3000";
@@ -13,9 +19,11 @@ const API_URL = "http://localhost:3000";
 const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
   changeUserData: async (_newData: Partial<User>) => {},
+  getHasRoommatePref: async () : Promise<boolean> => false,
   addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  changeRoommatePref: async (_newData : Partial<RoommatePref>) => {},
-  addHousePref: async (_newData: Partial<HousePref>) => {},
+  editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  getMatches: async () => [] as User[],
+  changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -43,7 +51,9 @@ export function UserContextProvider(props: PropsWithChildren) {
 
   useEffect(() => {
     if (!currentUserId) {
-      setUserData(undefined);
+      (async () => {
+        setUserData(undefined);
+      })();
       return;
     } else {
       (async () => {
@@ -77,19 +87,36 @@ export function UserContextProvider(props: PropsWithChildren) {
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
     },
-/*
-    async getRoommatePref() : Promise<void>{
 
-    },
-    
-    async getHousePref() : Promise<void>{
+    async getHasRoommatePref(): Promise<boolean> {
+      const response = await fetch(
+        API_URL + `/roommates-prefrences/${userData?.idUser}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        },
+      );
 
+      if (!response.ok) {
+        switch (response.status) {
+          case 403:
+            console.error("Invalid credentials");
+            return false;
+          default:
+            console.error("Failed to load roommate preferences");
+            return false;
+        }
+      }
+
+      return true;
     },
-    */
 
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
       const response = await fetch(
-        API_URL + `/roommates-prefrences/add`, //TODO: check if right endpoint
+        API_URL + `/roommates-prefrences/add`,
         {
           method: "POST",
           headers: {
@@ -97,7 +124,7 @@ export function UserContextProvider(props: PropsWithChildren) {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },
           body: JSON.stringify(newData),
-        }
+        },
       );
       if (!response.ok) {
         switch (response.status) {
@@ -109,7 +136,8 @@ export function UserContextProvider(props: PropsWithChildren) {
       }
     },
 
-    async changeRoommatePref(newData: Partial<RoommatePref>) : Promise<void>{
+    async editRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
+      console.log("Editing roommate preferences with data:", userData?.idUser);
       const response = await fetch(API_URL + `/roommates-prefrences/${userData?.idUser}`, {
         method: "PATCH",
         headers: {
@@ -127,22 +155,20 @@ export function UserContextProvider(props: PropsWithChildren) {
             throw new Error("Something went wrong");
         }
       }
-      const updatedUser = (await response.json()) as User;
-      setUserData(updatedUser);
     },
 
-    async addHousePref(newData: Partial<HousePref>): Promise<void> {
+    async getMatches(): Promise<User[]> {
       const response = await fetch(
-        API_URL + `/house-search-prefrences/add`,
+        API_URL + "/roommates-prefrences/getmatches",
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },
-          body: JSON.stringify(newData),
-        }
+        },
       );
+
       if (!response.ok) {
         switch (response.status) {
           case 403:
@@ -151,6 +177,39 @@ export function UserContextProvider(props: PropsWithChildren) {
             throw new Error("Something went wrong");
         }
       }
+
+      let prefrenceList;
+      try {
+        prefrenceList = await response.json();
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+      return prefrenceList as User[];
+    },
+
+    async changeRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
+      const response = await fetch(
+        API_URL + `/roommates-prefrences/${userData?.idUser}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+          body: JSON.stringify(newData),
+        },
+      );
+
+      if (!response.ok) {
+        switch (response.status) {
+          case 403:
+            throw new Error("Invalid credentials");
+          default:
+            throw new Error("Something went wrong");
+        }
+      }
+      const updatedUser = (await response.json()) as User;
+      setUserData(updatedUser);
     },
   };
 

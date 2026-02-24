@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Logout } from "./Logout";
 
 export function Profile() {
   const { userData } = useContext(UserContext);
@@ -18,7 +19,7 @@ export function Profile() {
     <div>
       {userData ? (
         <div className="flex justify-center mt-10">
-          <Card className="w-full max-w-sm p-6">
+          <Card className="card w-full max-w-sm p-6">
             <CardTitle className="text-center text-xl font-bold">
               Profile data
             </CardTitle>
@@ -50,14 +51,19 @@ export function Profile() {
               {userData.lookingForPeople ? "Yes" : "No"}
             </div>
 
-            <EditProfile />
-            <Button
-              onClick={() => {
-                window.location.href = "/setupprofile";
-              }}
-            >
-              Setup profile
-            </Button>
+            <div className="my-button-scope">
+              <Field>
+              <EditProfile />
+              <Button
+                onClick={() => {
+                  window.location.href = "/setupprofile";
+                }}
+              >
+                Setup profile
+              </Button>
+              <Logout />
+              </Field>
+            </div>
           </Card>
         </div>
       ) : (

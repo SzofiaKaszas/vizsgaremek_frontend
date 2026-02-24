@@ -3,7 +3,6 @@ import { AuthContext } from "../context/authContext";
 import type { User } from "../interfaces";
 import {
   Field,
-  FieldError,
   FieldDescription,
   FieldGroup,
   FieldLabel,
@@ -19,7 +18,7 @@ export function Register() {
 
   return (
     <div className="flex justify-center mt-10">
-    <Card className="w-full max-w-sm p-4">
+    <Card className="card w-full max-w-sm p-4">
       <CardTitle className="text-center text-xl font-bold">Register</CardTitle>
       <form
         onSubmit={(e) => {
@@ -117,9 +116,11 @@ export function Register() {
             ></Checkbox>
           </FieldLabel>
         </Field>
+        <div className="my-button-scope">
         <Button variant={"default"} type="submit" className="m-1">
           Register
         </Button>
+        </div>
       </form>
     </Card>
     </div>
@@ -133,20 +134,20 @@ async function handleSubmit(
   e.preventDefault();
 
   const form = new FormData(e.currentTarget);
-  const firstName = (form.get("firstName") as string) || undefined;
-  const lastName = (form.get("lastName") as string) || undefined;
-  const phoneNumber = (form.get("phoneNumber") as string) || undefined;
+  const firstName = form.get("firstName") as string;
+  const lastName = form.get("lastName") as string;
+  const phoneNumber = form.get("phoneNumber") as string;
   const hasHouse = form.get("hasHouse") === "on";
   const lookingForPeople = form.get("lookingForRoommate") === "on";
   const lookingForHouse = form.get("lookingForHouse") === "on";
-  const email = (form.get("email") as string) || undefined;
-  const password = (form.get("password") as string) || undefined;
+  const email = form.get("email") as string;
+  const password = form.get("password") as string;
 
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
   const regexPhone =
-    /^\+?\d{1,3}[-\s\.]?\(?\d{2,3}\)?[-\s\.]?\d{3}[-\s\.]?\d{4,6}$/; // Simplified phone number regex
-  const regexPassword = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // At least 6 characters, one upperif( letter, one number
+    /^\+?\d{1,3}[-\s.]?\(?\d{2,3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/; // Simplified phone number regex
+  const regexPassword = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // At least 6 characters, one uppercase letter, one number
 
   let hasError = false;
 
