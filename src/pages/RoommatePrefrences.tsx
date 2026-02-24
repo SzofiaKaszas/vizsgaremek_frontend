@@ -17,6 +17,7 @@ import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { GoNextProp } from "@/interfaces";
 
+/**TODO: If already has roommate pref, show the data in inputs */
 export function RoommatePrefrences({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
   const [ages, setAges] = useState<[number, number]>([25, 40]);

@@ -3,6 +3,7 @@
 import type { HouseContextType, HouseListing, HousePref } from "@/interfaces";
 import { useContext, type PropsWithChildren, createContext } from "react";
 import { AuthContext } from "./authContext";
+import { UserContext } from "./userContext";
 
 const API_URL = "http://localhost:3000";
 
@@ -23,12 +24,12 @@ const defaultUserContext: HouseContextType = {
 export const HouseContext = createContext(defaultUserContext);
 
 export function HouseContextProvider(props: PropsWithChildren) {
-  const { currentUserId } = useContext(AuthContext);
+  const context = useContext(UserContext);
 
   const contextValue : HouseContextType = {
     async getHouseListings(): Promise<HouseListing[]> {
       const response = await fetch(
-        API_URL + `/house-listings/${currentUserId}`,
+        API_URL + `/house-listings/${context.userData?.idUser}`,
         {
           method: "GET",
           headers: {
@@ -112,7 +113,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
     },
     async getHasHousePref(): Promise<boolean> {
       const response = await fetch(
-        API_URL + `/house-search-prefrences/${currentUserId}`,
+        API_URL + `/house-search-prefrences/${context.userData?.idUser}`,
         {
           method: "GET",
           headers: {
@@ -137,7 +138,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
     },
     async changeHousePref(newData: Partial<HousePref>): Promise<void> {
       const response = await fetch(
-        API_URL + `/house-search-prefrences/${currentUserId}`,
+        API_URL + `/house-search-prefrences/${context.userData?.idUser}`,
         {
           method: "PATCH",
           headers: {

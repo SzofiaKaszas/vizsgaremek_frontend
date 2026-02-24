@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import { HouseContext } from "@/context/houseContext";
 
+/**TODO: If already has house pref, show the data in inputs */
 export function HousePrefrences() {
   const userContext = useContext(UserContext);
   const context = useContext(HouseContext);
@@ -183,6 +184,7 @@ async function handleSubmit(
   const form = new FormData(e.currentTarget);
 
   const hasHousePref = await context.getHasHousePref();
+  console.log("Has house pref:", hasHousePref);
 
   const rent = form.get("rent");
   const sqmeter = form.get("sqmeter");

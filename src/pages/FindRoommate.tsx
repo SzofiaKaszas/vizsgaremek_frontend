@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
-import { AuthContext } from "../context/authContext";
 import type { User } from "@/interfaces";
 import { FindRoommateCard } from "./FindRoommateCard";
 import { LayoutGrid, GalleryHorizontal } from "lucide-react";
@@ -11,9 +10,8 @@ import { FindRoommateSlide } from "./FindRoommateSlide";
 export function FindRoommate() {
   const [roommatePref, setRoommatePref] = useState<User[]>([]);
   const isMobile = useIsMobile();
-  const tab = isMobile ? "list" : "grid";
+  const [tab, setTab] = useState(isMobile ? "list" : "grid");
 
-  const { currentUserId } = useContext(AuthContext);
   const context = useContext(UserContext);
   const isLoggedIn = context.userData ? true : false;
 
@@ -23,8 +21,13 @@ export function FindRoommate() {
     context.getMatches().then((prefs) => setRoommatePref(prefs));
   }, [isLoggedIn, context]);
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTab(isMobile ? "list" : "grid");
+  }, [isMobile]);
+
   return (
-    <Tabs value={tab} className="relative">
+    <Tabs value={tab} onValueChange={setTab} className="relative">
       <div className="flex w-full justify-end">
         <TabsList className="absolute ml-auto flex bg-transparent p-0 border border-slate rounded-md overflow-hidden !shadow-none">
           <TabsTrigger
