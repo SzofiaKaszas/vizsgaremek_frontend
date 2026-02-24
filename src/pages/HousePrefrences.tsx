@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 import { Field, FieldLabel } from "@/components/ui/field";

@@ -1,3 +1,4 @@
+import type { Furnishing, HeatingType, KitchenFurnishing, PropertyType } from "./assets/housePref";
 // User interfaces
 export interface User {
   idUser: number;
@@ -17,12 +18,12 @@ export interface User {
 
   hasHouse: boolean;
   lookingForPeople: boolean;
-  lookingForHouse: boolean
+  lookingForHouse: boolean;
 
   role: string;
 }
 
-export interface UserToken{
+export interface UserToken {
   userIdToken: number;
   token: string;
 }
@@ -30,34 +31,62 @@ export interface UserToken{
 export interface RoommatePref {
   //roommatesPrefrencesIdUser: number;
 
-  minAge?: number
-  maxAge?: number
-  gender?: string
-  language?: string
-
+  minAge?: number;
+  maxAge?: number;
+  gender?: string;
+  language?: string;
 }
 
 // House interfaces
+export interface HouseListing {
+  idHouse: number;
+  houseSearchIdUser: number;
+
+  description: string;
+  location: string;
+  city: string;
+  rent: number;
+  propertyType: PropertyType;
+  whichFloor: number;
+  numberOfRooms: number;
+  squareMeter: number;
+  heatingType: HeatingType;
+  furnishingLevel: Furnishing;
+  kitchenLevel: KitchenFurnishing;
+  bathrooms: number;
+  airConditioner: boolean;
+}
+
 export interface HousePref {
   houseSearchIdUser: number;
 
-  maxRent?: number
-  minSquareMeters?: number
-  minRooms?: number
-  city?: string
-  propertyType?: string
-  heatingType?: string
-  furnishingLevel?: string
-  kitchenLevel?: string
-  minBathrooms?: number
+  maxRent?: number;
+  minSquareMeters?: number;
+  minRooms?: number;
+  city?: string;
+  propertyType?: string;
+  heatingType?: string;
+  furnishingLevel?: string;
+  kitchenLevel?: string;
+  minBathrooms?: number;
 }
 
-export interface PleaseLoginProps{
-    text : string
+export interface PleaseLoginProps {
+  text: string;
 }
 
-export interface GoNextProp{
-  goNext : () => void
+export interface GoNextProp {
+  goNext: () => void;
+}
+
+export interface FindRoommateProps {
+  isLoggedIn: boolean;
+  roommatePref: User[];
+}
+
+export interface FindHouseProps {
+  isLoggedIn: boolean;
+  housePref: HouseListing[];
 }
 
 //context interfaces

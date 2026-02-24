@@ -1,10 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import {
   Field,
   FieldDescription,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
