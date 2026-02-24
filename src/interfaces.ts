@@ -99,9 +99,26 @@ export interface AuthContextType {
 
 export interface UserContextType {
   userData: User | undefined;
+  //userdata
   changeUserData: (newData: Partial<User>) => void;
+  //roommatepref
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
-  getRoommatePref: () => Promise<User[]>;
+  getHasRoommatePref: () => Promise<boolean>;
+  editRoommatePref: (newData: Partial<RoommatePref>) => void;
+  getMatches: () => Promise<User[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
+  //move to house context?
+  addHousePref: (newData: Partial<HousePref>) => void;
+}
+
+export interface HouseContextType {
+  //houselisting
+  getHouseListings: () => Promise<HouseListing[]>;
+  addHouseListing: (newData: Partial<HouseListing>) => void;
+  editHouseListing: (idHouse: number, newData: Partial<HouseListing>) => void;
+  deleteHouseListing: (idHouse: number) => void;
+  //housepref
+  getHousePref: () => Promise<HousePref>;
+  changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Partial<HousePref>) => void;
 }

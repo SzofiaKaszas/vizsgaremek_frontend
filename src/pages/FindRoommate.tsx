@@ -20,7 +20,7 @@ export function FindRoommate() {
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    context.getRoommatePref().then((prefs) => setRoommatePref(prefs));
+    context.getMatches().then((prefs) => setRoommatePref(prefs));
   }, [isLoggedIn, context]);
 
   return (

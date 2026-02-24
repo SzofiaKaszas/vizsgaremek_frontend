@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import Languages from "../assets/languages";
 import { UserContext } from "../context/userContext";
-import { Card, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
