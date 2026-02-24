@@ -118,5 +118,5 @@ export interface HouseContextType {
   //housepref
   getHasHousePref: () => Promise<boolean>;
   changeHousePref: (newData: Partial<HousePref>) => void;
-  addHousePref: (newData: Omit<HousePref, "houseSearchIdUser">) => void;
+  addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
 }

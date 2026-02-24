@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/*
-TODO: make house context -> move gethousepref here, make gethouselistings of a person - addhouselisting - edithouselisting - deletehouselisting 
-*/
 
 import type { HouseContextType, HouseListing, HousePref } from "@/interfaces";
 import { useContext, type PropsWithChildren, createContext } from "react";
 import { AuthContext } from "./authContext";
 
 const API_URL = "http://localhost:3000";
-const { currentUserId } = useContext(AuthContext);
 
 const defaultUserContext: HouseContextType = {
   getHouseListings: async () => [] as HouseListing[],
@@ -20,13 +16,16 @@ const defaultUserContext: HouseContextType = {
   deleteHouseListing: async (_idHouse: number) => {},
   getHasHousePref: async (): Promise<boolean> => false,
   changeHousePref: async (_newData: Partial<HousePref>) => {},
-  addHousePref: async (_newData: Omit<HousePref, "houseSearchIdUser">) => {},
+  addHousePref: async (_newData: Omit<HousePref, "idHouse">) => {},
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const HouseContext = createContext(defaultUserContext);
 
 export function HouseContextProvider(props: PropsWithChildren) {
-  const contextValue = {
+  const { currentUserId } = useContext(AuthContext);
+
+  const contextValue : HouseContextType = {
     async getHouseListings(): Promise<HouseListing[]> {
       const response = await fetch(
         API_URL + `/house-listings/${currentUserId}`,

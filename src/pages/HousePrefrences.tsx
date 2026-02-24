@@ -18,13 +18,15 @@ import {
 } from "@/assets/housePref";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
+import { HouseContext } from "@/context/houseContext";
 
 export function HousePrefrences() {
-  const context = useContext(UserContext);
+  const userContext = useContext(UserContext);
+  const context = useContext(HouseContext);
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, context)}>
+    <form onSubmit={(e) => handleSubmit(e, userContext, context)}>
       <CardTitle className="text-center text-xl font-bold">
         House Prefrences
       </CardTitle>
@@ -174,11 +176,14 @@ export function HousePrefrences() {
 
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
-  context: React.ContextType<typeof UserContext>,
+  userContext: React.ContextType<typeof UserContext>,
+  context: React.ContextType<typeof HouseContext>,
 ) {
   e.preventDefault();
-
   const form = new FormData(e.currentTarget);
+
+  const hasHousePref = await context.getHasHousePref();
+
   const rent = form.get("rent");
   const sqmeter = form.get("sqmeter");
   const rooms = form.get("rooms");
@@ -211,33 +216,67 @@ async function handleSubmit(
       break;
   }
 
-  try {
-    await context.addHousePref({
-      houseSearchIdUser: context.userData?.idUser,
-      maxRent: rent ? Number(rent) : undefined,
-      minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
-      minRooms: rooms ? Number(rooms) : undefined,
-      city: city && city !== "" ? (city as string) : undefined,
-      propertyType:
-        propertyType && propertyType !== ""
-          ? (propertyType as string)
-          : undefined,
-      heatingType:
-        heatingType && heatingType !== "" ? (heatingType as string) : undefined,
-      furnishingLevel:
-        furnishing && furnishing !== "" ? (furnishing as string) : undefined,
-      kitchenLevel:
-        kitchenFurnishing && kitchenFurnishing !== ""
-          ? (kitchenFurnishing as string)
-          : undefined,
-      minBathrooms: bathrooms ? Number(bathrooms) : undefined,
-    });
-    alert("Preferences saved successfully");
-    window.location.href = "/main";
-  } catch (err) {
-    alert((err as Error).message);
-    console.error("Error details:", err);
+  if (!hasHousePref) {
+    try {
+      await context.addHousePref({
+        houseSearchIdUser: userContext.userData?.idUser,
+        maxRent: rent ? Number(rent) : undefined,
+        minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
+        minRooms: rooms ? Number(rooms) : undefined,
+        city: city && city !== "" ? (city as string) : undefined,
+        propertyType:
+          propertyType && propertyType !== ""
+            ? (propertyType as string)
+            : undefined,
+        heatingType:
+          heatingType && heatingType !== ""
+            ? (heatingType as string)
+            : undefined,
+        furnishingLevel:
+          furnishing && furnishing !== "" ? (furnishing as string) : undefined,
+        kitchenLevel:
+          kitchenFurnishing && kitchenFurnishing !== ""
+            ? (kitchenFurnishing as string)
+            : undefined,
+        minBathrooms: bathrooms ? Number(bathrooms) : undefined,
+      });
+      alert("Preferences saved successfully");
+      window.location.href = "/main";
+    } catch (err) {
+      alert((err as Error).message);
+      console.error("Error details:", err);
+    }
+    return;
+  } else {
+    try {
+      await context.changeHousePref({
+        houseSearchIdUser: userContext.userData?.idUser,
+        maxRent: rent ? Number(rent) : undefined,
+        minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
+        minRooms: rooms ? Number(rooms) : undefined,
+        city: city && city !== "" ? (city as string) : undefined,
+        propertyType:
+          propertyType && propertyType !== ""
+            ? (propertyType as string)
+            : undefined,
+        heatingType:
+          heatingType && heatingType !== ""
+            ? (heatingType as string)
+            : undefined,
+        furnishingLevel:
+          furnishing && furnishing !== "" ? (furnishing as string) : undefined,
+        kitchenLevel:
+          kitchenFurnishing && kitchenFurnishing !== ""
+            ? (kitchenFurnishing as string)
+            : undefined,
+        minBathrooms: bathrooms ? Number(bathrooms) : undefined,
+      });
+      alert("Preferences saved successfully");
+      window.location.href = "/main";
+    } catch (err) {
+      alert((err as Error).message);
+      console.error("Error details:", err);
+    }
+    return;
   }
-
-  return;
 }
