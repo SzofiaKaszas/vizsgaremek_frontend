@@ -1,29 +1,66 @@
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../context/userContext";
+/*import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
-import { PleaseLogin } from "./PleaseLogin";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GalleryHorizontal, House, LayoutGrid } from "lucide-react";*/
 
 export function FindHouse() {
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  /*
+  const [roommatePref, setRoommatePref] = useState<User[]>([]);
+    const isMobile = useIsMobile();
+    const tab = isMobile ? "list" : "grid";
+  
+    const { currentUserId } = useContext(AuthContext);
+    const context = useContext(UserContext);
+    const isLoggedIn = context.userData ? true : false;
+  
+    useEffect(() => {
+      if (!isLoggedIn) return;
+  
+      context.getRoommatePref().then((prefs) => setRoommatePref(prefs));
+    }, [isLoggedIn, context]);
+*/
+  return (
+    /*<Tabs value={tab} onValueChange={setTab} className="relative">
+      <div className="flex w-full justify-end">
+        <TabsList className="absolute ml-auto flex bg-transparent p-0 border border-slate rounded-md overflow-hidden !shadow-none">
+          <TabsTrigger
+            value="grid"
+            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
+          >
+            <LayoutGrid />
+          </TabsTrigger>
+          <TabsTrigger
+            value="list"
+            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
+          >
+            <GalleryHorizontal />
+          </TabsTrigger>
+        </TabsList>
+      </div>
 
-  const { currentUserId } = useContext(AuthContext);
-  const context = useContext(UserContext);
-
-  useEffect(() => {
-    if (context.userData == undefined) {
-      setLoggedIn(false);
-    } else {
-      setLoggedIn(true);
-    }
-  }, [context.userData, currentUserId]);
-
-  return isLoggedIn === true ? (
-    <div className="bg-warning text-warning-foreground">
-      <h1>Find House Page</h1>
-      <p>Here you can find house listings based on your preferences.</p>
-      {/* Implement house listing display logic here */}
+      <TabsContent value="grid">
+        <FindHouseCard isLoggedIn={isLoggedIn} housePref={housePref} />
+      </TabsContent>
+      <TabsContent value="list">
+        <FindHouseSlide isLoggedIn={isLoggedIn} housePref={housePref} />
+      </TabsContent>
+    </Tabs>*/
+    <div className="flex justify-center mt-10">
+      <h1 className="text-2xl font-bold text-center">Dolgozunk rajta</h1>
     </div>
-  ) : (
-    <PleaseLogin text="Please login to find a house" />
   );
 }
+/*
+function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(
+      typeof window !== "undefined" ? window.innerWidth < 768 : false,
+    );
+
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth < 768);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return isMobile;
+  }*/
