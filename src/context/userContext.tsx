@@ -24,7 +24,6 @@ const defaultUserContext: UserContextType = {
   editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   getMatches: async () => [] as User[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  addHousePref: async (_newData: Partial<HousePref>) => {}, /**TODO: move to houseContext */
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -211,25 +210,6 @@ export function UserContextProvider(props: PropsWithChildren) {
       }
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
-    },
-
-    async addHousePref(newData: Partial<HousePref>): Promise<void> {
-      const response = await fetch(API_URL + `/house-search-prefrences/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-        body: JSON.stringify(newData),
-      });
-      if (!response.ok) {
-        switch (response.status) {
-          case 403:
-            throw new Error("Invalid credentials");
-          default:
-            throw new Error("Something went wrong");
-        }
-      }
     },
   };
 

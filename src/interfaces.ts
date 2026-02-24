@@ -107,18 +107,16 @@ export interface UserContextType {
   editRoommatePref: (newData: Partial<RoommatePref>) => void;
   getMatches: () => Promise<User[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
-  //move to house context?
-  addHousePref: (newData: Partial<HousePref>) => void;
 }
 
 export interface HouseContextType {
   //houselisting
   getHouseListings: () => Promise<HouseListing[]>;
-  addHouseListing: (newData: Partial<HouseListing>) => void;
-  editHouseListing: (idHouse: number, newData: Partial<HouseListing>) => void;
-  deleteHouseListing: (idHouse: number) => void;
+  addHouseListing: (newData: Omit<HouseListing, "idHouse">) => Promise<void>;
+  editHouseListing: (idHouse: number, newData: Partial<HouseListing>) => Promise<void>;
+  deleteHouseListing: (idHouse: number) => Promise<void>;
   //housepref
-  getHousePref: () => Promise<HousePref>;
+  getHasHousePref: () => Promise<boolean>;
   changeHousePref: (newData: Partial<HousePref>) => void;
-  addHousePref: (newData: Partial<HousePref>) => void;
+  addHousePref: (newData: Omit<HousePref, "houseSearchIdUser">) => void;
 }
