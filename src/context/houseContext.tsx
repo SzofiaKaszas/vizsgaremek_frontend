@@ -23,6 +23,7 @@ const defaultUserContext: HouseContextType = {
 // eslint-disable-next-line react-refresh/only-export-components
 export const HouseContext = createContext(defaultUserContext);
 
+/**TODO: check links cus they change -- ones that have id in them */
 export function HouseContextProvider(props: PropsWithChildren) {
   const context = useContext(UserContext);
 
@@ -76,7 +77,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
       idHouse: number,
       newData: Partial<HouseListing>,
     ): Promise<void> {
-      const response = await fetch(API_URL + `/house-listings/${idHouse}`, {
+      const response = await fetch(API_URL + `/house-listing/${idHouse}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +96,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
     },
 
     async deleteHouseListing(idHouse: number): Promise<void> {
-      const response = await fetch(API_URL + `/house-listings/${idHouse}`, {
+      const response = await fetch(API_URL + `/house-listing/${idHouse}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +139,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
     },
     async changeHousePref(newData: Partial<HousePref>): Promise<void> {
       const response = await fetch(
-        API_URL + `/house-search-prefrences/${context.userData?.idUser}`,
+        API_URL + `/house-search-prefrences/update`,
         {
           method: "PATCH",
           headers: {

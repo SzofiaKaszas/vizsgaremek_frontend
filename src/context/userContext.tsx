@@ -31,6 +31,7 @@ const defaultUserContext: UserContextType = {
 // eslint-disable-next-line react-refresh/only-export-components
 export const UserContext = createContext(defaultUserContext);
 
+/**TODO: check links cus they change -- ones that have id in them */
 export function UserContextProvider(props: PropsWithChildren) {
   const { currentUserId } = useContext(AuthContext);
   const [userData, setUserData] = useState<User | undefined>(undefined);
