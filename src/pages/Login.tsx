@@ -88,15 +88,20 @@ async function handleSubmit(
   const email = form.get("email") as string;
   const password = form.get("password") as string;
 
+  let error = false;
   if (!email) {
     document.getElementById("emailErr")!.innerHTML = "";
     document.getElementById("emailErr")?.append("Please fill in email.");
-    return;
+    error = true;
   }
 
   if(!password){
     document.getElementById("passwordErr")!.innerHTML = "";
     document.getElementById("passwordErr")?.append("Please fill in password.");
+    error = true;
+  }
+
+  if (error) {
     return;
   }
 
@@ -105,5 +110,6 @@ async function handleSubmit(
     window.location.href = "/main";
   } catch (err) {
     console.log(err)
+    document.getElementById("passwordErr")!.innerHTML = (err as Error).message;
   }
 }
