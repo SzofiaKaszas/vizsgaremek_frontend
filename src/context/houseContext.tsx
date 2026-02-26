@@ -29,7 +29,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
   const contextValue : HouseContextType = {
     async getHouseListings(): Promise<HouseListing[]> {
       const response = await fetch(
-        API_URL + `/house-listings/${context.userData?.idUser}`,
+        API_URL + `/house-listing/${context.userData?.idUser}/all`,
         {
           method: "GET",
           headers: {
@@ -55,7 +55,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
     async addHouseListing(
       newData: Omit<HouseListing, "idHouse">,
     ): Promise<void> {
-      const response = await fetch(API_URL + `/house-listings/add`, {
+      const response = await fetch(API_URL + `/house-listing`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

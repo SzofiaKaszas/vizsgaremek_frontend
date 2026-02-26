@@ -1,4 +1,4 @@
-import type { Furnishing, HeatingType, KitchenFurnishing, PropertyType } from "./assets/housePref";
+import type { FurnishingType, HeatingType, KitchenFurnishingType, PropertyType } from "./assets/housePref";
 // User interfaces
 export interface User {
   idUser: number;
@@ -51,12 +51,13 @@ export interface HouseListing {
   numberOfRooms: number;
   squareMeter: number;
   heatingType: HeatingType;
-  furnishingLevel: Furnishing;
-  kitchenLevel: KitchenFurnishing;
+  furnishingLevel: FurnishingType;
+  kitchenLevel: KitchenFurnishingType;
   bathrooms: number;
   airConditioner: boolean;
 }
 
+/**TODO: chabnge types to the right ones */
 export interface HousePref {
   houseSearchIdUser: number;
 
@@ -87,6 +88,10 @@ export interface FindRoommateProps {
 export interface FindHouseProps {
   isLoggedIn: boolean;
   housePref: HouseListing[];
+}
+
+export interface HouseListingProps {
+  houseListing: HouseListing;
 }
 
 //context interfaces

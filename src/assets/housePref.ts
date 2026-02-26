@@ -1,19 +1,19 @@
-export const PropertyType= [
+export const Property= [
   "house",
   "flat",
   "skyscraper",
 ] as const;
 
-export type PropertyType = typeof PropertyType[keyof typeof PropertyType];
+export type PropertyType = typeof Property[keyof typeof Property];
 
-export const HeatingType= [
+export const Heating= [
   "radiator",
   "airconditioner",
   "convector",
   "floor",
 ] as const;
 
-export type HeatingType = typeof HeatingType[keyof typeof HeatingType];
+export type HeatingType = typeof Heating[keyof typeof Heating];
 
 export const Furnishing= [
   "none",
@@ -21,7 +21,7 @@ export const Furnishing= [
   "full",
 ] as const;
 
-export type Furnishing = typeof Furnishing[keyof typeof Furnishing];
+export type FurnishingType = typeof Furnishing[keyof typeof Furnishing];
 
 export const KitchenFurnishing= [
   "none",
@@ -29,4 +29,4 @@ export const KitchenFurnishing= [
   "full",
 ] as const;
 
-export type KitchenFurnishing = typeof KitchenFurnishing[keyof typeof KitchenFurnishing];
+export type KitchenFurnishingType = typeof KitchenFurnishing[keyof typeof KitchenFurnishing];
