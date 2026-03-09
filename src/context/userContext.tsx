@@ -11,20 +11,21 @@ import type {
   RoommatePref,
   User,
   UserContextType,
+  UserNecesarry,
 } from "../interfaces";
 import { AuthContext } from "./authContext";
 import { errorCheckUser, errorCheckUserEdit } from "./errorCheck";
-import { error } from "console";
 
 const API_URL = "http://localhost:3000";
 
 const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
+  getUserById: async (id: number) => undefined as unknown as User,
   changeUserData: async (_newData: Partial<User>) => {},
   getHasRoommatePref: async (): Promise<boolean> => false,
   addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  getMatches: async () => [] as User[],
+  getMatches: async () => [] as UserNecesarry[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
 };
 
@@ -69,7 +70,23 @@ export function UserContextProvider(props: PropsWithChildren) {
 
   const contextValue = {
     userData: userData,
+    async getUserById(id: number): Promise<User> {
+      const response = await fetch(API_URL + `/user/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
 
+      if (!response.ok) {
+        errorCheckUser(response);
+        return undefined as unknown as User;
+      }
+
+      const roommateData = (await response.json()) as User;
+      return roommateData;
+    },
+    
     async changeUserData(newData: Partial<User>): Promise<void> {
       const response = await fetch(API_URL + `/user/${userData?.idUser}`, {
         method: "PATCH",
@@ -143,7 +160,7 @@ export function UserContextProvider(props: PropsWithChildren) {
       }
     },
 
-    async getMatches(): Promise<User[]> {
+    async getMatches(): Promise<UserNecesarry[]> {
       const response = await fetch(
         API_URL + "/roommates-prefrences/getmatches",
         {
@@ -163,10 +180,11 @@ export function UserContextProvider(props: PropsWithChildren) {
       let prefrenceList;
       try {
         prefrenceList = await response.json();
+        console.log(prefrenceList);
       } catch {
         throw new Error("Server did not return JSON");
       }
-      return prefrenceList as User[];
+      return prefrenceList as UserNecesarry[];
     },
 
     async changeRoommatePref(newData: Partial<RoommatePref>): Promise<void> {

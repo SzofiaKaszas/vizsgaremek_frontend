@@ -23,6 +23,19 @@ export interface User {
   role: string;
 }
 
+export interface UserNecesarry {
+  idUser: number;
+  firstName: string;
+  lastName: string;
+
+  email: string;
+
+  age?: number;
+  gender?: string; // could be enum
+  language?: string; // could be array of strings, also enum?
+  userBio?: string
+}
+
 export interface UserToken {
   userIdToken: number;
   token: string;
@@ -94,6 +107,10 @@ export interface HouseListingProps {
   houseListing: HouseListing;
 }
 
+export interface DialogContentProps{
+  id: number
+}
+
 //context interfaces
 export interface AuthContextType {
   currentUserId: number | undefined;
@@ -105,12 +122,13 @@ export interface AuthContextType {
 export interface UserContextType {
   userData: User | undefined;
   //userdata
+  getUserById: (id: number) => Promise<User>;
   changeUserData: (newData: Partial<User>) => void;
   //roommatepref
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
   getHasRoommatePref: () => Promise<boolean>;
   editRoommatePref: (newData: Partial<RoommatePref>) => void;
-  getMatches: () => Promise<User[]>;
+  getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
 }
 

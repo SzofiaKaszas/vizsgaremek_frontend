@@ -20,6 +20,7 @@ import type { GoNextProp } from "@/interfaces";
 export function RoommateProfile({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
 
+  //TODO: now it wants birthday and not age
   return (
     <form
       onSubmit={async (e) => {

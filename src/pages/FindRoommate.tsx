@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
-import type { User } from "@/interfaces";
+import type { User, UserNecesarry } from "@/interfaces";
 import { FindRoommateCard } from "./FindRoommateCard";
 import { LayoutGrid, GalleryHorizontal } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FindRoommateSlide } from "./FindRoommateSlide";
 
 export function FindRoommate() {
-  const [roommatePref, setRoommatePref] = useState<User[]>([]);
+  const [roommatePref, setRoommatePref] = useState<UserNecesarry[]>([]);
   const isMobile = useIsMobile();
   const [tab, setTab] = useState(isMobile ? "list" : "grid");
 
@@ -46,12 +46,12 @@ export function FindRoommate() {
       </div>
 
       <TabsContent value="grid">
-        <FindRoommateCard isLoggedIn={isLoggedIn} roommatePref={roommatePref} />
+        <FindRoommateCard isLoggedIn={isLoggedIn} roommatePref={roommatePref as User[]} />
       </TabsContent>
       <TabsContent value="list">
         <FindRoommateSlide
           isLoggedIn={isLoggedIn}
-          roommatePref={roommatePref}
+          roommatePref={roommatePref as User[]}
         />
       </TabsContent>
     </Tabs>

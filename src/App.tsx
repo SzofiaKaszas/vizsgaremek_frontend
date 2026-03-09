@@ -8,7 +8,7 @@ import { UserContext } from './context/userContext'
 
 function App() {
   const context = useContext(AuthContext)
-
+  //TODO: context menu for right clicking (on users, and a few things)
   return (
     <div>
       <NavBar />
