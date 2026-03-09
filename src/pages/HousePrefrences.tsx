@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/combobox";
 import {
   Furnishing,
-  HeatingType,
+  Heating,
   KitchenFurnishing,
-  PropertyType,
+  Property,
 } from "@/assets/housePref";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ export function HousePrefrences() {
 
       <Field className="m-2">
         <FieldLabel htmlFor="property">Property type:</FieldLabel>
-        <Combobox items={PropertyType}>
+        <Combobox items={Property}>
           <ComboboxInput
             placeholder="Select property type"
             id="property"
@@ -85,7 +85,7 @@ export function HousePrefrences() {
 
       <Field className="m-2">
         <FieldLabel htmlFor="heating">Heating type:</FieldLabel>
-        <Combobox items={HeatingType}>
+        <Combobox items={Heating}>
           <ComboboxInput
             placeholder="Select heating type"
             id="heating"
@@ -250,6 +250,7 @@ async function handleSubmit(
     }
     return;
   } else {
+    /**TODO: change types to the right ones */
     try {
       await context.changeHousePref({
         houseSearchIdUser: userContext.userData?.idUser,

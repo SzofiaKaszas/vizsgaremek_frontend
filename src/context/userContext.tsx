@@ -13,13 +13,15 @@ import type {
   UserContextType,
 } from "../interfaces";
 import { AuthContext } from "./authContext";
+import { errorCheckUser, errorCheckUserEdit } from "./errorCheck";
+import { error } from "console";
 
 const API_URL = "http://localhost:3000";
 
 const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
   changeUserData: async (_newData: Partial<User>) => {},
-  getHasRoommatePref: async () : Promise<boolean> => false,
+  getHasRoommatePref: async (): Promise<boolean> => false,
   addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   getMatches: async () => [] as User[],
@@ -29,6 +31,7 @@ const defaultUserContext: UserContextType = {
 // eslint-disable-next-line react-refresh/only-export-components
 export const UserContext = createContext(defaultUserContext);
 
+/**TODO: check links cus they change -- ones that have id in them */
 export function UserContextProvider(props: PropsWithChildren) {
   const { currentUserId } = useContext(AuthContext);
   const [userData, setUserData] = useState<User | undefined>(undefined);
@@ -42,9 +45,10 @@ export function UserContextProvider(props: PropsWithChildren) {
     });
 
     if (!response.ok) {
-      console.error("Failed to load user data");
+      errorCheckUser(response);
       return undefined;
     }
+
     const userData = (await response.json()) as User;
     return userData;
   }
@@ -77,12 +81,8 @@ export function UserContextProvider(props: PropsWithChildren) {
       });
 
       if (!response.ok) {
-        switch (response.status) {
-          case 403:
-            throw new Error("Invalid credentials");
-          default:
-            throw new Error("Something went wrong");
-        }
+        errorCheckUserEdit(response);
+        return;
       }
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
@@ -101,24 +101,34 @@ export function UserContextProvider(props: PropsWithChildren) {
       );
 
       if (!response.ok) {
-        switch (response.status) {
-          case 403:
-            console.error("Invalid credentials");
-            return false;
-          default:
-            console.error("Failed to load roommate preferences");
-            return false;
-        }
+        errorCheckUser(response);
+        return false;
       }
 
       return true;
     },
 
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
+      const response = await fetch(API_URL + `/roommates-prefrences/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(newData),
+      });
+      if (!response.ok) {
+        errorCheckUser(response);
+        return;
+      }
+    },
+
+    async editRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
+      console.log("Editing roommate preferences with data:", userData?.idUser);
       const response = await fetch(
-        API_URL + `/roommates-prefrences/add`,
+        API_URL + `/roommates-prefrences/${userData?.idUser}`,
         {
-          method: "POST",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -126,34 +136,10 @@ export function UserContextProvider(props: PropsWithChildren) {
           body: JSON.stringify(newData),
         },
       );
-      if (!response.ok) {
-        switch (response.status) {
-          case 403:
-            throw new Error("Invalid credentials");
-          default:
-            throw new Error("Something went wrong");
-        }
-      }
-    },
-
-    async editRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
-      console.log("Editing roommate preferences with data:", userData?.idUser);
-      const response = await fetch(API_URL + `/roommates-prefrences/${userData?.idUser}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-        body: JSON.stringify(newData),
-      });
 
       if (!response.ok) {
-        switch (response.status) {
-          case 403:
-            throw new Error("Invalid credentials");
-          default:
-            throw new Error("Something went wrong");
-        }
+        errorCheckUserEdit(response);
+        return;
       }
     },
 
@@ -170,12 +156,8 @@ export function UserContextProvider(props: PropsWithChildren) {
       );
 
       if (!response.ok) {
-        switch (response.status) {
-          case 403:
-            throw new Error("Invalid credentials");
-          default:
-            throw new Error("Something went wrong");
-        }
+        errorCheckUser(response);
+        return [];
       }
 
       let prefrenceList;
@@ -201,12 +183,8 @@ export function UserContextProvider(props: PropsWithChildren) {
       );
 
       if (!response.ok) {
-        switch (response.status) {
-          case 403:
-            throw new Error("Invalid credentials");
-          default:
-            throw new Error("Something went wrong");
-        }
+        errorCheckUserEdit(response);
+        return;
       }
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);

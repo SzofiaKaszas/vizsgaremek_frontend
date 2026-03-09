@@ -6,6 +6,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import type { AuthContextType, User, UserToken } from "../interfaces";
+import { errorCheckUser } from "./errorCheck";
 
 const API_URL = "http://localhost:3000";
 
@@ -69,15 +70,9 @@ export function AuthContextProvider(props: PropsWithChildren) {
       });
 
       if (!response.ok) {
-        switch (response.status) {
-          case 404:
-            throw new Error("User not found");
-          case 403:
-            throw new Error("Invalid credentials");
-          default:
-            throw new Error(`Something went wrong (${response.status})`);
-        }
+        errorCheckUser(response);
       }
+
       const tokenObj = await response.json();
       setToken(tokenObj.token);
       localStorage.setItem("token", tokenObj.token);
@@ -103,12 +98,7 @@ export function AuthContextProvider(props: PropsWithChildren) {
       });
 
       if (!response.ok) {
-        switch (response.status) {
-          case 409:
-            throw new Error("Email already in use");
-          default:
-            throw new Error("Something went wrong");
-        }
+        errorCheckUser(response);
       }
 
       let newUser;
