@@ -304,10 +304,16 @@ async function handleSubmit(
       break;
   }
 
+  const userId = userContext.userData?.idUser;
+    if (!userId) {
+      alert("User ID not found. Please log in again.");
+      return;
+    }
+    console.log("User ID for house listing:", userId);
+
   try {
-    console.log("User ID for house listing:", userContext.userData?.idUser);
     await houseContext.addHouseListing({
-      houseIdUser: userContext.userData?.idUser,
+      houseSearchIdUser: userId,
       description: description as string,
       location: location as string,
       city: city as string,

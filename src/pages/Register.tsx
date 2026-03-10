@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
+import { isDate } from "date-fns";
 
 export function Register() {
   const context = useContext(AuthContext);
@@ -57,6 +58,16 @@ export function Register() {
               />
             </Field>
           </FieldGroup>
+          <Field className="m-2">
+            <FieldLabel htmlFor="age">
+              Birthday <span className="text-destructive">*</span>
+            </FieldLabel>
+            <Input type="date" name="age" placeholder="20" id="age"></Input>
+            <FieldDescription
+              id="ageErr"
+              className="text-red-600 text-sm mt-1"
+            ></FieldDescription>
+          </Field>
           <Field>
             <FieldLabel htmlFor="phone-number">
               Phone Number <span className="text-destructive">*</span>
@@ -211,11 +222,30 @@ async function handleSubmit(
     hasError = true;
   }
 
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+  const birth = (form.get("age") as string) || undefined;
+  const birthDay = new Date(birth as string);
+
+  if (!birthDay) {
+    hasError = true;
+    document
+      .getElementById("ageErr")
+      ?.append("Give birthday");
+  } else if (!(isDate(birthDay) && eighteenYearsAgo > birthDay)) {
+    hasError = true;
+    document
+      .getElementById("ageErr")
+      ?.append("User must be at least 18 years old");
+  }
+
   if (hasError) return;
 
   const user: Omit<User, "idUser"> = {
     firstName,
     lastName,
+    birthDay,
     phoneNumber,
     hasHouse,
     lookingForPeople,

@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/authContext";
 import { UserContext } from "../context/userContext";
 import { PleaseLogin } from "./PleaseLogin";
 import { HouseContext } from "@/context/houseContext";
@@ -12,12 +10,10 @@ import { HouseListingCard } from "./HouseListingCard";
 export function YourHouseListing() {
   const [listings, setListings] = useState<HouseListing[]>([]); 
 
-  const { currentUserId } = useContext(AuthContext);
   const usercontext = useContext(UserContext);
+  const housecontext = useContext(HouseContext);
 
   const isLoggedIn = usercontext.userData ? true : false;
-
-  const housecontext = useContext(HouseContext);
   
   useEffect(() => {
     if (!isLoggedIn) return;

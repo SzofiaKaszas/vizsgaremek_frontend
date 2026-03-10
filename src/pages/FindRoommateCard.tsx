@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Card } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
 import type { FindRoommateProps, User } from "@/interfaces";
@@ -6,9 +5,9 @@ import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
-import { useContext, useEffect, useState } from "react";
+import { /*useContext,*/ useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
-import { UserContext } from "@/context/userContext";
+//import { UserContext } from "@/context/userContext";
 
 export function FindRoommateCard(props: FindRoommateProps) {
   const [roommatePrefList, setroommatePrefList] = useState<User[]>([]);
@@ -37,10 +36,10 @@ export function FindRoommateCard(props: FindRoommateProps) {
     setroommatePrefList((prev) => prev.filter((user) => user.idUser !== id));
   }
 
-  const context = useContext(UserContext);
+  //const context = useContext(UserContext);
 
   async function LikeClick(id: number) {
-    console.log("like");
+    console.log(id);
     //await context.addLiked(id);
   }
   if (roommatePrefList.length === 0) {
@@ -86,7 +85,7 @@ export function FindRoommateCard(props: FindRoommateProps) {
               </Carousel>
               <Field>
                 {pref.firstName} {pref.lastName} -{" "}
-                {whatToShow(pref.age?.toString())}
+                {whatToShow(pref.birthDay?.toString())}
                 <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
               </Field>
               <Field>Language: {whatToShow(pref.language)}</Field>

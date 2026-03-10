@@ -10,7 +10,7 @@ export interface User {
   email: string;
 
   userBio?: string;
-  age?: number;
+  birthDay?: Date;
   gender?: string; // could be enum
   language?: string; // could be array of strings, also enum?
   occupation?: string;
