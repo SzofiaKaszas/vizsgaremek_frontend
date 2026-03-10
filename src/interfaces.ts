@@ -108,9 +108,12 @@ export interface HouseListingProps {
 }
 
 export interface DialogContentProps{
-  id: number
+  id: number;
+  prefList: User[];
+  onDislike: (id: number) => void;
+  onLike: (id: number) => void;
+  triggerAnimation: (id: number, dir: "left" | "right", action: "like" | "dislike") => void;
 }
-
 //context interfaces
 export interface AuthContextType {
   currentUserId: number | undefined;
@@ -130,6 +133,7 @@ export interface UserContextType {
   editRoommatePref: (newData: Partial<RoommatePref>) => void;
   getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
+  addLiked: (id: number) => void;
 }
 
 export interface HouseContextType {

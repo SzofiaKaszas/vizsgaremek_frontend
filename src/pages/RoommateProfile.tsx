@@ -30,7 +30,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
       <CardTitle className="text-center text-xl font-bold p-2">
         Your Profile
       </CardTitle>
-
+    
       <Field className="m-2">
         <FieldLabel htmlFor="userBio">Description about you:</FieldLabel>
         <Textarea

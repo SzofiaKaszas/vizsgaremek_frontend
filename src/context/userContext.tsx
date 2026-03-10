@@ -7,7 +7,6 @@ import {
   type PropsWithChildren,
 } from "react";
 import type {
-  HousePref,
   RoommatePref,
   User,
   UserContextType,
@@ -20,13 +19,14 @@ const API_URL = "http://localhost:3000";
 
 const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
-  getUserById: async (id: number) => undefined as unknown as User,
+  getUserById: async (_id: number) => undefined as unknown as User,
   changeUserData: async (_newData: Partial<User>) => {},
   getHasRoommatePref: async (): Promise<boolean> => false,
   addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   getMatches: async () => [] as UserNecesarry[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  addLiked: async(_id: number) => {},
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -207,6 +207,23 @@ export function UserContextProvider(props: PropsWithChildren) {
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
     },
+
+    async addLiked(id: number): Promise<void>{
+      const response = await fetch(API_URL + ``,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        }
+      )
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return;
+      }
+    }
   };
 
   return (
