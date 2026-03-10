@@ -61,4 +61,58 @@ body {
         background-color: var(--color-deepamber);
         color: var(--color-charcoal);
     }
+
+    .likeButton {
+        background-color: var(--color-grey);
+        color: var(--color-charcoal);
+        box-shadow: none;
+        border: none;
+    }
+
+    .likeButton:hover {
+        background-color: var(--color-lightred);
+        color: var(--color-coolwhite);
+    }
+
+    .dislikeButton {
+        background-color: var(--color-grey);
+        color: var(--color-charcoal);
+        box-shadow: none;
+        border: none;
+    }
+
+    .dislikeButton:hover {
+        background-color: var(--color-sky);
+        color: var(--color-coolwhite);
+    }
+}
+
+@keyframes swipe-right {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(300px) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipe-left {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-300px) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+.swipe-right {
+  animation: swipe-right 0.25s ease-out forwards;
+}
+
+.swipe-left {
+  animation: swipe-left 0.25s ease-out forwards;
 }

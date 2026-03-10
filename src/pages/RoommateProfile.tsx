@@ -20,6 +20,7 @@ import type { GoNextProp } from "@/interfaces";
 export function RoommateProfile({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
 
+  //TODO: now it wants birthday and not age
   return (
     <form
       onSubmit={async (e) => {
@@ -29,7 +30,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
       <CardTitle className="text-center text-xl font-bold p-2">
         Your Profile
       </CardTitle>
-
+    
       <Field className="m-2">
         <FieldLabel htmlFor="userBio">Description about you:</FieldLabel>
         <Textarea
@@ -42,7 +43,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
       <Field className="m-2">
         <FieldLabel htmlFor="age">Your age:</FieldLabel>
         {/**maybe datepicker as birthday */}
-        <Input type="number" name="age" placeholder="20" id="age"></Input>
+        <Input type="date" name="age" placeholder="20" id="age"></Input>
       </Field>
 
       <Field className="m-2">
