@@ -134,7 +134,7 @@ export function EditProfile() {
                 <Checkbox
                   id="lookingForPeople"
                   name="lookingForPeople"
-                  defaultChecked={context.userData?.lookingForHouse}
+                  defaultChecked={context.userData?.lookingForPeople}
                 />
               </div>
               <FieldDescription

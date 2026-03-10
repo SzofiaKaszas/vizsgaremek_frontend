@@ -43,7 +43,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
       <Field className="m-2">
         <FieldLabel htmlFor="age">Your age:</FieldLabel>
         {/**maybe datepicker as birthday */}
-        <Input type="number" name="age" placeholder="20" id="age"></Input>
+        <Input type="date" name="age" placeholder="20" id="age"></Input>
       </Field>
 
       <Field className="m-2">
