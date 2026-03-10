@@ -1,36 +1,73 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
-import { AuthContext } from "../context/authContext";
+import type { User, UserNecesarry } from "@/interfaces";
+import { FindRoommateCard } from "./FindRoommateCard";
+import { LayoutGrid, GalleryHorizontal } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FindRoommateSlide } from "./FindRoommateSlide";
 
 export function FindRoommate() {
-  const [isLoggedIn, setLoggedIn] = useState(false);
-  
-    const { currentUserId } = useContext(AuthContext);
-    const context = useContext(UserContext);
-  
-    useEffect(() => {
-      if (context.userData == undefined) {
-        setLoggedIn(false);
-      } else {
-        setLoggedIn(true);
-      }
-    }, [currentUserId]);
+  const [roommatePref, setRoommatePref] = useState<UserNecesarry[]>([]);
+  const isMobile = useIsMobile();
+  const [tab, setTab] = useState(isMobile ? "list" : "grid");
+
+  const context = useContext(UserContext);
+  const isLoggedIn = context.userData ? true : false;
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    context.getMatches().then((prefs) => setRoommatePref(prefs));
+  }, [isLoggedIn, context]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTab(isMobile ? "list" : "grid");
+  }, [isMobile]);
 
   return (
-    isLoggedIn === true ? (
-      <div>
-        <h1>Find Roomate Page</h1>
-        {/* Implement roomate listing display logic here */}
+    <Tabs value={tab} onValueChange={setTab} className="relative">
+      <div className="flex w-full justify-end">
+        <TabsList className="absolute ml-auto flex bg-transparent p-0 border border-slate rounded-md overflow-hidden !shadow-none">
+          <TabsTrigger
+            value="grid"
+            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
+          >
+            <LayoutGrid />
+          </TabsTrigger>
+          <TabsTrigger
+            value="list"
+            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
+          >
+            <GalleryHorizontal />
+          </TabsTrigger>
+        </TabsList>
       </div>
-    ) : (
-      <div>
-      <a
-        href="/login"
-        className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors p-2"
-      >
-        Please log in to view house listings.
-      </a>
-    </div>
-    )
+
+      <TabsContent value="grid">
+        <FindRoommateCard isLoggedIn={isLoggedIn} roommatePref={roommatePref as User[]} />
+      </TabsContent>
+      <TabsContent value="list">
+        <FindRoommateSlide
+          isLoggedIn={isLoggedIn}
+          roommatePref={roommatePref as User[]}
+        />
+      </TabsContent>
+    </Tabs>
   );
+}
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false,
+  );
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile;
 }

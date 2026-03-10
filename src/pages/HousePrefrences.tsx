@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -11,29 +12,44 @@ import {
 } from "@/components/ui/combobox";
 import {
   Furnishing,
-  HeatingType,
+  Heating,
   KitchenFurnishing,
-  PropertyType,
+  Property,
 } from "@/assets/housePref";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
+import { HouseContext } from "@/context/houseContext";
 
+/**TODO: If already has house pref, show the data in inputs */
 export function HousePrefrences() {
-  const context = useContext(UserContext);
+  const userContext = useContext(UserContext);
+  const context = useContext(HouseContext);
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, context)}>
-      <CardTitle className="text-center text-xl font-bold">House Prefrences</CardTitle>
+    <form onSubmit={(e) => handleSubmit(e, userContext, context)}>
+      <CardTitle className="text-center text-xl font-bold">
+        House Prefrences
+      </CardTitle>
 
       <Field className="m-2">
         <FieldLabel htmlFor="rent">Max rent:</FieldLabel>
-        <Input type="number" id="rent" name="rent" placeholder="300 000"></Input>
+        <Input
+          type="number"
+          id="rent"
+          name="rent"
+          placeholder="300 000"
+        ></Input>
       </Field>
 
       <Field className="m-2">
         <FieldLabel htmlFor="sqmeter">Minimum square meters:</FieldLabel>
-        <Input type="number" id="sqmeter" name="sqmeter" placeholder="5"></Input>
+        <Input
+          type="number"
+          id="sqmeter"
+          name="sqmeter"
+          placeholder="5"
+        ></Input>
       </Field>
 
       <Field className="m-2">
@@ -48,7 +64,7 @@ export function HousePrefrences() {
 
       <Field className="m-2">
         <FieldLabel htmlFor="property">Property type:</FieldLabel>
-        <Combobox items={PropertyType}>
+        <Combobox items={Property}>
           <ComboboxInput
             placeholder="Select property type"
             id="property"
@@ -69,7 +85,7 @@ export function HousePrefrences() {
 
       <Field className="m-2">
         <FieldLabel htmlFor="heating">Heating type:</FieldLabel>
-        <Combobox items={HeatingType}>
+        <Combobox items={Heating}>
           <ComboboxInput
             placeholder="Select heating type"
             id="heating"
@@ -132,33 +148,44 @@ export function HousePrefrences() {
 
       <Field className="m-2">
         <FieldLabel htmlFor="bathrooms">Minimum bathrooms:</FieldLabel>
-        <Input type="number" id="bathrooms" name="bathrooms" placeholder="1"></Input>
+        <Input
+          type="number"
+          id="bathrooms"
+          name="bathrooms"
+          placeholder="1"
+        ></Input>
       </Field>
 
-      <Button variant={"default"} type="submit" className="m-1">
-        Next
-      </Button>
-      <Button
-        variant={"outline"}
-        type="button"
-        className="m-1"
-        onClick={() => {
-          window.location.href = "/main";
-        }}
-      >
-        Do later
-      </Button>
+      <div className="my-button-scope">
+        <Button variant={"default"} type="submit" className="m-1">
+          Next
+        </Button>
+        <Button
+          variant={"outline"}
+          type="button"
+          className="m-1"
+          onClick={() => {
+            window.location.href = "/profile";
+          }}
+        >
+          Skip
+        </Button>
+      </div>
     </form>
   );
 }
 
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
-  context: React.ContextType<typeof UserContext>,
+  userContext: React.ContextType<typeof UserContext>,
+  context: React.ContextType<typeof HouseContext>,
 ) {
   e.preventDefault();
-
   const form = new FormData(e.currentTarget);
+
+  const hasHousePref = await context.getHasHousePref();
+  console.log("Has house pref:", hasHousePref);
+
   const rent = form.get("rent");
   const sqmeter = form.get("sqmeter");
   const rooms = form.get("rooms");
@@ -191,33 +218,68 @@ async function handleSubmit(
       break;
   }
 
-  try {
-    await context.addHousePref({
-      houseSearchIdUser: context.userData?.idUser,
-      maxRent: rent ? Number(rent) : undefined,
-      minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
-      minRooms: rooms ? Number(rooms) : undefined,
-      city: city && city !== "" ? (city as string) : undefined,
-      propertyType:
-        propertyType && propertyType !== ""
-          ? (propertyType as string)
-          : undefined,
-      heatingType:
-        heatingType && heatingType !== "" ? (heatingType as string) : undefined,
-      furnishingLevel:
-        furnishing && furnishing !== "" ? (furnishing as string) : undefined,
-      kitchenLevel:
-        kitchenFurnishing && kitchenFurnishing !== ""
-          ? (kitchenFurnishing as string)
-          : undefined,
-      minBathrooms: bathrooms ? Number(bathrooms) : undefined,
-    });
-    alert("Preferences saved successfully");
-    window.location.href = "/main";
-  } catch (err) {
-    alert((err as Error).message);
-    console.error("Error details:", err);
+  if (!hasHousePref) {
+    try {
+      await context.addHousePref({
+        houseSearchIdUser: userContext.userData?.idUser,
+        maxRent: rent ? Number(rent) : undefined,
+        minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
+        minRooms: rooms ? Number(rooms) : undefined,
+        city: city && city !== "" ? (city as string) : undefined,
+        propertyType:
+          propertyType && propertyType !== ""
+            ? (propertyType as string)
+            : undefined,
+        heatingType:
+          heatingType && heatingType !== ""
+            ? (heatingType as string)
+            : undefined,
+        furnishingLevel:
+          furnishing && furnishing !== "" ? (furnishing as string) : undefined,
+        kitchenLevel:
+          kitchenFurnishing && kitchenFurnishing !== ""
+            ? (kitchenFurnishing as string)
+            : undefined,
+        minBathrooms: bathrooms ? Number(bathrooms) : undefined,
+      });
+      alert("Preferences saved successfully");
+      window.location.href = "/main";
+    } catch (err) {
+      alert((err as Error).message);
+      console.error("Error details:", err);
+    }
+    return;
+  } else {
+    /**TODO: change types to the right ones */
+    try {
+      await context.changeHousePref({
+        houseSearchIdUser: userContext.userData?.idUser,
+        maxRent: rent ? Number(rent) : undefined,
+        minSquareMeters: sqmeter ? Number(sqmeter) : undefined,
+        minRooms: rooms ? Number(rooms) : undefined,
+        city: city && city !== "" ? (city as string) : undefined,
+        propertyType:
+          propertyType && propertyType !== ""
+            ? (propertyType as string)
+            : undefined,
+        heatingType:
+          heatingType && heatingType !== ""
+            ? (heatingType as string)
+            : undefined,
+        furnishingLevel:
+          furnishing && furnishing !== "" ? (furnishing as string) : undefined,
+        kitchenLevel:
+          kitchenFurnishing && kitchenFurnishing !== ""
+            ? (kitchenFurnishing as string)
+            : undefined,
+        minBathrooms: bathrooms ? Number(bathrooms) : undefined,
+      });
+      alert("Preferences saved successfully");
+      window.location.href = "/main";
+    } catch (err) {
+      alert((err as Error).message);
+      console.error("Error details:", err);
+    }
+    return;
   }
-
-  return;
 }

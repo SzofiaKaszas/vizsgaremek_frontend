@@ -6,9 +6,10 @@ import {
   NavigationMenu,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function NavBar() {
   const { currentUserId } = useContext(AuthContext);
@@ -25,34 +26,29 @@ export function NavBar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            <SheetDescription className="sr-only">Mobile navigation</SheetDescription>
             <div className="flex flex-col gap-4 mt-6">
-              <NavLink to="/main">Main</NavLink>
+              <NavLink className={"navigation-menu_link"} to="/main">Main</NavLink>
 
               {userData?.role === "admin" && (
-                <NavLink to="/admin">Admin</NavLink>
+                <NavLink className={"navigation-menu_link"} to="/admin">Admin</NavLink>
               )}
 
               {(userData?.lookingForPeople || userData === undefined) && (
-                <NavLink to="/findroomate">Roommate Find</NavLink>
+                <NavLink className={"navigation-menu_link"} to="/findroomate">Roommate Find</NavLink>
               )}
 
               {(userData?.lookingForHouse || userData === undefined) && (
-                <NavLink to="/findhouse">House Listing Find</NavLink>
+                <NavLink className={"navigation-menu_link"} to="/findhouse">House Listing Find</NavLink>
               )}
 
               {(userData?.hasHouse || userData === undefined) && (
-                <NavLink to="/managehouselising">Your House Listings</NavLink>
+                <NavLink className={"navigation-menu_link"} to="/managehouselising">Your House Listings</NavLink>
               )}
 
               {currentUserId === undefined && (
-                <NavLink to="/login">Login</NavLink>
-              )}
-
-              {currentUserId !== undefined && (
-                <>
-                  <NavLink to="/logout">Logout</NavLink>
-                  <NavLink to="/profile">Profile</NavLink>
-                </>
+                <NavLink className={"navigation-menu_link"} to="/login">Login</NavLink>
               )}
             </div>
           </SheetContent>
@@ -61,49 +57,53 @@ export function NavBar() {
         {/**desktop */}
         <NavigationMenu className="hidden sm:flex gap-3">
           <NavigationMenuLink asChild>
-            <NavLink to="/main">Main</NavLink>
+            <NavLink className={"navigation-menu_link"} to="/main">Main</NavLink>
           </NavigationMenuLink>
           {userData?.role === "admin" && (
             <NavigationMenuLink asChild>
-              <NavLink to="/admin">Admin</NavLink>
+              <NavLink className={"navigation-menu_link"} to="/admin">Admin</NavLink>
             </NavigationMenuLink>
           )}
 
           {(userData?.lookingForPeople === true || userData === undefined) && (
             <NavigationMenuLink asChild>
-              <NavLink to="/findroomate">Roomate Find</NavLink>
+              <NavLink className={"navigation-menu_link"} to="/findroomate">Roomate Find</NavLink>
             </NavigationMenuLink>
           )}
 
           {(userData?.lookingForHouse === true || userData === undefined) && (
             <NavigationMenuLink asChild>
-              <NavLink to="/findhouse">House Listing Find</NavLink>
+              <NavLink className={"navigation-menu_link"} to="/findhouse">House Listing Find</NavLink>
             </NavigationMenuLink>
           )}
 
           {(userData?.hasHouse === true || userData === undefined) && (
             <NavigationMenuLink asChild>
-              <NavLink to="/managehouselising">Your House Listings</NavLink>
+              <NavLink className={"navigation-menu_link"} to="/managehouselising">Your House Listings</NavLink>
             </NavigationMenuLink>
           )}
 
           {currentUserId === undefined && (
             <NavigationMenuLink asChild>
-              <NavLink to="/login">Login</NavLink>
+              <NavLink className={"navigation-menu_link"} to="/login">Login</NavLink>
             </NavigationMenuLink>
           )}
-
-          {currentUserId !== undefined && (
-            <>
-              <NavigationMenuLink asChild>
-                <NavLink to="/logout">Logout</NavLink>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <NavLink to="/profile">Profile</NavLink>
-              </NavigationMenuLink>
-            </>
-          )}
         </NavigationMenu>
+
+        {currentUserId !== undefined && (
+                <>
+                  <NavLink className={"navigation-menu_link"} to="/profile">
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                  className="grayscale"
+                />
+                <AvatarFallback>Profile</AvatarFallback>
+              </Avatar>
+                </NavLink>
+                </>
+              )}
       </div>
     </nav>
   );

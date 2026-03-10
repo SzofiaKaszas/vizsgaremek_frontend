@@ -1,12 +1,12 @@
 export const Genders= [
-  "woman",
-  "man",
+  "female",
+  "male",
   "other",
 ] as const;
 
 export const GendersForPref= [
-  "woman",
-  "man",
+  "female",
+  "male",
   "any",
   "other",
 ] as const;
