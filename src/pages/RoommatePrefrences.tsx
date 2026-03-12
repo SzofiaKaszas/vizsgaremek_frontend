@@ -120,16 +120,7 @@ async function handleSubmit(
   e.preventDefault();
   const form = new FormData(e.currentTarget);
 
-  let hasRoommatePref;
-
-  try {
-    await context.getHasRoommatePref();
-    hasRoommatePref = true
-    console.log("Result:", hasRoommatePref);
-  } catch (err) {
-    hasRoommatePref = false
-    console.error("Error while checking roommate pref:", err);
-  }
+  const hasRoommatePref = await context.getHasRoommatePref();
 
   const minAge = ages[0];
   const maxAge = ages[1];

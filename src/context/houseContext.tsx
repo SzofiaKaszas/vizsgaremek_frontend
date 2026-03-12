@@ -3,6 +3,7 @@
 import type { HouseContextType, HouseListing, HousePref } from "@/interfaces";
 import { useContext, type PropsWithChildren, createContext } from "react";
 import { UserContext } from "./userContext";
+import { errorCheckUser } from "./errorCheck";
 
 const API_URL = "http://localhost:3000";
 
@@ -17,6 +18,7 @@ const defaultUserContext: HouseContextType = {
   getHasHousePref: async (): Promise<boolean> => false,
   changeHousePref: async (_newData: Partial<HousePref>) => {},
   addHousePref: async (_newData: Omit<HousePref, "idHouse">) => {},
+  getMatches: async () => [] as HouseListing[],
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -26,7 +28,7 @@ export const HouseContext = createContext(defaultUserContext);
 export function HouseContextProvider(props: PropsWithChildren) {
   const context = useContext(UserContext);
 
-  const contextValue : HouseContextType = {
+  const contextValue: HouseContextType = {
     async getHouseListings(): Promise<HouseListing[]> {
       const response = await fetch(
         API_URL + `/house-listing/${context.userData?.idUser}/all`,
@@ -175,6 +177,32 @@ export function HouseContextProvider(props: PropsWithChildren) {
             throw new Error("Something went wrong");
         }
       }
+    },
+    async getMatches(): Promise<HouseListing[]> {
+      const response = await fetch(
+        API_URL + "/house-search-prefrences/gethousematches",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      let prefrenceList;
+      try {
+        prefrenceList = await response.json();
+        console.log(prefrenceList);
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+      return prefrenceList as HouseListing[];
     },
   };
 

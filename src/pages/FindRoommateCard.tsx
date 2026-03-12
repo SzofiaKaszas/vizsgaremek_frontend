@@ -5,8 +5,9 @@ import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
-import { /*useContext,*/ useEffect, useState } from "react";
+import { /*useContext,*/ useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
+import { UserContext } from "@/context/userContext";
 //import { UserContext } from "@/context/userContext";
 
 export function FindRoommateCard(props: FindRoommateProps) {
@@ -36,11 +37,11 @@ export function FindRoommateCard(props: FindRoommateProps) {
     setroommatePrefList((prev) => prev.filter((user) => user.idUser !== id));
   }
 
-  //const context = useContext(UserContext);
+  const context = useContext(UserContext);
 
   async function LikeClick(id: number) {
     console.log(id);
-    //await context.addLiked(id);
+    await context.addLiked(id);
   }
   if (roommatePrefList.length === 0) {
     return (
