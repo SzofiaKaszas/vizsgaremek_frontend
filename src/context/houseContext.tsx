@@ -2,7 +2,6 @@
 
 import type { HouseContextType, HouseListing, HousePref } from "@/interfaces";
 import { useContext, type PropsWithChildren, createContext } from "react";
-import { AuthContext } from "./authContext";
 import { UserContext } from "./userContext";
 
 const API_URL = "http://localhost:3000";
@@ -134,7 +133,6 @@ export function HouseContextProvider(props: PropsWithChildren) {
             return false;
         }
       }
-
       return true;
     },
     async changeHousePref(newData: Partial<HousePref>): Promise<void> {

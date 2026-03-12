@@ -120,8 +120,16 @@ async function handleSubmit(
   e.preventDefault();
   const form = new FormData(e.currentTarget);
 
+  let hasRoommatePref;
 
-  const hasRoommatePref = await context.getHasRoommatePref();
+  try {
+    await context.getHasRoommatePref();
+    hasRoommatePref = true
+    console.log("Result:", hasRoommatePref);
+  } catch (err) {
+    hasRoommatePref = false
+    console.error("Error while checking roommate pref:", err);
+  }
 
   const minAge = ages[0];
   const maxAge = ages[1];
@@ -146,9 +154,9 @@ async function handleSubmit(
   const gender = form.get("gender") as string;
   const language = form.get("language") as string;
 
-  console.log(hasRoommatePref)
+  console.log(hasRoommatePref);
   if (hasRoommatePref == false) {
-    console.log("nincs pref")
+    console.log("nincs pref");
     try {
       await context.addRoommatePref({
         minAge: minAge ? Number(minAge) : undefined,
@@ -166,7 +174,7 @@ async function handleSubmit(
       alert((err as Error).message);
     }
   } else {
-    console.log("van pref")
+    console.log("van pref");
     try {
       await context.editRoommatePref({
         minAge: minAge ? Number(minAge) : undefined,

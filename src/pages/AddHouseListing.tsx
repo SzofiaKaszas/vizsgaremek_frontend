@@ -313,7 +313,7 @@ async function handleSubmit(
 
   try {
     await houseContext.addHouseListing({
-      houseSearchIdUser: userId,
+      houseIdUser: userId,
       description: description as string,
       location: location as string,
       city: city as string,

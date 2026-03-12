@@ -184,7 +184,6 @@ async function handleSubmit(
   const form = new FormData(e.currentTarget);
 
   const hasHousePref = await context.getHasHousePref();
-  console.log("Has house pref:", hasHousePref);
 
   const rent = form.get("rent");
   const sqmeter = form.get("sqmeter");
@@ -218,7 +217,7 @@ async function handleSubmit(
       break;
   }
 
-  if (!hasHousePref) {
+  if (hasHousePref == false) {
     try {
       await context.addHousePref({
         houseSearchIdUser: userContext.userData?.idUser,

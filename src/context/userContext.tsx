@@ -16,7 +16,7 @@ import { AuthContext } from "./authContext";
 import { errorCheckUser, errorCheckUserEdit } from "./errorCheck";
 
 const API_URL = "http://localhost:3000";
-
+//TODO: get error from backend
 const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
   getUserById: async (_id: number) => undefined as unknown as User,

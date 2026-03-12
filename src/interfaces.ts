@@ -53,7 +53,7 @@ export interface RoommatePref {
 // House interfaces
 export interface HouseListing {
   idHouse: number;
-  houseSearchIdUser: number;
+  houseIdUser: number;
 
   description: string;
   location: string;
