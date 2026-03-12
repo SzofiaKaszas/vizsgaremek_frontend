@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
 import type { User, UserNecesarry } from "@/interfaces";

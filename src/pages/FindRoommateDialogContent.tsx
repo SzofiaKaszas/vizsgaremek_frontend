@@ -55,7 +55,7 @@ export function FindRoommateDialogContent(props: DialogContentProps) {
           <DialogDescription className="text-sm text-muted-foreground">
             {selectedUser
               ? `${whatToShow(selectedUser.gender)}, ${whatToShow(
-                  selectedUser.age?.toString(),
+                  selectedUser.birthDay?.toString(),
                 )}`
               : "Loading..."}
           </DialogDescription>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Card } from "@/components/ui/card";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Field, FieldDescription } from "@/components/ui/field";

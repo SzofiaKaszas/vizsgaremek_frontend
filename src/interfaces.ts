@@ -10,7 +10,7 @@ export interface User {
   email: string;
 
   userBio?: string;
-  age?: number;
+  birthDay?: Date;
   gender?: string; // could be enum
   language?: string; // could be array of strings, also enum?
   occupation?: string;
@@ -53,7 +53,7 @@ export interface RoommatePref {
 // House interfaces
 export interface HouseListing {
   idHouse: number;
-  houseSearchIdUser: number;
+  houseIdUser: number;
 
   description: string;
   location: string;
@@ -146,4 +146,5 @@ export interface HouseContextType {
   getHasHousePref: () => Promise<boolean>;
   changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
+  getMatches: () => Promise<HouseListing[]>
 }

@@ -16,7 +16,7 @@ import { AuthContext } from "./authContext";
 import { errorCheckUser, errorCheckUserEdit } from "./errorCheck";
 
 const API_URL = "http://localhost:3000";
-
+//TODO: get error from backend
 const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
   getUserById: async (_id: number) => undefined as unknown as User,
@@ -26,7 +26,7 @@ const defaultUserContext: UserContextType = {
   editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   getMatches: async () => [] as UserNecesarry[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  addLiked: async(_id: number) => {},
+  addLiked: async (_id: number) => {},
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -86,7 +86,7 @@ export function UserContextProvider(props: PropsWithChildren) {
       const roommateData = (await response.json()) as User;
       return roommateData;
     },
-    
+
     async changeUserData(newData: Partial<User>): Promise<void> {
       const response = await fetch(API_URL + `/user/${userData?.idUser}`, {
         method: "PATCH",
@@ -106,23 +106,33 @@ export function UserContextProvider(props: PropsWithChildren) {
     },
 
     async getHasRoommatePref(): Promise<boolean> {
-      const response = await fetch(
-        API_URL + `/roommates-prefrences/${userData?.idUser}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+      try {
+        const response = await fetch(
+          API_URL + `/roommates-prefrences/${userData?.idUser}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            },
           },
-        },
-      );
+        );
 
-      if (!response.ok) {
-        errorCheckUser(response);
+        if (!response.ok) {
+          return false; // backend error, no preferences
+        }
+
+        const data = await response.json();
+
+        if (!data || Object.keys(data).length === 0) {
+          return false;
+        }
+
+        return true;
+      } catch (err) {
+        console.error("getHasRoommatePref crashed:", err);
         return false;
       }
-
-      return true;
     },
 
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
@@ -208,22 +218,20 @@ export function UserContextProvider(props: PropsWithChildren) {
       setUserData(updatedUser);
     },
 
-    async addLiked(id: number): Promise<void>{
-      const response = await fetch(API_URL + ``,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-        }
-      )
+    async addLiked(id: number): Promise<void> {
+      const response = await fetch(API_URL + `like/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
 
       if (!response.ok) {
         errorCheckUser(response);
         return;
       }
-    }
+    },
   };
 
   return (
