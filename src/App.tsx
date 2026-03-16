@@ -6,6 +6,7 @@ import { AuthContext } from './context/authContext'
 import './App.css'
 
 function App() {
+  //loading in the context so it will trigger logging in as the previous user
   const context = useContext(AuthContext)
   //TODO: context menu for right clicking (on users, and a few things)
   return (

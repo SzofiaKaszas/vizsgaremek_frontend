@@ -5,6 +5,7 @@ import { FindRoommateCard } from "./FindRoommateCard";
 import { LayoutGrid, GalleryHorizontal } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FindRoommateSlide } from "./FindRoommateSlide";
+import { PleaseLogin } from "./PleaseLogin";
 
 export function FindRoommate() {
   const [roommatePref, setRoommatePref] = useState<UserNecesarry[]>([]);
@@ -25,7 +26,7 @@ export function FindRoommate() {
     setTab(isMobile ? "list" : "grid");
   }, [isMobile]);
 
-  return (
+  return isLoggedIn ? (
     <Tabs value={tab} onValueChange={setTab} className="relative">
       <div className="flex w-full justify-end">
         <TabsList className="absolute ml-auto flex bg-transparent p-0 border border-slate rounded-md overflow-hidden !shadow-none">
@@ -45,7 +46,10 @@ export function FindRoommate() {
       </div>
 
       <TabsContent value="grid">
-        <FindRoommateCard isLoggedIn={isLoggedIn} roommatePref={roommatePref as User[]} />
+        <FindRoommateCard
+          isLoggedIn={isLoggedIn}
+          roommatePref={roommatePref as User[]}
+        />
       </TabsContent>
       <TabsContent value="list">
         <FindRoommateSlide
@@ -54,6 +58,8 @@ export function FindRoommate() {
         />
       </TabsContent>
     </Tabs>
+  ) : (
+    <PleaseLogin text={"Please login to find roommates"}></PleaseLogin>
   );
 }
 

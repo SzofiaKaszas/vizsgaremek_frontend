@@ -5,6 +5,7 @@ import { FindHouseCard } from "./FindHouseCard";
 import type { HouseListing } from "@/interfaces";
 import { UserContext } from "@/context/userContext";
 import { HouseContext } from "@/context/houseContext";
+import { PleaseLogin } from "./PleaseLogin";
 export function FindHouse() {
   const [housePref, setHousePref] = useState<HouseListing[]>([]);
     const isMobile = useIsMobile();
@@ -26,6 +27,7 @@ export function FindHouse() {
     }, [isMobile]);
 
   return (
+    isLoggedIn ? 
     <>
     <Tabs value={tab} onValueChange={setTab} className="relative">
       <div className="flex w-full justify-end">
@@ -55,7 +57,7 @@ export function FindHouse() {
     <div className="flex justify-center mt-10">
       <h1 className="text-2xl font-bold text-center">Dolgozunk rajta</h1>
     </div>
-    </>
+    </> : <PleaseLogin text="Please login to find house"></PleaseLogin>
   );
 }
 

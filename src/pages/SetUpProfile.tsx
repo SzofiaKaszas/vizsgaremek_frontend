@@ -39,7 +39,6 @@ export function SetUpProfile() {
 
   return "bg-gray-300 text-gray-600";
 }
-  /**might not be the best way to do it */
   const goNext = () => {
     switch (true) {
       case step === "account":

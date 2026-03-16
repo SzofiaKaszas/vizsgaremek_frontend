@@ -47,7 +47,6 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     if (!response.ok) {
       errorCheckUser(response);
-      return undefined;
     }
 
     const userData = (await response.json()) as User;
@@ -80,7 +79,6 @@ export function UserContextProvider(props: PropsWithChildren) {
 
       if (!response.ok) {
         errorCheckUser(response);
-        return undefined as unknown as User;
       }
 
       const roommateData = (await response.json()) as User;
@@ -99,7 +97,6 @@ export function UserContextProvider(props: PropsWithChildren) {
 
       if (!response.ok) {
         errorCheckUserEdit(response);
-        return;
       }
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
