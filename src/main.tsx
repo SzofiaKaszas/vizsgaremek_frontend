@@ -18,6 +18,7 @@ import { SetUpProfile } from "./pages/SetUpProfile.tsx";
 import { HouseContextProvider } from "./context/houseContext.tsx";
 import { AddHouseListing } from "./pages/AddHouseListing.tsx";
 
+//routing
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
   },
 ]);
 
+//Context and routing
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthContextProvider> 

@@ -146,7 +146,9 @@
   --shadow-2xl: 4px 4px 0px 0px oklch(0% 0 0 / 0.5);
 }
 
+/*our own colors for the website (some is just an idea not in use)*/
 @theme {
+  /*used colors*/
   --color-charcoal: oklch(0.235 0 0);
   --color-coolwhite: oklch(0.9612 0 0);
   --color-grey: oklch(0.8545 0 0);
@@ -155,6 +157,7 @@
   --color-amber: oklch(0.8179 0.1705 77.95);
   --color-deepamber: oklch(0.7559 0.1653 77.95);
 
+  /*unused colors*/
   --color-purple: oklch(0.6239 0.2251 318.91);
   --color-deeppurple: oklch(0.5692 0.2289 288.56);
 
