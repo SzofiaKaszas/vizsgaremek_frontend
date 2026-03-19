@@ -36,7 +36,8 @@ export interface UserNecesarry {
   age?: number;
   gender?: string; // could be enum
   language?: string; // could be array of strings, also enum?
-  userBio?: string
+  userBio?: string;
+  birthDay?: Date;
 }
 
 //interface for tokens

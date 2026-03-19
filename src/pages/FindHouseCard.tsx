@@ -50,13 +50,13 @@ export function FindHouseCard(props: FindHouseProps) {
   }
 
   return props.isLoggedIn === true ? (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 px-4">
+    <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
       {housePrefList.map((pref) => (
         <Dialog key={pref.idHouse}>
           <DialogTrigger asChild onClick={handleOpen}>
             <Card
               className={`
-    col-auto card w-full max-w-md p-4
+    col-auto card w-full p-4
     ${animatingId === pref.idHouse && direction === "right" ? "swipe-right" : ""}
     ${animatingId === pref.idHouse && direction === "left" ? "swipe-left" : ""}
   `}

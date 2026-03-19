@@ -3,75 +3,188 @@
 }
 
 body {
+    /*basic background and color + font family style -- true to full site*/
     background-color: var(--color-grey);
     color: var(--color-charcoal);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 
-    nav {
-        background-color: var(--color-charcoal);
-        color: var(--color-amber);
-        font-weight: bold;
-        font-size: large;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-        border: none;
-
-        .navigation-menu_link:hover {
-            color: var(--color-coolwhite);
-            background-color: var(--color-charcoal);
-        }
-
-        .navigation-menu_link.active {
-            background-color: var(--color-charcoal);
-            color: var(--color-coolwhite);
-        }
-
-        .navigation-menu_link:active {
-            background-color: var(--color-charcoal);
-            color: var(--color-coolwhite);
-        }
-
-        .navigation-menu_link::selection {
-            background-color: var(--color-charcoal);
-            color: var(--color-charcoal);
-        }
+    /*this is for normal links - not navlinks - we only have 1*/
+    .normal-link {
+        font-size: 0.9rem;
+        color: var(--color-accent);
+        text-decoration: underline;
+        padding: 0.4rem 0;
+        display: inline-block;
+        transition: color 0.25s ease, transform 0.2s ease;
+        letter-spacing: 0.3px;
     }
 
-    .card {
-        background-color: var(--color-coolwhite);
-        border: none;
-        box-shadow: none;
-
-        input {
-            box-shadow: none;
-        }
-
-        textarea {
-            box-shadow: none;
-        }
+    /*hover of the link*/
+    .normal-link:hover {
+        color: var(--color-accent-hover);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        transform: translateY(-1px);
     }
+
+    /*when clicked the link*/
+    .normal-link:active {
+        transform: translateY(0);
+        color: var(--color-accent-hover);
+    }
+
+    /*------------- NAVBAR STYLES ----------------*/
+    .out-nav {
+        background-color: var(--color-bg-dark);
+        border-bottom: 2px solid var(--color-accent);
+    }
+
+    /* Navbar links -- letters uppercase, small transition*/
+    .navigation-menu_link {
+        color: var(--color-text-light);
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    /* */
+    .navigation-menu_link:hover {
+        color: var(--color-text-light);
+    }
+
+    .navigation-menu_link.active {
+        color: var(--color-text-light);
+    }
+
+    .navigation-menu_link:active {
+        color: var(--color-accent);
+    }
+
+    /* the menu button when in mobile mode */
+    .mobile-nav button {
+        border: 2px solid var(--color-accent);
+        background: transparent;
+        color: var(--color-accent);
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        transition: 0.25s ease;
+    }
+
+    /* when sheet active makes the site a bit darker*/
+    [data-slot="sheet-overlay"] {
+        background: rgba(0, 0, 0, 0.55) !important;
+        backdrop-filter: blur(2px);
+    }
+
+    /* basic sheet panel settings */
+    [data-slot="sheet-content"] {
+        background: var(--color-charcoal) !important;
+        color: var(--color-text-light) !important;
+        border-right: 2px solid var(--color-accent);
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* nav links in sheet */
+    [data-slot="sheet-content"] .navigation-menu_link {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 600;
+        padding: 0.75rem 0;
+        color: var(--color-text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid var(--color-silver);
+        transition: 0.25s ease;
+    }
+
+    [data-slot="sheet-content"] .navigation-menu_link:hover {
+        color: var(--color-accent);
+        transform: translateX(4px);
+    }
+
+    /* Remove border from last link */
+    [data-slot="sheet-content"] .navigation-menu_link:last-child {
+        border-bottom: none;
+    }
+
+    /* avatar */
+    nav .avatar {
+        border: 2px solid var(--color-accent);
+        transition: 0.2s ease;
+    }
+
+    /*make avatar bigger when hovered*/
+    nav .avatar:hover {
+        border-color: var(--color-accent-hover);
+        transform: scale(1.2);
+    }
+
+    /*------------- ALL BUTTONS -------------*/
+
+    /*css for the wrapper div - display buttons side by side on the left side*/
+    .my-button-scope {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        gap: 0.75rem;
+    }
+
 
     .my-button-scope button {
-        background-color: var(--color-amber);
-        color: var(--color-charcoal);
-        box-shadow: none;
-        border: none;
-    }
-
-    .my-button-scope button:hover {
-        background-color: var(--color-deepamber);
-        color: var(--color-charcoal);
-    }
-
-    .add-button {
-        color: var(--color-charcoal);
-        width: 5%;
-        border-radius: 15px;
-        float: right;
+        padding: 0.65rem 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.25s ease;
         display: flex;
-        justify-content: center;
+        flex-direction: row;
         align-items: center;
+        justify-content: center;
+        user-select: none;
+        background: transparent;
     }
 
+    /* Primary button (all important buttons) */
+    .my-button-scope .primary-btn {
+        background: var(--color-accent);
+        color: var(--color-text-light);
+        border-color: var(--color-accent);
+    }
+
+    .my-button-scope .primary-btn:hover {
+        background: var(--color-accent-hover);
+        border-color: var(--color-accent-hover);
+        transform: translateY(-2px);
+    }
+
+    .my-button-scope .primary-btn:active {
+        transform: translateY(0);
+    }
+
+    /* secondary button (skip and logout button)*/
+    .my-button-scope .sec-btn {
+        background: transparent;
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
+    .my-button-scope .sec-btn:hover {
+        background: var(--color-accent);
+        color: var(--color-text-light);
+        transform: translateY(-2px);
+    }
+
+    .my-button-scope .sec-btn:active {
+        transform: translateY(0);
+    }
+
+    /* button for liking roommates and houses */
     .likeButton {
         background-color: var(--color-grey);
         color: var(--color-charcoal);
@@ -81,9 +194,10 @@ body {
 
     .likeButton:hover {
         background-color: var(--color-lightred);
-        color: var(--color-coolwhite);
+        color: var(--color-text-light);
     }
 
+    /* button for disliking roommates and houses */
     .dislikeButton {
         background-color: var(--color-grey);
         color: var(--color-charcoal);
@@ -93,56 +207,425 @@ body {
 
     .dislikeButton:hover {
         background-color: var(--color-sky);
-        color: var(--color-coolwhite);
+        color: var(--color-text-light);
     }
 
-    .button-64 {
-        background-color: var(--color-amber);
-        border-radius: 15px;
-        color: #FFFFFF;
+    /* Plus button on your house listings - to add new house listing */
+    .plus-button-wrapper {
+        width: 100%;
         display: flex;
-        float: right;
-        font-family: Phantomsans, sans-serif;
-        justify-content: center;
-        padding: 3px;
-        touch-action: manipulation;
-        white-space: nowrap;
-        cursor: pointer;
-        transition: transform 0.15s ease;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+    }
 
+    /* button itself */
+    .plus-button {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--color-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--color-text-light);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         margin-top: 0.5%;
     }
 
-    .button-64:active {
-        transform: scale(0.92);
+    .plus-button:hover {
+        background: var(--color-accent-hover);
+        border-color: var(--color-accent-hover);
+        transform: translateY(-3px);
     }
 
-    .button-64:active,
-    .button-64:hover {
-        outline: 0;
+    .plus-button:active {
+        transform: translateY(0);
     }
 
-    .button-64 span {
-        background-color: rgb(5, 6, 45);
-        padding: 4px;
-        border-radius: 15px;
+    /* ------------ CARD -------------- */
+    /*card for forms and writing out basic stuff*/
+    .form-card {
+        background: var(--color-text-light);
+        border: 2px solid var(--color-accent);
+        padding: 2rem;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /*card style for writing out data about roommate matches and houselistings*/
+    .card {
+        background-color: var(--color-text-light);
+        border: none;
+        box-shadow: none;
+    }
+
+    /* --------------- SET UP --------------- */
+    .stepper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    /* grey line behind the colorful one -- animation */
+    .stepper-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--color-silver);
+        transform: translateY(-50%);
+    }
+
+    /* colorful line over the grey one - animation */
+    .stepper-progress {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        height: 3px;
+        background: var(--color-accent);
+        transform: translateY(-50%);
+        transition: width 0.3s ease;
+    }
+
+    /* step circle design -- colors in tailwind classes */
+    .step-circle {
+        position: relative;
+        z-index: 10;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid transparent;
+        transition: all 0.25s ease;
+        cursor: pointer;
+    }
+
+    /* --------------- FORM --------------- */
+
+    /* from title */
+    .form-scope .card-title,
+    .form-scope h2,
+    .form-scope .text-xl {
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--color-charcoal);
+        margin-bottom: 0.5rem;
+    }
+
+    /* style for all fields -- most has m-2 as a class (maybe all) */
+    .form-scope .field,
+    .form-scope .m-2 {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    /* labels on forms */
+    .form-scope label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--color-charcoal);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* all types of input fields */
+    .form-scope input[type="text"],
+    .form-scope input[type="email"],
+    .form-scope input[type="date"],
+    .form-scope input[type="tel"],
+    .form-scope input[type="number"],
+    .form-scope input[type="password"],
+    .form-scope .input,
+    .form-scope textarea,
+    .form-scope .Textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--color-silver);
+        background: var(--color-text-light);
+        color: var(--color-charcoal);
+        font-size: 1rem;
+        transition: all 0.25s ease;
+    }
+
+    /* when clicking on a input -- color and shadow*/
+    .form-scope input:focus,
+    .form-scope textarea:focus {
+        border-color: var(--color-accent);
+        outline: none;
+        box-shadow: 0 0 0 3px oklch(0.6239 0.2251 318.91 / 0.25);
+    }
+
+    /* checkbox */
+    .form-scope [data-state="unchecked"],
+    .form-scope [data-state="checked"] {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--color-silver);
+        background: var(--color-text-light);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    /* checkbox checked state */
+    .form-scope [data-state="checked"] {
+        background: var(--color-accent);
+        border: none;
+        box-shadow: none;
+    }
+
+    /* make chackbox bigger when mouse over it */
+    .form-scope [data-state="unchecked"]:hover,
+    .form-scope [data-state="checked"]:hover {
+        transform: scale(1.05);
+    }
+
+    /* slider design -- it has its own scope */
+    .age-slider-scope [data-slot="slider"] {
+        width: 100%;
+        height: 28px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* background line color -- and so its seen */
+    .age-slider-scope [data-slot="slider-track"] {
+        width: 100%;
+        height: 4px;
+        background: var(--color-silver);
+    }
+
+    /* the actual range (colored part) */
+    .age-slider-scope [data-slot="slider-range"] {
+        position: absolute;
+        height: 4px;
+        background: var(--color-accent-hover);
+    }
+
+    /* style of the slider "buttons" that you slide */
+    .age-slider-scope [data-slot="slider-thumb"] {
+        width: 20px;
+        height: 20px;
+        background: var(--color-accent);
+        border: 3px solid var(--color-coolwhite);
+        border-radius: 30%;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    /* "buttons" when hovered */
+    .age-slider-scope [data-slot="slider-thumb"]:hover {
+        background: var(--color-accent-hover);
+        transform: scale(1.1);
+    }
+
+    /* style for profile page */
+    .profile-scope {
+        display: flex;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    /* card class inside the profile-scope -- same as form-card */
+    .profile-scope .card {
+        background: var(--color-text-light);
+        border: 2px solid var(--color-accent);
+        padding: 2rem;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* style for the title of the card */
+    .profile-scope .card-title,
+    .profile-scope .text-xl {
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--color-charcoal);
+        margin-bottom: 1rem;
+    }
+
+    /* field labels in the profile data page */
+    .profile-scope label,
+    .profile-scope .field label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--color-charcoal);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* fields inside the profile data page */
+    .profile-scope .field,
+    .profile-scope .flex.items-center {
+        font-size: 0.95rem;
+        color: var(--color-charcoal);
+    }
+
+    /* scopes for finding a roommate or house or looking at own houselistings */
+    .find-scope {
+        width: 100%;
+        padding: 1rem;
+        position: relative;
+    }
+
+    /* scope for the cards in finding roommate and finding houses or looking at own houselistings*/
+    .find-card-scope {
+        width: 100%;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    /* cards inside the scope */
+    .find-card-scope .card {
+        background: var(--color-text-light);
+        color: var(--color-charcoal);
+        border: 2px solid var(--color-silver);
+        border-radius: 8px;
+        padding: 1rem;
+        cursor: pointer;
+    }
+
+    /* bigger if hovered over */
+    .find-card-scope .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    /* image inside the cards - making it fully visible (later maybe problem with the 100% width and height)*/
+    /* TODO: some way to make img always look the same */
+    .find-card-scope img {
+        width: 100%;
+        height: fit-content;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Dialog of finding roommate -- size and colors*/
+    .find-roommate-dialog {
+        background: var(--color-text-light);
+        border-radius: 8px;
+        overflow: hidden;
+        max-width: fit-content;
+        width: 100%;
+    }
+
+    /* image inside the dialog -- again problem with sizing */
+    /*TODO: same as up there*/
+    .find-roommate-dialog img {
         width: 100%;
         height: 100%;
-        transition: 300ms;
+        object-fit: cover;
+        border-bottom: 2px solid var(--color-silver);
+    }
+/* itt tartottam --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+    /* BODY */
+    .find-roommate-dialog .dialog-body {
+        padding: 1rem 1.25rem;
+        font-size: 0.95rem;
+        color: var(--color-charcoal);
+        line-height: 1.45;
     }
 
-    .button-64:hover span {
-        background: none;
+    .find-roommate-dialog .dialog-body p {
+        margin-bottom: 0.5rem;
     }
 
-    @media (min-width: 768px) {
-        .button-64 {
-            max-width: 10%;
-            max-height: 10%;
-        }
+    .find-roommate-dialog .dialog-body span {
+        font-weight: 600;
+    }
+
+    /* ACTION BUTTONS */
+    .find-roommate-dialog .action-row {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem 0 1.25rem;
+    }
+
+    /* SCOPE */
+    .main-scope {
+        width: 100%;
+        min-height: 100vh;
+        background: var(--color-grey);
+        color: var(--color-charcoal);
+        font-family: "Inter", sans-serif;
+    }
+
+    /* HERO */
+    .hero {
+        text-align: center;
+        padding: 4rem 1rem;
+        background: var(--color-text-light);
+        border-bottom: 2px solid var(--color-accent);
+    }
+
+    .hero-title {
+        font-size: 2.4rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: var(--color-muted);
+        margin-bottom: 1.5rem;
+    }
+
+    /* HERO BUTTONS */
+    .hero-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    /* FEATURES */
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
+        padding: 2rem 1rem;
+    }
+
+    .feature-card {
+        background: var(--color-text-light);
+        border: 2px solid var(--color-silver);
+        padding: 1.5rem;
+        border-radius: 6px;
+        transition: 0.25s ease;
+    }
+
+    .feature-card:hover {
+        border-color: var(--color-accent);
+        transform: translateY(-4px);
+    }
+
+    /* FOOTER */
+    .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--color-muted);
+        font-size: 0.9rem;
     }
 }
 
+/*------------- SWIPE ANIMATION ------------- */
+/* when liking or disliking a user/house */
 @keyframes swipe-right {
     0% {
         transform: translateX(0) rotate(0deg);

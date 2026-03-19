@@ -27,7 +27,7 @@ export function FindRoommate() {
   }, [isMobile]);
 
   return isLoggedIn ? (
-    <Tabs value={tab} onValueChange={setTab} className="relative">
+    <Tabs value={tab} onValueChange={setTab} className="find-scope relative">
       <div className="flex w-full justify-end">
         <TabsList className="absolute ml-auto flex bg-transparent p-0 border border-slate rounded-md overflow-hidden !shadow-none">
           <TabsTrigger

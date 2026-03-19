@@ -28,7 +28,7 @@ export function FindRoommateDialogContent(props: DialogContentProps) {
   }
 
   return (
-    <DialogContent className="p-0">
+    <DialogContent className="find-roommate-dialog p-0">
       <Carousel>
         <CarouselContent>
           <div className="w-full">
@@ -83,7 +83,7 @@ export function FindRoommateDialogContent(props: DialogContentProps) {
           </p>
         </div>
       </div>
-      <div className="w-full flex gap-4 justify-center pb-2 mt-4">
+      <div className="action-row w-full flex gap-4 justify-center pb-2 mt-4">
         <DialogClose asChild>
         <button
           className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"

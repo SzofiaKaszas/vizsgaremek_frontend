@@ -30,15 +30,16 @@ export function YourHouseListing() {
   return isLoggedIn === true ? (
     <>
       {/**if clicking on plus redirecting to the page/form  to add a new houselisting*/}
-      <Button
-        className={"button-64"}
-        onClick={() => (window.location.href = "/addhouselisting")}
-      >
-        <span>
-          <Plus size={35} />
-        </span>
-      </Button>
-
+      <div className="plus-button-wrapper">
+        <Button
+          className={"plus-button"}
+          onClick={() => (window.location.href = "/addhouselisting")}
+        >
+          <span>
+            <Plus size={35} />
+          </span>
+        </Button>
+      </div>
       {/**if user has no house listing yet then show that -- if not then map the list and make HouseListingCards to write the data out */}
       {listings.length === 0 ? (
         <p>You have no house listings yet.</p>

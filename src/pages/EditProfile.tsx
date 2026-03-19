@@ -26,7 +26,7 @@ export function EditProfile() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        <Button className="primary-btn">Edit Profile</Button>
       </DialogTrigger>
       <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-">
         <DialogHeader>
@@ -34,6 +34,7 @@ export function EditProfile() {
           <DialogDescription>You can edit your profile here</DialogDescription>
         </DialogHeader>
         <form
+        className="form-scope"
           onSubmit={async (e) => {
             handleSubmit(e, context);
           }}
@@ -153,11 +154,9 @@ export function EditProfile() {
             </Field>
           </FieldGroup>
           <DialogFooter>
-            {/*<DialogClose asChild>*/}
             <div className="my-button-scope">
-              <Button type="submit">Save changes</Button>
+              <Button type="submit" className="primary-btn">Save changes</Button>
             </div>
-            {/*</DialogClose>*/}
           </DialogFooter>
         </form>
       </DialogContent>

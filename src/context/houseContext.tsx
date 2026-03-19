@@ -61,7 +61,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
         },
         body: JSON.stringify(newData),
       });
@@ -80,7 +80,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
         },
         body: JSON.stringify(newData),
       });
@@ -97,7 +97,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
         },
       });
 
@@ -114,7 +114,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
           },
         },
       );
@@ -131,7 +131,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
           },
           body: JSON.stringify(newData),
         },
@@ -150,7 +150,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
         },
         body: JSON.stringify(newData),
       });
@@ -168,7 +168,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
           },
         },
       );
