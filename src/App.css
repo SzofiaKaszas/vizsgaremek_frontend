@@ -368,8 +368,8 @@ body {
     }
 
     /* checkbox */
-    .form-scope [data-state="unchecked"],
-    .form-scope [data-state="checked"] {
+    .form-scope [role="checkbox"][data-state="unchecked"],
+    .form-scope [role="checkbox"][data-state="checked"] {
         width: 20px;
         height: 20px;
         border: 2px solid var(--color-silver);
@@ -380,16 +380,43 @@ body {
     }
 
     /* checkbox checked state */
-    .form-scope [data-state="checked"] {
+    .form-scope [role="checkbox"][data-state="checked"] {
         background: var(--color-accent);
         border: none;
         box-shadow: none;
     }
 
     /* make chackbox bigger when mouse over it */
-    .form-scope [data-state="unchecked"]:hover,
-    .form-scope [data-state="checked"]:hover {
+    .form-scope [role="checkbox"][data-state="unchecked"]:hover,
+    .form-scope [role="checkbox"][data-state="checked"]:hover {
         transform: scale(1.05);
+    }
+
+    /* ---------- SWITCH (shadcn / radix) ---------- */
+
+    /* unchecked */
+    .form-scope [data-slot="switch"][data-state="unchecked"] {
+        background: var(--color-silver);
+    }
+
+    /* checked */
+    .form-scope [data-slot="switch"][data-state="checked"] {
+        background: var(--color-accent);
+    }
+
+    /* make switch bigger when hovered over */
+    .form-scope [data-slot="switch"]:hover {
+        transform: scale(1.05);
+    }
+
+    /* switch circle color set*/
+    .form-scope [data-slot="switch-thumb"] {
+        background: var(--color-charcoal);
+    }
+
+    /* optional: nicer focus */
+    .form-scope [data-slot="switch"]:focus-visible {
+        box-shadow: 0 0 0 3px oklch(0.6239 0.2251 318.91 / 0.25);
     }
 
     /* slider design -- it has its own scope */
@@ -508,6 +535,24 @@ body {
 
     /* image inside the cards - making it fully visible (later maybe problem with the 100% width and height)*/
     /* TODO: some way to make img always look the same */
+
+    /*
+    maybe answer to the todo
+
+    .image-wrapper {
+    width: 100%;
+    height: 200px; 
+    overflow: hidden;
+    border-radius: 6px;
+    }
+
+    .image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /
+    }
+    */
+    
     .find-card-scope img {
         width: 100%;
         height: fit-content;
@@ -519,10 +564,12 @@ body {
     /* Dialog of finding roommate -- size and colors*/
     .find-roommate-dialog {
         background: var(--color-text-light);
-        border-radius: 8px;
+        border-radius: 10px;
         overflow: hidden;
         max-width: fit-content;
         width: 100%;
+        padding: 1%;
+        border: none;
     }
 
     /* image inside the dialog -- again problem with sizing */
@@ -533,32 +580,14 @@ body {
         object-fit: cover;
         border-bottom: 2px solid var(--color-silver);
     }
-/* itt tartottam --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-    /* BODY */
-    .find-roommate-dialog .dialog-body {
-        padding: 1rem 1.25rem;
-        font-size: 0.95rem;
-        color: var(--color-charcoal);
-        line-height: 1.45;
-    }
 
-    .find-roommate-dialog .dialog-body p {
-        margin-bottom: 0.5rem;
-    }
-
-    .find-roommate-dialog .dialog-body span {
-        font-weight: 600;
-    }
-
-    /* ACTION BUTTONS */
+    /* like and dislike buttons row */
     .find-roommate-dialog .action-row {
         display: flex;
         justify-content: center;
-        gap: 1rem;
-        padding: 1rem 0 1.25rem;
     }
 
-    /* SCOPE */
+    /* ------------------ Main page -----------------*/
     .main-scope {
         width: 100%;
         min-height: 100vh;
@@ -567,7 +596,6 @@ body {
         font-family: "Inter", sans-serif;
     }
 
-    /* HERO */
     .hero {
         text-align: center;
         padding: 4rem 1rem;
@@ -587,14 +615,6 @@ body {
         margin-bottom: 1.5rem;
     }
 
-    /* HERO BUTTONS */
-    .hero-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-    }
-
-    /* FEATURES */
     .features {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -615,7 +635,6 @@ body {
         transform: translateY(-4px);
     }
 
-    /* FOOTER */
     .footer {
         text-align: center;
         padding: 1.5rem;

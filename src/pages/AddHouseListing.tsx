@@ -231,11 +231,13 @@ export function AddHouseListing() {
           </Field>
 
           <Field className="m-2">
+            <div className="flex items-center gap-2">
             <FieldLabel htmlFor="airConditioner">
               Is there air conditioner
               <span className="text-destructive">*</span>
             </FieldLabel>
             <Switch name="airConditioner" id="airConditioner"></Switch>
+            </div>
           </Field>
 
           <div className="my-button-scope">
