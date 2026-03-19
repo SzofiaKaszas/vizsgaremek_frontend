@@ -1,10 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import {
-  Field,
-  FieldDescription,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,15 +11,16 @@ export function Login() {
   if (!context.currentUserId) {
     return (
       <div className="flex justify-center mt-10">
-        <Card className="card w-full max-w-sm p-4">
-          <CardTitle className="text-center text-xl font-bold">
-            Login
-          </CardTitle>
-          <form
-            onSubmit={(e) => {
-              handleSubmit(e, context);
-            }}
-          >
+        <form
+        className="form-scope"
+          onSubmit={(e) => {
+            handleSubmit(e, context);
+          }}
+        >
+          <Card className="form-card w-full max-w-sm p-4">
+            <CardTitle className="text-center text-xl font-bold">
+              Login
+            </CardTitle>
             <Field>
               <FieldLabel htmlFor="email">
                 Email <span className="text-destructive">*</span>
@@ -37,7 +34,7 @@ export function Login() {
               />
               <FieldDescription
                 id="emailErr"
-                className="text-red-600 text-sm mt-1"
+                className="text-red-600 text-sm"
               ></FieldDescription>
             </Field>
             <Field>
@@ -53,25 +50,25 @@ export function Login() {
               />
               <FieldDescription
                 id="passwordErr"
-                className="text-red-600 text-sm mt-1"
+                className="text-red-600 text-sm"
               ></FieldDescription>
             </Field>
             <div className="my-button-scope">
-            <Button variant={"default"} type="submit" className="m-1">
-              Login
-            </Button>
+              <Button variant={"default"} type="submit" className="primary-btn">
+                Login
+              </Button>
             </div>
-          </form>
+            <div>
+              <a
 
-          <div>
-            <a
-              href="/register"
-              className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors p-2"
-            >
-              Don't have an account? Register here.
-            </a>
-          </div>
-        </Card>
+                href="/register"
+                className="normal-link"
+              >
+                Don't have an account? Register here.
+              </a>
+            </div>
+          </Card>
+        </form>
       </div>
     );
   }
@@ -95,7 +92,7 @@ async function handleSubmit(
     error = true;
   }
 
-  if(!password){
+  if (!password) {
     document.getElementById("passwordErr")!.innerHTML = "";
     document.getElementById("passwordErr")?.append("Please fill in password.");
     error = true;
@@ -109,7 +106,7 @@ async function handleSubmit(
     await context.login(email, password);
     window.location.href = "/main";
   } catch (err) {
-    console.log(err)
+    console.log(err);
     document.getElementById("passwordErr")!.innerHTML = (err as Error).message;
   }
 }

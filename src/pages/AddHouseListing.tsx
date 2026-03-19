@@ -34,8 +34,8 @@ export function AddHouseListing() {
   const usercontext = useContext(UserContext);
 
   return (
-    <div className="flex justify-center mt-10">
-      <Card className="card w-full max-w-sm p-4">
+    <div className="form-scope flex justify-center mt-10">
+      <Card className="form-card w-full max-w-sm p-4">
         <form onSubmit={(e) => handleSubmit(e, usercontext, housecontext)}>
           <CardTitle className="text-center text-xl font-bold">
             Add House Listing
@@ -239,13 +239,13 @@ export function AddHouseListing() {
           </Field>
 
           <div className="my-button-scope">
-            <Button variant={"default"} type="submit" className="m-1">
+            <Button variant={"default"} type="submit" className="primary-btn">
               Add
             </Button>
             <Button
               variant={"outline"}
               type="button"
-              className="m-1"
+              className="sec-btn"
               onClick={() => {
                 window.location.href = "/managehouselising";
               }}
