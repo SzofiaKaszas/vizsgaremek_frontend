@@ -15,7 +15,6 @@ body {
         text-decoration: underline;
         padding: 0.4rem 0;
         display: inline-block;
-        transition: color 0.25s ease, transform 0.2s ease;
         letter-spacing: 0.3px;
     }
 

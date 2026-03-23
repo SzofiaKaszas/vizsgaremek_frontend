@@ -165,5 +165,6 @@ export interface HouseContextType {
   getHasHousePref: () => Promise<boolean>;
   changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
-  getMatches: () => Promise<HouseListing[]>
+  getMatches: () => Promise<HouseListing[]>;
+  addLiked: (id: number) => void;
 }

@@ -216,8 +216,8 @@ export function UserContextProvider(props: PropsWithChildren) {
     },
 
     async addLiked(id: number): Promise<void> {
-      const response = await fetch(API_URL + `like/${id}`, {
-        method: "PUT",
+      const response = await fetch(API_URL + `/user/like/${id}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
