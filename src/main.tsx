@@ -19,6 +19,7 @@ import { HouseContextProvider } from "./context/houseContext.tsx";
 import { AddHouseListing } from "./pages/AddHouseListing.tsx";
 import { Likes } from "./pages/Likes.tsx";
 import { Admin } from "./pages/Admin.tsx";
+import { Rate } from "./pages/Rate.tsx";
 
 //routing
 const router = createBrowserRouter([
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: "/profile", Component: Profile }, // to see own profile
       { path: "/editprofile", Component: EditProfile }, // to edit own profile
       { path: "/admin", Component: Admin }, // admin page ?? 
+      {path: "/rate", Component: Rate},
     ],
   },
 ]);

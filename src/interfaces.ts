@@ -120,6 +120,12 @@ export interface HouseListingProps {
   houseListing: HouseListing;
 }
 
+//interface for props of rating page
+export interface RatingProp{
+  id : number;
+  houseOrRoommate: string;
+}
+
 //interface for the DialogContent when you click a user (so u can see more of their data)
 export interface DialogContentProps{
   id: number;

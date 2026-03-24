@@ -20,7 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export function NavBar() {
   const { currentUserId } = useContext(AuthContext);
   const { userData } = useContext(UserContext);
-
+  
   return (
     <nav className="out-nav">
       <div className="mx-auto flex items-center justify-between p-2">
@@ -101,8 +101,7 @@ export function NavBar() {
               </NavigationMenuLink>
             )}
 
-            {(userData?.lookingForPeople ||
-              userData === undefined) && (
+            {(userData?.lookingForPeople || userData === undefined) && (
               <NavigationMenuLink asChild>
                 <NavLink className={"navigation-menu_link"} to="/findroomate">
                   Roomate Find
@@ -118,13 +117,16 @@ export function NavBar() {
               </NavigationMenuLink>
             )}
 
-            {/*userData?.lookingForHouse === true || userData?.lookingForPeople === true ||*/ userData != undefined && (
-              <NavigationMenuLink asChild>
-                <NavLink className={"navigation-menu_link"} to="/likes">
-                  Likes
-                </NavLink>
-              </NavigationMenuLink>
-            )}
+            {
+              /*userData?.lookingForHouse === true || userData?.lookingForPeople === true ||*/ userData !=
+                undefined && (
+                <NavigationMenuLink asChild>
+                  <NavLink className={"navigation-menu_link"} to="/likes">
+                    Likes
+                  </NavLink>
+                </NavigationMenuLink>
+              )
+            }
 
             {(userData?.hasHouse || userData === undefined) && (
               <NavigationMenuLink asChild>

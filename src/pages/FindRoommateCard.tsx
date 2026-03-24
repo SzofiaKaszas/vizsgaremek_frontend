@@ -6,8 +6,10 @@ import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
 import { /*useContext,*/ useContext, useEffect, useState } from "react";
-import { Heart, Star, ThumbsDown } from "lucide-react";
+import { Heart, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
+import { StarRating } from "./StarRating";
+import { useNavigate } from "react-router";
 //import { UserContext } from "@/context/userContext";
 
 export function FindRoommateCard(props: FindRoommateProps) {
@@ -18,6 +20,10 @@ export function FindRoommateCard(props: FindRoommateProps) {
   const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
     null,
   );
+
+  const [ratings, setRatings] = useState<Record<number, number>>({});
+
+  //const navigate = useNavigate();
 
   useEffect(() => {
     async function set() {
@@ -30,12 +36,17 @@ export function FindRoommateCard(props: FindRoommateProps) {
     setroommatePrefList((prev) => prev.filter((user) => user.idUser !== id));
   }
 
+  function handleRating(id: number, rating: number) {
+    setRatings((prev) => ({ ...prev, [id]: rating }));
+  }
+
   const context = useContext(UserContext);
 
   async function LikeClick(id: number) {
     console.log(id);
     await context.addLiked(id);
   }
+
   if (roommatePrefList.length === 0 && props.isLoggedIn) {
     return (
       <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
@@ -81,6 +92,20 @@ export function FindRoommateCard(props: FindRoommateProps) {
                 {pref.firstName} {pref.lastName} - {getAge(pref.birthDay)}
                 <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
               </Field>
+              <div className="flex justify-center mt-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent opening the card dialog
+                    window.location.href = `/rate`; // navigate
+                  }}
+                  className="cursor-pointer"
+                >
+                  <StarRating
+                    value={ratings[pref.idUser] || 0}
+                    onChange={(rating) => handleRating(pref.idUser, rating)}
+                  />
+                </button>
+              </div>
               <Field>{pref.userBio}</Field>
               <Field>Language: {whatToShow(pref.language)}</Field>
               <div className="w-full flex gap-4 justify-center">
