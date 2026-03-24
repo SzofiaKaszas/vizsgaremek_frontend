@@ -526,11 +526,28 @@ body {
         cursor: pointer;
     }
 
-    /* bigger if hovered over */
+    /* bigger if hovered over and border shows which one we are looking at */
     .find-card-scope .card:hover {
         transform: translateY(-4px);
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        border: 2px solid var(--color-accent);
     }
+
+    .tabs-list {
+        position: relative;
+        background: var(--color-silver);
+    }
+
+    .tabs-trigger:hover {
+        background: var(--color-text-light);
+        transform: translateY(-2px);
+    }
+
+    .tabs-trigger[data-state="active"] {
+        background: var(--color-accent);
+        color: var(--color-text-light);
+    }
+
 
     /* image inside the cards - making it fully visible (later maybe problem with the 100% width and height)*/
     /* TODO: some way to make img always look the same */
@@ -551,12 +568,12 @@ body {
         object-fit: cover; /
     }
     */
-    
+
     .find-card-scope img {
         width: 100%;
-        height: fit-content;
+        height: 400px;
         object-fit: cover;
-        border-radius: 6px;
+        border-radius: 0px;
         margin-bottom: 0.75rem;
     }
 
@@ -608,25 +625,12 @@ body {
         margin-bottom: 0.5rem;
     }
 
-    .hero-subtitle {
-        font-size: 1.1rem;
-        color: var(--color-muted);
-        margin-bottom: 1.5rem;
-    }
-
-    .features {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1rem;
-        padding: 2rem 1rem;
-    }
-
     .feature-card {
-        background: var(--color-text-light);
-        border: 2px solid var(--color-silver);
+        background: var(--color-silver);
+        border: 2px solid var(--color-charcoal);
         padding: 1.5rem;
         border-radius: 6px;
-        transition: 0.25s ease;
+        box-shadow: none;
     }
 
     .feature-card:hover {

@@ -17,6 +17,8 @@ import { Logout } from "./pages/Logout.tsx";
 import { SetUpProfile } from "./pages/SetUpProfile.tsx";
 import { HouseContextProvider } from "./context/houseContext.tsx";
 import { AddHouseListing } from "./pages/AddHouseListing.tsx";
+import { Likes } from "./pages/Likes.tsx";
+import { Admin } from "./pages/Admin.tsx";
 
 //routing
 const router = createBrowserRouter([
@@ -34,11 +36,12 @@ const router = createBrowserRouter([
       { path: "/roomate", Component: Login }, //to see roommates profiles
       { path: "/findhouse", Component: FindHouse }, //to find houses
       { path: "/houselisting", Component: Login }, //to see house one listing
+      { path: "/likes", Component: Likes }, // to see who/what the user liked
       { path: "/addhouselisting", Component:  AddHouseListing }, //to add own house listing
       { path: "/managehouselising", Component: YourHouseListing }, //to manage own house listings
       { path: "/profile", Component: Profile }, // to see own profile
       { path: "/editprofile", Component: EditProfile }, // to edit own profile
-      { path: "/admin", Component: EditProfile }, // admin page ?? 
+      { path: "/admin", Component: Admin }, // admin page ?? 
     ],
   },
 ]);

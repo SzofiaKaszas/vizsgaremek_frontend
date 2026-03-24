@@ -12,6 +12,7 @@ import { UserContext } from "@/context/userContext";
 
 export function FindRoommateCard(props: FindRoommateProps) {
   const [roommatePrefList, setroommatePrefList] = useState<User[]>([]);
+
   const [animatingId, setAnimatingId] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
   const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
@@ -25,14 +26,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
     set();
   }, [props.roommatePref]);
 
-  function whatToShow(string: string | undefined | null) {
-    if (string === undefined || string === "" || string === null) {
-      return "Not specified";
-    } else {
-      return string;
-    }
-  }
-
   function removeUser(id: number) {
     setroommatePrefList((prev) => prev.filter((user) => user.idUser !== id));
   }
@@ -43,7 +36,7 @@ export function FindRoommateCard(props: FindRoommateProps) {
     console.log(id);
     await context.addLiked(id);
   }
-  if (roommatePrefList.length === 0) {
+  if (roommatePrefList.length === 0 && props.isLoggedIn) {
     return (
       <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
         No more roommates available right now.
@@ -76,7 +69,7 @@ export function FindRoommateCard(props: FindRoommateProps) {
               }}
             >
               <Carousel>
-                <CarouselContent>
+                <CarouselContent className="image-wrapper">
                   <img
                     src="https://github.com/shadcn.png"
                     alt={`${pref.firstName} ${pref.lastName}'s profile picture`}
@@ -85,12 +78,11 @@ export function FindRoommateCard(props: FindRoommateProps) {
                 </CarouselContent>
               </Carousel>
               <Field>
-                {pref.firstName} {pref.lastName} -{" "}
-                {whatToShow(pref.birthDay?.toString())}
+                {pref.firstName} {pref.lastName} - {getAge(pref.birthDay)}
                 <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
               </Field>
-              <Field>Language: {whatToShow(pref.language)}</Field>
               <Field>{pref.userBio}</Field>
+              <Field>Language: {whatToShow(pref.language)}</Field>
               <div className="w-full flex gap-4 justify-center">
                 <button
                   className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
@@ -150,5 +142,34 @@ function handleOpen(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
     return;
+  }
+}
+
+function getAge(birthDay: Date | undefined) {
+  if (!birthDay) return "Unknown";
+
+  const date = birthDay instanceof Date ? birthDay : new Date(birthDay);
+
+  if (isNaN(date.getTime())) return "Unknown";
+
+  const now = new Date();
+  let age = now.getFullYear() - date.getFullYear();
+
+  const hasHadBirthdayThisYear =
+    now.getMonth() > date.getMonth() ||
+    (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age;
+}
+
+function whatToShow(string: string | undefined | null) {
+  if (string === undefined || string === "" || string === null) {
+    return "Not specified";
+  } else {
+    return string;
   }
 }

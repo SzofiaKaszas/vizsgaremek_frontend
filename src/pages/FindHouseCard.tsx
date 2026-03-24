@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
+import { Field, FieldDescription } from "@/components/ui/field";
 import type { FindHouseProps, HouseListing } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";

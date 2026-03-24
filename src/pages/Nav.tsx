@@ -60,6 +60,12 @@ export function NavBar() {
                   </NavLink>
                 )}
 
+                {userData != undefined && (
+                  <NavLink className={"navigation-menu_link"} to="/likes">
+                    Likes
+                  </NavLink>
+                )}
+
                 {(userData?.hasHouse || userData === undefined) && (
                   <NavLink
                     className={"navigation-menu_link"}
@@ -95,7 +101,7 @@ export function NavBar() {
               </NavigationMenuLink>
             )}
 
-            {(userData?.lookingForPeople === true ||
+            {(userData?.lookingForPeople ||
               userData === undefined) && (
               <NavigationMenuLink asChild>
                 <NavLink className={"navigation-menu_link"} to="/findroomate">
@@ -104,7 +110,7 @@ export function NavBar() {
               </NavigationMenuLink>
             )}
 
-            {(userData?.lookingForHouse === true || userData === undefined) && (
+            {(userData?.lookingForHouse || userData === undefined) && (
               <NavigationMenuLink asChild>
                 <NavLink className={"navigation-menu_link"} to="/findhouse">
                   House Listing Find
@@ -112,7 +118,15 @@ export function NavBar() {
               </NavigationMenuLink>
             )}
 
-            {(userData?.hasHouse === true || userData === undefined) && (
+            {/*userData?.lookingForHouse === true || userData?.lookingForPeople === true ||*/ userData != undefined && (
+              <NavigationMenuLink asChild>
+                <NavLink className={"navigation-menu_link"} to="/likes">
+                  Likes
+                </NavLink>
+              </NavigationMenuLink>
+            )}
+
+            {(userData?.hasHouse || userData === undefined) && (
               <NavigationMenuLink asChild>
                 <NavLink
                   className={"navigation-menu_link"}

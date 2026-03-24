@@ -11,17 +11,18 @@ const API_URL = "http://localhost:3000";
 // Default values so React has an initial context shape
 const defaultUserContext: HouseContextType = {
   getHouseListings: async () => [] as HouseListing[],
-  addHouseListing: async (_newData: Omit<HouseListing, "idHouse">) => { },
+  addHouseListing: async (_newData: Omit<HouseListing, "idHouse">) => {},
   editHouseListing: async (
     _idHouse: number,
     _newData: Partial<HouseListing>,
-  ) => { },
-  deleteHouseListing: async (_idHouse: number) => { },
+  ) => {},
+  deleteHouseListing: async (_idHouse: number) => {},
   getHasHousePref: async (): Promise<boolean> => false,
-  changeHousePref: async (_newData: Partial<HousePref>) => { },
-  addHousePref: async (_newData: Omit<HousePref, "idHouse">) => { },
+  changeHousePref: async (_newData: Partial<HousePref>) => {},
+  addHousePref: async (_newData: Omit<HousePref, "idHouse">) => {},
   getMatches: async () => [] as HouseListing[],
-  addLiked: async (_id: number) => { },
+  addLiked: async (_id: number) => {},
+  getLikes: async () => [] as HouseListing[],
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -203,6 +204,30 @@ export function HouseContextProvider(props: PropsWithChildren) {
         errorCheckHouse(response);
         return;
       }
+    },
+
+    async getLikes(): Promise<HouseListing[]> {
+      const response = await fetch(API_URL + "/roommates/getlikes", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckHouse(response);
+        return [];
+      }
+
+      let likedList;
+      try {
+        likedList = await response.json();
+        console.log(likedList);
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+      return likedList as HouseListing[];
     },
   };
 
