@@ -1,11 +1,12 @@
 import { Card } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
+import { Field, FieldDescription } from "@/components/ui/field";
 import type { FindHouseProps, HouseListing } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { /*useContext,*/ useEffect, useState } from "react";
+import { /*useContext,*/ useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
+import { HouseContext } from "@/context/houseContext";
 //import { UserContext } from "@/context/userContext";
 
 export function FindHouseCard(props: FindHouseProps) {
@@ -35,11 +36,11 @@ export function FindHouseCard(props: FindHouseProps) {
     sethousePrefList((prev) => prev.filter((house) => house.idHouse !== id));
   }
 
-  //const context = useContext(UserContext);
+  const context = useContext(HouseContext);
 
   async function LikeClick(id: number) {
     console.log(id);
-    //await context.addLiked(id);
+    await context.addLiked(id);
   }
   if (housePrefList.length === 0) {
     return (

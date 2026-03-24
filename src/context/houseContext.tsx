@@ -21,6 +21,8 @@ const defaultUserContext: HouseContextType = {
   changeHousePref: async (_newData: Partial<HousePref>) => {},
   addHousePref: async (_newData: Omit<HousePref, "idHouse">) => {},
   getMatches: async () => [] as HouseListing[],
+  addLiked: async (_id: number) => {},
+  getLikes: async () => [] as HouseListing[],
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -41,7 +43,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")  || ""}`, // send token
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
           },
         },
       );
@@ -187,6 +189,45 @@ export function HouseContextProvider(props: PropsWithChildren) {
         throw new Error("Server did not return JSON");
       }
       return prefrenceList as HouseListing[];
+    },
+
+    async addLiked(id: number): Promise<void> {
+      const response = await fetch(API_URL + `/house-listing/like/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckHouse(response);
+        return;
+      }
+    },
+
+    async getLikes(): Promise<HouseListing[]> {
+      const response = await fetch(API_URL + "/house-listing/liked", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckHouse(response);
+        return [];
+      }
+
+      let likedList;
+      try {
+        likedList = await response.json();
+        console.log(likedList);
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+      return likedList as HouseListing[];
     },
   };
 

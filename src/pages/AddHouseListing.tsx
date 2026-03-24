@@ -29,6 +29,7 @@ import { UserContext } from "@/context/userContext";
 import type { HouseContextType, UserContextType } from "@/interfaces";
 import { useContext } from "react";
 
+/**TODO: valamiért kis nézetbe (iphone SE, ipad) ha +-ra nyomsz nem látod a kinézetet */
 export function AddHouseListing() {
   const housecontext = useContext(HouseContext);
   const usercontext = useContext(UserContext);
@@ -231,11 +232,13 @@ export function AddHouseListing() {
           </Field>
 
           <Field className="m-2">
+            <div className="flex items-center gap-2">
             <FieldLabel htmlFor="airConditioner">
               Is there air conditioner
               <span className="text-destructive">*</span>
             </FieldLabel>
             <Switch name="airConditioner" id="airConditioner"></Switch>
+            </div>
           </Field>
 
           <div className="my-button-scope">

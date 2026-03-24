@@ -42,10 +42,16 @@ export function YourHouseListing() {
       </div>
       {/**if user has no house listing yet then show that -- if not then map the list and make HouseListingCards to write the data out */}
       {listings.length === 0 ? (
-        <p>You have no house listings yet.</p>
+        <p className="flex justify-center w-full font-bold">
+          You have no house listings yet.
+        </p>
       ) : (
         /*sending a data of a listing to the HouseListingCard component*/
-        listings.map((listing) => <HouseListingCard houseListing={listing} />)
+        listings.map((listing) => (
+          <div className="find-scope">
+            <HouseListingCard houseListing={listing} />
+          </div>
+        ))
       )}
     </>
   ) : (

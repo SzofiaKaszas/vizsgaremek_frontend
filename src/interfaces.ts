@@ -33,7 +33,6 @@ export interface UserNecesarry {
 
   email: string;
 
-  age?: number;
   gender?: string; // could be enum
   language?: string; // could be array of strings, also enum?
   userBio?: string;
@@ -152,6 +151,7 @@ export interface UserContextType {
   getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
+  getLikes: () => Promise<UserNecesarry[]>;
 }
 
 //interface for the managemant of the house data in housecontext
@@ -165,5 +165,7 @@ export interface HouseContextType {
   getHasHousePref: () => Promise<boolean>;
   changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
-  getMatches: () => Promise<HouseListing[]>
+  getMatches: () => Promise<HouseListing[]>;
+  addLiked: (id: number) => void;
+  getLikes: () => Promise<HouseListing[]>;
 }

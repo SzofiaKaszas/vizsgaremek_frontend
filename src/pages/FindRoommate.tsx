@@ -27,19 +27,14 @@ export function FindRoommate() {
   }, [isMobile]);
 
   return isLoggedIn ? (
-    <Tabs value={tab} onValueChange={setTab} className="find-scope relative">
-      <div className="flex w-full justify-end">
-        <TabsList className="absolute ml-auto flex bg-transparent p-0 border border-slate rounded-md overflow-hidden !shadow-none">
-          <TabsTrigger
-            value="grid"
-            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
-          >
+    <Tabs value={tab} onValueChange={setTab} className="find-scope">
+      <div className="tabs-wrapper flex w-full justify-end">
+        <TabsList className="tabs-list">
+          <TabsTrigger value="grid" className="tabs-trigger">
             <LayoutGrid />
           </TabsTrigger>
-          <TabsTrigger
-            value="list"
-            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
-          >
+
+          <TabsTrigger value="list" className="tabs-trigger">
             <GalleryHorizontal />
           </TabsTrigger>
         </TabsList>

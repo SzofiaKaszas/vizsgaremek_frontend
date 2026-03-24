@@ -27,6 +27,7 @@ const defaultUserContext: UserContextType = {
   getMatches: async () => [] as UserNecesarry[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   addLiked: async (_id: number) => {},
+  getLikes: async () => [] as UserNecesarry[],
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -216,8 +217,8 @@ export function UserContextProvider(props: PropsWithChildren) {
     },
 
     async addLiked(id: number): Promise<void> {
-      const response = await fetch(API_URL + `like/${id}`, {
-        method: "PUT",
+      const response = await fetch(API_URL + `/user/like/${id}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
@@ -228,6 +229,33 @@ export function UserContextProvider(props: PropsWithChildren) {
         errorCheckUser(response);
         return;
       }
+    },
+
+    async getLikes(): Promise<UserNecesarry[]> {
+      const response = await fetch(
+        API_URL + "/user/liked",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      let likedList;
+      try {
+        likedList = await response.json();
+        console.log(likedList);
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+      return likedList as UserNecesarry[];
     },
   };
 
