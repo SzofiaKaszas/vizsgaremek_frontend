@@ -95,6 +95,7 @@ export interface GoNextProp {
 
 export interface FindRoommateProps {
   isLoggedIn: boolean;
+ 
   roommatePref: User[];
 }
 

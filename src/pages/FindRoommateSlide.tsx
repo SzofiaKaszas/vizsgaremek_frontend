@@ -1,63 +1,73 @@
-import type {  FindRoommateProps,User } from "@/interfaces";
+import type { FindRoommateProps, User } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 
-////
 //import { IconUserCircle } from '@tabler/icons-react';
-import { CircleArrowUp } from 'lucide-react';
-import * as React from "react"
-import { useContext, useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card"
+import { CircleArrowUp } from "lucide-react";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  /*
-  CarouselNext,
-  CarouselPrevious,*/
   type CarouselApi,
-} from "@/components/ui/carousel"
-//import { Button } from "@/components/ui/button"
+} from "@/components/ui/carousel";
+
 import {
   Drawer,
   //DrawerClose,
   DrawerContent,
-  DrawerDescription,
+  //DrawerDescription,
   //DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import { UserContext } from "@/context/userContext";
+//Húzogatás
+import { motion, type PanInfo } from "framer-motion";
 
-
-export function FindRoommateSlide(props :FindRoommateProps) { //props : FindRoommateProps , props : DialogContentProps
-  //Jobb -Ball
- //const [direction, setDirection] = useState<"left" | "right" | null>(null)
-  //Kép húzogatás
-  //const context = useContext(UserContext);
-  //const [selectedUser, setSelectedUser] = useState<User | null>(null);
+export function FindRoommateSlide(props: FindRoommateProps) {
   const [roommatePrefList, setroommatePrefList] = useState<User[]>([]);
-  const [api, setApi] = React.useState<CarouselApi>()
-  const [current, setCurrent] = React.useState(0)
-  const [count, setCount] = React.useState(0)
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
+  const [count, setCount] = React.useState(0);
+  const [direction, setDirection] = useState<"left" | "right" | null>(null);
   React.useEffect(() => {
     if (!api) {
-      return
+      return;
     }
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1)
-    })
-  }, [api])
-  useEffect(()=>{
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
+  useEffect(() => {
     async function set() {
-      setroommatePrefList(await props.roommatePref)
-      
+      setroommatePrefList(await props.roommatePref);
     }
-    set()
-  },[props.roommatePref])
-  
+    set();
+  }, [props.roommatePref]);
+  const handleDragEnd = (
+    _: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => {
+    const threshold = 20;
+
+    if (info.offset.x > threshold) {
+      console.log("jobbra húzva"); // => LIKE
+      setDirection("right");
+      setroommatePrefList((prev) => prev.slice(1));
+    } else if (info.offset.x < -threshold) {
+      console.log("balra húzva"); // <= DISLIKE
+      setDirection("left");
+      setroommatePrefList((prev) => prev.slice(1));
+    } else {
+      console.log("nem volt elég nagy húzás");
+    }
+  };
+
   function whatToShow(string: string | undefined | null) {
     if (string === undefined || string === "" || string === null) {
       return "Not specified";
@@ -66,36 +76,17 @@ export function FindRoommateSlide(props :FindRoommateProps) { //props : FindRoom
     }
   }
 
-  ///
-  /*
-  useEffect(()=>{
-    const fetchUser=async()=>{
-      const user=await context.getUserById(props.id);
-      setSelectedUser(user)
-    };
-    fetchUser();
-
-  },[props.id,context]);
-
-   function whatToShow(value: string | undefined | null) {
-    return value ? value : "Not specified";
-  }
-  */
-  //props.isLoggedIn ? 
-  // <div className="flex justify-center mt-10">  <div className="grid grid-cols-1">
   return props.isLoggedIn ? (
     <div className="flex justify-center mt-10">
       <div className="mx-auto  sm:max-w-xs">
-        <h1 className="text-2xl font-bold text-center">Hunor csinálja</h1>
+        {/*<h1 className="text-2xl font-bold text-center">Hunor csinálja</h1>*/}
         <div>
-          {roommatePrefList.+-).map((p, index) => (
+          {roommatePrefList.slice(0, 1).map((p, index) => (
             <motion.div
               key={p.idUser}
               drag={index === 0 ? "x" : false}
               onDragEnd={handleDragEnd}
               style={{
-                //...cardStyle,
-                //position: "absolute",
                 zIndex: roommatePrefList.length - index,
                 top: index,
               }}
@@ -111,7 +102,7 @@ export function FindRoommateSlide(props :FindRoommateProps) { //props : FindRoom
                   </CardContent>
                   <div className="py-2 text-center text-sm text-muted-foreground">
                     {p
-                      ? ` ${p.firstName} Language:${p.language}  ${p.gender}`
+                      ? ` ${p.firstName} Language:${p.language} Gender:${p.gender}`
                       : "Loding..."}
                   </div>
                 </Card>
@@ -126,34 +117,61 @@ export function FindRoommateSlide(props :FindRoommateProps) { //props : FindRoom
                       <DrawerTitle>
                         {p ? `${p.firstName} ${p.lastName}` : "Loding..."}
                       </DrawerTitle>
-                      <DrawerDescription>
-                        <div className="col-auto card w-full">
-                          <Carousel setApi={setApi} className="w-full max-w-xs">
-                            <CarouselContent>
-                              {Array.from({ length: 3 }).map((_, index) => (
-                                <CarouselItem key={index}>
-                                  <Card className="m-px">
-                                    <CardContent className="flex aspect-square items-center justify-center p-6">
-                                      <img
-                                        src="https://github.com/shadcn.png"
-                                        className="w-full h-56 object-cover rounded-t-md"
-                                      />
-                                    </CardContent>
-                                  </Card>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
-                          </Carousel>
-                          <div>
-                            Imags {current} of {count}
-                          </div>
-                          <p>
-                            {p
-                              ? ` ${whatToShow(p.userBio)} \n Language: ${whatToShow(p.language)} \n Jobb: ${whatToShow(p.occupation)}`
-                              : "Loding..."}
-                          </p>
+
+                      <div className="col-auto card w-full">
+                        <Carousel
+                          setApi={setApi}
+                          className="max-w-xs mx-auto flex justify-center"
+                        >
+                          <CarouselContent>
+                            {Array.from({ length: 3 }).map((_, index) => (
+                              <CarouselItem key={index}>
+                                <Card className="m-px">
+                                  <CardContent className="flex aspect-square items-center justify-center p-6">
+                                    <img
+                                      src="https://github.com/shadcn.png"
+                                      className="w-full h-56 object-cover rounded-t-md"
+                                    />
+                                  </CardContent>
+                                </Card>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                        </Carousel>
+                        <div>
+                          Imags {current} of {count}
                         </div>
-                      </DrawerDescription>
+                        
+                          <div className="mt-3 space-y-2 text-sm">
+                            <p>{p ? whatToShow(p.userBio) : "Loading..."}</p>
+
+                            <p>
+                              <span className="font-medium">Language:</span>{" "}
+                              {p
+                                ? whatToShow(p.language)
+                                : "Loading..."}
+                            </p>
+
+                            <p>
+                              <span className="font-medium">Job:</span>{" "}
+                              {p
+                                ? whatToShow(p.occupation)
+                                : "Loading..."}
+                            </p>
+
+                            <p>
+                              <span className="font-medium">Email:</span>{" "}
+                              {p? p.email : "Loading..."}
+                            </p>
+                            
+                          </div>
+                          {/*p
+                            ? ` ${whatToShow(p.userBio)}  
+                              Language: ${whatToShow(p.language)}
+                               Jobb: ${whatToShow(p.occupation)}`
+                            : "Loding..."*/}
+                        
+                      </div>
                     </DrawerHeader>
                   </DrawerContent>
                 </Drawer>
@@ -163,7 +181,6 @@ export function FindRoommateSlide(props :FindRoommateProps) { //props : FindRoom
         </div>
       </div>
     </div>
-    
   ) : (
     <PleaseLogin text="Please login to find a roommate" />
   );
