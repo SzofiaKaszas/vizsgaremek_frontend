@@ -105,6 +105,7 @@ export interface GoNextProp {
 //interface for props of the FindRoommateSlide and FindRoommateCard component
 export interface FindRoommateProps {
   isLoggedIn: boolean;
+ 
   roommatePref: User[];
 }
 
