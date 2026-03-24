@@ -6,7 +6,7 @@ import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
 import { /*useContext,*/ useContext, useEffect, useState } from "react";
-import { Heart, ThumbsDown } from "lucide-react";
+import { Heart, Star, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
 //import { UserContext } from "@/context/userContext";
 

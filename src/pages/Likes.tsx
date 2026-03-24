@@ -16,6 +16,8 @@ export function Likes() {
 
     userContext.getLikes().then((likes) => setLikedUsers(likes));
     houseContext.getLikes().then((likes) => setLikedHouses(likes));
+    console.log(likedHouses)
+    console.log(likedUsers)
   }, [isLoggedIn, userContext]);
 
   return <></>;

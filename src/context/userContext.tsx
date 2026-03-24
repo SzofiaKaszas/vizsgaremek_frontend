@@ -233,7 +233,7 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     async getLikes(): Promise<UserNecesarry[]> {
       const response = await fetch(
-        API_URL + "/roommates/getlikes",
+        API_URL + "/user/liked",
         {
           method: "GET",
           headers: {

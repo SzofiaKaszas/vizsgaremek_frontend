@@ -207,7 +207,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
     },
 
     async getLikes(): Promise<HouseListing[]> {
-      const response = await fetch(API_URL + "/roommates/getlikes", {
+      const response = await fetch(API_URL + "/house-listing/liked", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
