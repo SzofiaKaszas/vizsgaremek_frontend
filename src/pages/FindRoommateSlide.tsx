@@ -84,65 +84,84 @@ export function FindRoommateSlide(props :FindRoommateProps) { //props : FindRoom
   //props.isLoggedIn ? 
   // <div className="flex justify-center mt-10">  <div className="grid grid-cols-1">
   return props.isLoggedIn ? (
-    
-   <div className="flex justify-center mt-10"> 
-     
-
-      <div className="mx-auto max-w-[10rem] sm:max-w-xs">
-         <h1 className="text-2xl font-bold text-center">Hunor csinálja</h1>
-      <div>
-     {roommatePrefList.map((p)=>(
-      <Card className={`col-auto card w-full`}>
-            <Carousel setApi={setApi} className="w-full max-w-xs">
-              <CarouselContent>
-                {Array.from({ length: 2 }).map((_, index) => (
-                  <CarouselItem key={index}>
-                    <Card className="m-px">
-                      <CardContent className="flex aspect-square items-center justify-center p-6">
-                        <img src="https://github.com/shadcn.png" className="w-full h-56 object-cover rounded-t-md"/>
-                        
-                      </CardContent> 
-                    </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              
-            </Carousel>
-      
-
-      <div className="py-2 text-center text-sm text-muted-foreground">
+    <div className="flex justify-center mt-10">
+      <div className="mx-auto  sm:max-w-xs">
+        <h1 className="text-2xl font-bold text-center">Hunor csinálja</h1>
         <div>
-           Imags {current} of {count}
+          {roommatePrefList.+-).map((p, index) => (
+            <motion.div
+              key={p.idUser}
+              drag={index === 0 ? "x" : false}
+              onDragEnd={handleDragEnd}
+              style={{
+                //...cardStyle,
+                //position: "absolute",
+                zIndex: roommatePrefList.length - index,
+                top: index,
+              }}
+              whileTap={{ scale: 1.05 }}
+            >
+              <Card className={`col-auto card w-full`}>
+                <Card className="m-px">
+                  <CardContent className="flex aspect-square items-center justify-center p-6">
+                    <img
+                      src="https://github.com/shadcn.png"
+                      className="w-full h-56 object-cover rounded-t-md"
+                    />
+                  </CardContent>
+                  <div className="py-2 text-center text-sm text-muted-foreground">
+                    {p
+                      ? ` ${p.firstName} Language:${p.language}  ${p.gender}`
+                      : "Loding..."}
+                  </div>
+                </Card>
+
+                <Drawer>
+                  <DrawerTrigger className="flex justify-center mt-10">
+                    {" "}
+                    <CircleArrowUp />{" "}
+                  </DrawerTrigger>
+                  <DrawerContent>
+                    <DrawerHeader>
+                      <DrawerTitle>
+                        {p ? `${p.firstName} ${p.lastName}` : "Loding..."}
+                      </DrawerTitle>
+                      <DrawerDescription>
+                        <div className="col-auto card w-full">
+                          <Carousel setApi={setApi} className="w-full max-w-xs">
+                            <CarouselContent>
+                              {Array.from({ length: 3 }).map((_, index) => (
+                                <CarouselItem key={index}>
+                                  <Card className="m-px">
+                                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                                      <img
+                                        src="https://github.com/shadcn.png"
+                                        className="w-full h-56 object-cover rounded-t-md"
+                                      />
+                                    </CardContent>
+                                  </Card>
+                                </CarouselItem>
+                              ))}
+                            </CarouselContent>
+                          </Carousel>
+                          <div>
+                            Imags {current} of {count}
+                          </div>
+                          <p>
+                            {p
+                              ? ` ${whatToShow(p.userBio)} \n Language: ${whatToShow(p.language)} \n Jobb: ${whatToShow(p.occupation)}`
+                              : "Loding..."}
+                          </p>
+                        </div>
+                      </DrawerDescription>
+                    </DrawerHeader>
+                  </DrawerContent>
+                </Drawer>
+              </Card>
+            </motion.div>
+          ))}
         </div>
-        {p? `${p.firstName} ${p.language}` : "Loding..."}
       </div>
-
-            <Drawer>
-            <DrawerTrigger className="flex justify-center mt-10"> <CircleArrowUp />  </DrawerTrigger>
-            <DrawerContent>
-              <DrawerHeader>
-                <DrawerTitle>{p? `${p.firstName} ${p.lastName}`: "Loding..."}</DrawerTitle>
-                <DrawerDescription><div> 
-                  <h1>
-                    {p? `${p.firstName} ${p.lastName}`: "Loding..."}
-                  </h1>
-                 
-                  <p>
-                   {p? ` ${whatToShow(p.userBio)} \n Language: ${whatToShow(p.language)} \n Jobb: ${whatToShow(p.occupation)}`: "Loding..."}
-                  </p>
-                  
-                  </div></DrawerDescription>
-              </DrawerHeader>
-             
-            </DrawerContent>
-          </Drawer>
-    </Card>
-     ))}
-
-     
-    </div>
-    </div>
-   
     </div>
     
   ) : (
