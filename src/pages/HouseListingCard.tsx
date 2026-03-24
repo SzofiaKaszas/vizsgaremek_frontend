@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Card } from "@/components/ui/card";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Field, FieldDescription } from "@/components/ui/field";
@@ -6,7 +5,7 @@ import type { HouseListingProps } from "@/interfaces";
 
 export function HouseListingCard(props: HouseListingProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 px-4" key={props.houseListing.idHouse}>
+    <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 px-4" key={props.houseListing.idHouse}>
       <Card
         key={props.houseListing.idHouse}
         className="col-auto card w-full max-w-sm p-4"

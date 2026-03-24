@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
 import type { User, UserNecesarry } from "@/interfaces";
@@ -6,6 +5,7 @@ import { FindRoommateCard } from "./FindRoommateCard";
 import { LayoutGrid, GalleryHorizontal } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FindRoommateSlide } from "./FindRoommateSlide";
+import { PleaseLogin } from "./PleaseLogin";
 
 export function FindRoommate() {
   const [roommatePref, setRoommatePref] = useState<UserNecesarry[]>([]);
@@ -26,27 +26,25 @@ export function FindRoommate() {
     setTab(isMobile ? "list" : "grid");
   }, [isMobile]);
 
-  return (
-    <Tabs value={tab} onValueChange={setTab} className="relative">
-      <div className="flex w-full justify-end">
-        <TabsList className="absolute ml-auto flex bg-transparent p-0 border border-slate rounded-md overflow-hidden !shadow-none">
-          <TabsTrigger
-            value="grid"
-            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
-          >
+  return isLoggedIn ? (
+    <Tabs value={tab} onValueChange={setTab} className="find-scope">
+      <div className="tabs-wrapper flex w-full justify-end">
+        <TabsList className="tabs-list">
+          <TabsTrigger value="grid" className="tabs-trigger">
             <LayoutGrid />
           </TabsTrigger>
-          <TabsTrigger
-            value="list"
-            className="bg-transparent data-[state=active]:bg-silver data-[state=active]:text-black hover:bg-transparent !shadow-none"
-          >
+
+          <TabsTrigger value="list" className="tabs-trigger">
             <GalleryHorizontal />
           </TabsTrigger>
         </TabsList>
       </div>
 
       <TabsContent value="grid">
-        <FindRoommateCard isLoggedIn={isLoggedIn} roommatePref={roommatePref as User[]} />
+        <FindRoommateCard
+          isLoggedIn={isLoggedIn}
+          roommatePref={roommatePref as User[]}
+        />
       </TabsContent>
       <TabsContent value="list">
         <FindRoommateSlide
@@ -55,6 +53,8 @@ export function FindRoommate() {
         />
       </TabsContent>
     </Tabs>
+  ) : (
+    <PleaseLogin text={"Please login to find roommates"}></PleaseLogin>
   );
 }
 

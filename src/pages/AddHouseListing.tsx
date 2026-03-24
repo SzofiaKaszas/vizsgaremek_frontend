@@ -29,13 +29,14 @@ import { UserContext } from "@/context/userContext";
 import type { HouseContextType, UserContextType } from "@/interfaces";
 import { useContext } from "react";
 
+/**TODO: valamiért kis nézetbe (iphone SE, ipad) ha +-ra nyomsz nem látod a kinézetet */
 export function AddHouseListing() {
   const housecontext = useContext(HouseContext);
   const usercontext = useContext(UserContext);
 
   return (
-    <div className="flex justify-center mt-10">
-      <Card className="card w-full max-w-sm p-4">
+    <div className="form-scope flex justify-center mt-10">
+      <Card className="form-card w-full max-w-sm p-4">
         <form onSubmit={(e) => handleSubmit(e, usercontext, housecontext)}>
           <CardTitle className="text-center text-xl font-bold">
             Add House Listing
@@ -231,21 +232,23 @@ export function AddHouseListing() {
           </Field>
 
           <Field className="m-2">
+            <div className="flex items-center gap-2">
             <FieldLabel htmlFor="airConditioner">
               Is there air conditioner
               <span className="text-destructive">*</span>
             </FieldLabel>
             <Switch name="airConditioner" id="airConditioner"></Switch>
+            </div>
           </Field>
 
           <div className="my-button-scope">
-            <Button variant={"default"} type="submit" className="m-1">
+            <Button variant={"default"} type="submit" className="primary-btn">
               Add
             </Button>
             <Button
               variant={"outline"}
               type="button"
-              className="m-1"
+              className="sec-btn"
               onClick={() => {
                 window.location.href = "/managehouselising";
               }}
@@ -304,10 +307,16 @@ async function handleSubmit(
       break;
   }
 
+  const userId = userContext.userData?.idUser;
+    if (!userId) {
+      alert("User ID not found. Please log in again.");
+      return;
+    }
+    console.log("User ID for house listing:", userId);
+
   try {
-    console.log("User ID for house listing:", userContext.userData?.idUser);
     await houseContext.addHouseListing({
-      houseIdUser: userContext.userData?.idUser,
+      houseIdUser: userId,
       description: description as string,
       location: location as string,
       city: city as string,

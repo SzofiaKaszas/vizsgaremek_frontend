@@ -23,10 +23,11 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
   const [ages, setAges] = useState<[number, number]>([25, 40]);
 
   const MIN_AGE = 18;
-  const MAX_AGE = 80;
+  const MAX_AGE = 100;
 
   return (
     <form
+    className="form-scope"
       onSubmit={async (e) => {
         handleSubmit(e, context, ages, goNext);
       }}
@@ -34,7 +35,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
       <CardTitle className="text-center text-xl font-bold p-2">
         Your Prefrences
       </CardTitle>
-      <Field className="m-2">
+      <Field className="age-slider-scope m-2">
         <FieldLabel>
           Age range: {ages[0]} – {ages[1]}
         </FieldLabel>
@@ -93,13 +94,13 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
       </Field>
 
       <div className="my-button-scope">
-        <Button variant={"default"} type="submit" className="m-1">
+        <Button variant={"default"} type="submit" className="primary-btn m-1">
           Next
         </Button>
         <Button
           variant={"outline"}
           type="button"
-          className="m-1"
+          className="sec-btn m-1"
           onClick={() => {
             goNext();
           }}
@@ -119,7 +120,6 @@ async function handleSubmit(
 ) {
   e.preventDefault();
   const form = new FormData(e.currentTarget);
-
 
   const hasRoommatePref = await context.getHasRoommatePref();
 
@@ -146,9 +146,9 @@ async function handleSubmit(
   const gender = form.get("gender") as string;
   const language = form.get("language") as string;
 
-  console.log(hasRoommatePref)
+  console.log(hasRoommatePref);
   if (hasRoommatePref == false) {
-    console.log("nincs pref")
+    console.log("nincs pref");
     try {
       await context.addRoommatePref({
         minAge: minAge ? Number(minAge) : undefined,
@@ -166,7 +166,7 @@ async function handleSubmit(
       alert((err as Error).message);
     }
   } else {
-    console.log("van pref")
+    console.log("van pref");
     try {
       await context.editRoommatePref({
         minAge: minAge ? Number(minAge) : undefined,

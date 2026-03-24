@@ -27,7 +27,7 @@ export function HousePrefrences() {
   const context = useContext(HouseContext);
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, userContext, context)}>
+    <form className="form-scope" onSubmit={(e) => handleSubmit(e, userContext, context)}>
       <CardTitle className="text-center text-xl font-bold">
         House Prefrences
       </CardTitle>
@@ -157,13 +157,13 @@ export function HousePrefrences() {
       </Field>
 
       <div className="my-button-scope">
-        <Button variant={"default"} type="submit" className="m-1">
+        <Button variant={"default"} type="submit" className="primary-btn m-1">
           Next
         </Button>
         <Button
           variant={"outline"}
           type="button"
-          className="m-1"
+          className="sec-btn m-1"
           onClick={() => {
             window.location.href = "/profile";
           }}
@@ -184,7 +184,6 @@ async function handleSubmit(
   const form = new FormData(e.currentTarget);
 
   const hasHousePref = await context.getHasHousePref();
-  console.log("Has house pref:", hasHousePref);
 
   const rent = form.get("rent");
   const sqmeter = form.get("sqmeter");
@@ -218,7 +217,7 @@ async function handleSubmit(
       break;
   }
 
-  if (!hasHousePref) {
+  if (hasHousePref == false) {
     try {
       await context.addHousePref({
         houseSearchIdUser: userContext.userData?.idUser,

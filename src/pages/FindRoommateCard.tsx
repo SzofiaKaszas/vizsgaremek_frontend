@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Card } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
 import type { FindRoommateProps, User } from "@/interfaces";
@@ -6,12 +5,14 @@ import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
-import { useContext, useEffect, useState } from "react";
-import { Heart, ThumbsDown } from "lucide-react";
+import { /*useContext,*/ useContext, useEffect, useState } from "react";
+import { Heart, Star, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
+//import { UserContext } from "@/context/userContext";
 
 export function FindRoommateCard(props: FindRoommateProps) {
   const [roommatePrefList, setroommatePrefList] = useState<User[]>([]);
+
   const [animatingId, setAnimatingId] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
   const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
@@ -25,14 +26,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
     set();
   }, [props.roommatePref]);
 
-  function whatToShow(string: string | undefined | null) {
-    if (string === undefined || string === "" || string === null) {
-      return "Not specified";
-    } else {
-      return string;
-    }
-  }
-
   function removeUser(id: number) {
     setroommatePrefList((prev) => prev.filter((user) => user.idUser !== id));
   }
@@ -40,10 +33,10 @@ export function FindRoommateCard(props: FindRoommateProps) {
   const context = useContext(UserContext);
 
   async function LikeClick(id: number) {
-    console.log("like");
-    //await context.addLiked(id);
+    console.log(id);
+    await context.addLiked(id);
   }
-  if (roommatePrefList.length === 0) {
+  if (roommatePrefList.length === 0 && props.isLoggedIn) {
     return (
       <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
         No more roommates available right now.
@@ -52,13 +45,13 @@ export function FindRoommateCard(props: FindRoommateProps) {
   }
 
   return props.isLoggedIn === true ? (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 px-4">
+    <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
       {roommatePrefList.map((pref) => (
         <Dialog key={pref.idUser}>
           <DialogTrigger asChild onClick={handleOpen}>
             <Card
               className={`
-    col-auto card w-full max-w-md p-4
+    col-auto card w-full p-4
     ${animatingId === pref.idUser && direction === "right" ? "swipe-right" : ""}
     ${animatingId === pref.idUser && direction === "left" ? "swipe-left" : ""}
   `}
@@ -76,7 +69,7 @@ export function FindRoommateCard(props: FindRoommateProps) {
               }}
             >
               <Carousel>
-                <CarouselContent>
+                <CarouselContent className="image-wrapper">
                   <img
                     src="https://github.com/shadcn.png"
                     alt={`${pref.firstName} ${pref.lastName}'s profile picture`}
@@ -85,12 +78,11 @@ export function FindRoommateCard(props: FindRoommateProps) {
                 </CarouselContent>
               </Carousel>
               <Field>
-                {pref.firstName} {pref.lastName} -{" "}
-                {whatToShow(pref.age?.toString())}
+                {pref.firstName} {pref.lastName} - {getAge(pref.birthDay)}
                 <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
               </Field>
-              <Field>Language: {whatToShow(pref.language)}</Field>
               <Field>{pref.userBio}</Field>
+              <Field>Language: {whatToShow(pref.language)}</Field>
               <div className="w-full flex gap-4 justify-center">
                 <button
                   className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
@@ -150,5 +142,34 @@ function handleOpen(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
     return;
+  }
+}
+
+function getAge(birthDay: Date | undefined) {
+  if (!birthDay) return "Unknown";
+
+  const date = birthDay instanceof Date ? birthDay : new Date(birthDay);
+
+  if (isNaN(date.getTime())) return "Unknown";
+
+  const now = new Date();
+  let age = now.getFullYear() - date.getFullYear();
+
+  const hasHadBirthdayThisYear =
+    now.getMonth() > date.getMonth() ||
+    (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age;
+}
+
+function whatToShow(string: string | undefined | null) {
+  if (string === undefined || string === "" || string === null) {
+    return "Not specified";
+  } else {
+    return string;
   }
 }

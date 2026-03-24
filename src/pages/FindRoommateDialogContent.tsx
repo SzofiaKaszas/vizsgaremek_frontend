@@ -28,7 +28,7 @@ export function FindRoommateDialogContent(props: DialogContentProps) {
   }
 
   return (
-    <DialogContent className="p-0">
+    <DialogContent className="find-roommate-dialog p-0">
       <Carousel>
         <CarouselContent>
           <div className="w-full">
@@ -48,15 +48,13 @@ export function FindRoommateDialogContent(props: DialogContentProps) {
         <DialogHeader className="p-0">
           <DialogTitle className="text-xl font-semibold">
             {selectedUser
-              ? `${selectedUser.firstName} ${selectedUser.lastName}`
+              ? `${selectedUser.firstName} ${selectedUser.lastName} - ${getAge(selectedUser.birthDay)}`
               : "Loading..."}
           </DialogTitle>
 
           <DialogDescription className="text-sm text-muted-foreground">
             {selectedUser
-              ? `${whatToShow(selectedUser.gender)}, ${whatToShow(
-                  selectedUser.age?.toString(),
-                )}`
+              ? `${whatToShow(selectedUser.gender)}`
               : "Loading..."}
           </DialogDescription>
         </DialogHeader>
@@ -83,7 +81,7 @@ export function FindRoommateDialogContent(props: DialogContentProps) {
           </p>
         </div>
       </div>
-      <div className="w-full flex gap-4 justify-center pb-2 mt-4">
+      <div className="action-row w-full flex gap-4 justify-center pb-2 mt-4">
         <DialogClose asChild>
         <button
           className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
@@ -111,4 +109,25 @@ export function FindRoommateDialogContent(props: DialogContentProps) {
       </div>
     </DialogContent>
   );
+}
+
+function getAge(birthDay: Date | undefined) {
+  if (!birthDay) return "Unknown";
+
+  const date = birthDay instanceof Date ? birthDay : new Date(birthDay);
+
+  if (isNaN(date.getTime())) return "Unknown";
+
+  const now = new Date();
+  let age = now.getFullYear() - date.getFullYear();
+
+  const hasHadBirthdayThisYear =
+    now.getMonth() > date.getMonth() ||
+    (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age;
 }

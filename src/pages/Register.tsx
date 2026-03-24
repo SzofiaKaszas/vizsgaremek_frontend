@@ -12,21 +12,23 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
+import { isDate } from "date-fns";
 
 export function Register() {
   const context = useContext(AuthContext);
 
   return (
     <div className="flex justify-center mt-10">
-      <Card className="card w-full max-w-sm p-4">
-        <CardTitle className="text-center text-xl font-bold">
-          Register
-        </CardTitle>
-        <form
-          onSubmit={(e) => {
-            handleSubmit(e, context);
-          }}
-        >
+      <form
+        className="form-scope"
+        onSubmit={(e) => {
+          handleSubmit(e, context);
+        }}
+      >
+        <Card className="form-card w-full max-w-sm p-4">
+          <CardTitle className="text-center text-xl font-bold">
+            Register
+          </CardTitle>
           <FieldGroup className="grid max-w-sm grid-cols-2">
             <Field>
               <FieldLabel htmlFor="first-name">
@@ -57,6 +59,16 @@ export function Register() {
               />
             </Field>
           </FieldGroup>
+          <Field className="m-2">
+            <FieldLabel htmlFor="age">
+              Birthday <span className="text-destructive">*</span>
+            </FieldLabel>
+            <Input type="date" name="age" placeholder="20" id="age"></Input>
+            <FieldDescription
+              id="ageErr"
+              className="text-red-600 text-sm mt-1"
+            ></FieldDescription>
+          </Field>
           <Field>
             <FieldLabel htmlFor="phone-number">
               Phone Number <span className="text-destructive">*</span>
@@ -106,14 +118,14 @@ export function Register() {
             ></FieldDescription>
           </Field>
           <FieldSeparator />
-          <Field className="m-1">
+          <Field>
             <FieldLabel htmlFor="has-house">
               Do you want to rent out a house to others?
               <span className="text-destructive">*</span>
               <Checkbox id="has-house" name="hasHouse"></Checkbox>
             </FieldLabel>
           </Field>
-          <Field className="m-1">
+          <Field>
             <FieldLabel htmlFor="looking-for-house">
               Are you looking for a house?
               <span className="text-destructive">*</span>
@@ -123,7 +135,7 @@ export function Register() {
               ></Checkbox>
             </FieldLabel>
           </Field>
-          <Field className="m-1">
+          <Field>
             <FieldLabel htmlFor="looking-for-roommate">
               Are you looking for a roommate?
               <span className="text-destructive">*</span>
@@ -138,12 +150,12 @@ export function Register() {
             ></FieldDescription>
           </Field>
           <div className="my-button-scope">
-            <Button variant={"default"} type="submit" className="m-1">
+            <Button variant={"default"} type="submit" className="primary-btn">
               Register
             </Button>
           </div>
-        </form>
-      </Card>
+        </Card>
+      </form>
     </div>
   );
 }
@@ -211,11 +223,28 @@ async function handleSubmit(
     hasError = true;
   }
 
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+  const birth = (form.get("age") as string) || undefined;
+  const birthDay = new Date(birth as string);
+
+  if (!birthDay) {
+    hasError = true;
+    document.getElementById("ageErr")?.append("Give birthday");
+  } else if (!(isDate(birthDay) && eighteenYearsAgo > birthDay)) {
+    hasError = true;
+    document
+      .getElementById("ageErr")
+      ?.append("User must be at least 18 years old");
+  }
+
   if (hasError) return;
 
   const user: Omit<User, "idUser"> = {
     firstName,
     lastName,
+    birthDay,
     phoneNumber,
     hasHouse,
     lookingForPeople,

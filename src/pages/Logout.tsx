@@ -13,7 +13,7 @@ export function Logout() {
   return (
     <div className="my-button-scope">
         <Field>
-      <Button onClick={logout}>Logout</Button>
+      <Button onClick={logout} className="sec-btn">Logout</Button>
       </Field>
     </div>
   );

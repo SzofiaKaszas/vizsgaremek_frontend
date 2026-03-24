@@ -1,5 +1,7 @@
 import type { FurnishingType, HeatingType, KitchenFurnishingType, PropertyType } from "./assets/housePref";
-// User interfaces
+// --------------- User interfaces -----------------
+
+//interface when getting full data of users
 export interface User {
   idUser: number;
   firstName: string;
@@ -10,7 +12,7 @@ export interface User {
   email: string;
 
   userBio?: string;
-  age?: number;
+  birthDay?: Date;
   gender?: string; // could be enum
   language?: string; // could be array of strings, also enum?
   occupation?: string;
@@ -23,6 +25,7 @@ export interface User {
   role: string;
 }
 
+//interface when getting the roommate matches
 export interface UserNecesarry {
   idUser: number;
   firstName: string;
@@ -30,17 +33,19 @@ export interface UserNecesarry {
 
   email: string;
 
-  age?: number;
   gender?: string; // could be enum
   language?: string; // could be array of strings, also enum?
-  userBio?: string
+  userBio?: string;
+  birthDay?: Date;
 }
 
+//interface for tokens
 export interface UserToken {
   userIdToken: number;
   token: string;
 }
 
+//inetface for roommate prefrences
 export interface RoommatePref {
   //roommatesPrefrencesIdUser: number;
 
@@ -50,10 +55,12 @@ export interface RoommatePref {
   language?: string;
 }
 
-// House interfaces
+// ------------ House interfaces -----------------
+
+//interface when getting houseListings or creating one
 export interface HouseListing {
   idHouse: number;
-  houseSearchIdUser: number;
+  houseIdUser: number;
 
   description: string;
   location: string;
@@ -70,7 +77,7 @@ export interface HouseListing {
   airConditioner: boolean;
 }
 
-/**TODO: chabnge types to the right ones */
+//interface for getting house prefrences or creating one
 export interface HousePref {
   houseSearchIdUser: number;
 
@@ -78,36 +85,42 @@ export interface HousePref {
   minSquareMeters?: number;
   minRooms?: number;
   city?: string;
-  propertyType?: string;
-  heatingType?: string;
-  furnishingLevel?: string;
-  kitchenLevel?: string;
+  propertyType?: PropertyType;
+  heatingType?: HeatingType;
+  furnishingLevel?: FurnishingType;
+  kitchenLevel?: KitchenFurnishingType;
   minBathrooms?: number;
 }
 
+//interface for props of the PleaseLogin component
 export interface PleaseLoginProps {
   text: string;
 }
 
+//interface for props so the components can go to the next step in SetUpProfile
 export interface GoNextProp {
   goNext: () => void;
 }
 
+//interface for props of the FindRoommateSlide and FindRoommateCard component
 export interface FindRoommateProps {
   isLoggedIn: boolean;
  
   roommatePref: User[];
 }
 
+//interface for props of the FindHouseCard component
 export interface FindHouseProps {
   isLoggedIn: boolean;
   housePref: HouseListing[];
 }
 
+//interface for props of the HouseListingCard component
 export interface HouseListingProps {
   houseListing: HouseListing;
 }
 
+//interface for the DialogContent when you click a user (so u can see more of their data)
 export interface DialogContentProps{
   id: number;
   prefList: User[];
@@ -115,7 +128,10 @@ export interface DialogContentProps{
   onLike: (id: number) => void;
   triggerAnimation: (id: number, dir: "left" | "right", action: "like" | "dislike") => void;
 }
-//context interfaces
+
+//---------------context interfaces-------------------
+
+//interface for the authentication context
 export interface AuthContextType {
   currentUserId: number | undefined;
   login: (email: string, password: string) => Promise<UserToken[]>;
@@ -123,6 +139,7 @@ export interface AuthContextType {
   register: (user: Omit<User, "idUser">) => Promise<User[]>;
 }
 
+//interface for the managemant of the user data in usercontext
 export interface UserContextType {
   userData: User | undefined;
   //userdata
@@ -135,8 +152,10 @@ export interface UserContextType {
   getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
+  getLikes: () => Promise<UserNecesarry[]>;
 }
 
+//interface for the managemant of the house data in housecontext
 export interface HouseContextType {
   //houselisting
   getHouseListings: () => Promise<HouseListing[]>;
@@ -147,4 +166,7 @@ export interface HouseContextType {
   getHasHousePref: () => Promise<boolean>;
   changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
+  getMatches: () => Promise<HouseListing[]>;
+  addLiked: (id: number) => void;
+  getLikes: () => Promise<HouseListing[]>;
 }
