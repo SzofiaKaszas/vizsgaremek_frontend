@@ -130,7 +130,6 @@ export interface GoNextProp {
 //interface for props of the FindRoommateSlide and FindRoommateCard component
 export interface FindRoommateProps {
   isLoggedIn: boolean;
-
   roommatePref: UserNecesarry[];
 }
 
@@ -138,6 +137,11 @@ export interface FindRoommateProps {
 export interface FindHouseProps {
   isLoggedIn: boolean;
   housePref: HouseListing[];
+}
+
+export interface LikedUserProps {
+  isLoggedIn: boolean;
+  likedUsers: User[];
 }
 
 //interface for props of the HouseListingCard component
@@ -148,7 +152,7 @@ export interface HouseListingProps {
 //interface for the DialogContent when you click a user (so u can see more of their data)
 export interface DialogContentProps {
   id: number;
-  prefList: User[];
+  prefList: UserNecesarry[];
   onDislike: (id: number) => void;
   onLike: (id: number) => void;
   triggerAnimation: (
@@ -182,7 +186,7 @@ export interface UserContextType {
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
   getLikes: () => Promise<UserNecesarry[]>;
-  rateUser: (id: number, data: Partial<RateUser>) => void,
+  rateUser: (id: number, data: Partial<RateUser>) => void;
 }
 
 //interface for the managemant of the house data in housecontext
@@ -202,5 +206,5 @@ export interface HouseContextType {
   getMatches: () => Promise<HouseListing[]>;
   addLiked: (id: number) => void;
   getLikes: () => Promise<HouseListing[]>;
-  rateHouse: (id: number, data: Partial<RateHouse>) => void,
+  rateHouse: (id: number, data: Partial<RateHouse>) => void;
 }

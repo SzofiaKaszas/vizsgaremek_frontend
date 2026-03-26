@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
-import type { FindRoommateProps, UserNecesarry } from "@/interfaces";
+import type { LikedUserProps, User } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { /*useContext,*/ useContext, useEffect, useState } from "react";
@@ -10,8 +10,8 @@ import { useNavigate } from "react-router";
 import { Button } from "@base-ui/react";
 //import { UserContext } from "@/context/userContext";
 
-export function LikeUserCard(props: FindRoommateProps) {
-  const [roommatePrefList, setroommatePrefList] = useState<UserNecesarry[]>([]);
+export function LikeUserCard(props: LikedUserProps) {
+  const [likedUsers, setLikedUsers] = useState<User[]>([]);
 
   const [animatingId, setAnimatingId] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
@@ -23,13 +23,13 @@ export function LikeUserCard(props: FindRoommateProps) {
 
   useEffect(() => {
     async function set() {
-      setroommatePrefList(await props.roommatePref);
+      setLikedUsers(await props.likedUsers);
     }
     set();
-  }, [props.roommatePref]);
+  }, [props.likedUsers]);
 
   function removeUser(id: number) {
-    setroommatePrefList((prev) => prev.filter((user) => user.idUser !== id));
+    setLikedUsers((prev) => prev.filter((user) => user.idUser !== id));
   }
 
   const context = useContext(UserContext);
@@ -38,7 +38,7 @@ export function LikeUserCard(props: FindRoommateProps) {
     await context.addLiked(id);
   }
 
-  if (roommatePrefList.length === 0 && props.isLoggedIn) {
+  if (likedUsers.length === 0 && props.isLoggedIn) {
     return (
       <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
         No more roommates available right now.
@@ -48,7 +48,7 @@ export function LikeUserCard(props: FindRoommateProps) {
 
   return props.isLoggedIn === true ? (
     <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
-      {roommatePrefList.map((pref) => (
+      {likedUsers.map((pref) => (
             <Card
               className={`
     col-auto card w-full p-4
@@ -83,6 +83,7 @@ export function LikeUserCard(props: FindRoommateProps) {
               </Field>
               <Field>{pref.userBio}</Field>
               <Field>Language: {whatToShow(pref.language)}</Field>
+              <Field>Occupation: {whatToShow(pref.occupation)}</Field>
               <div className="w-full flex gap-4 justify-center">
                 <button
                   className="likeButton h-10 w-10 rounded-full flex items-center justify-center"

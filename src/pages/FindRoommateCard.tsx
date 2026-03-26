@@ -87,7 +87,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
                 <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
               </Field>
               <Field>{pref.userBio}</Field>
-              <Field>Language: {whatToShow(pref.language)}</Field>
               <div className="w-full flex gap-4 justify-center">
                 <button
                   className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
