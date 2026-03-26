@@ -11,7 +11,6 @@ export function StarRating({
   size?: number;
 }) {
   const [hover, setHover] = useState<number | null>(null);
-  console.log(value);
   return (
     <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((star) => {

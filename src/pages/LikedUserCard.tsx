@@ -1,19 +1,16 @@
 import { Card } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
-import type { FindRoommateProps, User, UserNecesarry } from "@/interfaces";
+import type { FindRoommateProps, UserNecesarry } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
 import { /*useContext,*/ useContext, useEffect, useState } from "react";
-import { Heart, ThumbsDown } from "lucide-react";
+import { Heart } from "lucide-react";
 import { UserContext } from "@/context/userContext";
-import { StarRating } from "./StarRating";
 import { useNavigate } from "react-router";
 import { Button } from "@base-ui/react";
 //import { UserContext } from "@/context/userContext";
 
-export function FindRoommateCard(props: FindRoommateProps) {
+export function LikeUserCard(props: FindRoommateProps) {
   const [roommatePrefList, setroommatePrefList] = useState<UserNecesarry[]>([]);
 
   const [animatingId, setAnimatingId] = useState<number | null>(null);
@@ -52,8 +49,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
   return props.isLoggedIn === true ? (
     <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
       {roommatePrefList.map((pref) => (
-        <Dialog key={pref.idUser}>
-          <DialogTrigger asChild onClick={handleOpen}>
             <Card
               className={`
     col-auto card w-full p-4
@@ -90,21 +85,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
               <Field>Language: {whatToShow(pref.language)}</Field>
               <div className="w-full flex gap-4 justify-center">
                 <button
-                  className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setAnimatingId(pref.idUser);
-                    setDirection("left");
-                    setPendingAction("dislike");
-                  }}
-                >
-                  <ThumbsDown
-                    fill="var(--color-bluee)"
-                    stroke="var(--color-bluee)"
-                  />
-                </button>
-                <button
                   className="likeButton h-10 w-10 rounded-full flex items-center justify-center"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -133,36 +113,11 @@ export function FindRoommateCard(props: FindRoommateProps) {
                 </Button>
               </div>
             </Card>
-          </DialogTrigger>
-          <FindRoommateDialogContent
-            id={pref.idUser}
-            prefList={roommatePrefList}
-            onDislike={removeUser}
-            onLike={LikeClick}
-            triggerAnimation={(id, dir, action) => {
-              setAnimatingId(id);
-              setDirection(dir);
-              setPendingAction(action);
-            }}
-          />
-        </Dialog>
       ))}
     </div>
   ) : (
     <PleaseLogin text="Please login to find a roommate" />
   );
-}
-
-/**Making sure dialog doesnt open if your selecting text */
-function handleOpen(e: React.MouseEvent) {
-  const selection = window.getSelection();
-  const isSelecting = selection && selection.toString().length > 0;
-
-  if (isSelecting) {
-    e.preventDefault();
-    e.stopPropagation();
-    return;
-  }
 }
 
 function getAge(birthDay: Date | undefined) {

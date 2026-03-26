@@ -2,6 +2,7 @@ import { HouseContext } from "@/context/houseContext";
 import { UserContext } from "@/context/userContext";
 import type { HouseListing, UserNecesarry } from "@/interfaces";
 import { useContext, useEffect, useState } from "react";
+import { LikeUserCard } from "./LikedUserCard";
 
 export function Likes() {
   const [likedUsers, setLikedUsers] = useState<UserNecesarry[]>([]);
@@ -20,5 +21,5 @@ export function Likes() {
     console.log(likedUsers)
   }, [isLoggedIn, userContext]);
 
-  return <></>;
+  return <LikeUserCard isLoggedIn={isLoggedIn} roommatePref={likedUsers}/>;
 }

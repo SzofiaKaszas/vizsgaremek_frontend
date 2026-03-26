@@ -1,4 +1,9 @@
-import type { FurnishingType, HeatingType, KitchenFurnishingType, PropertyType } from "./assets/housePref";
+import type {
+  FurnishingType,
+  HeatingType,
+  KitchenFurnishingType,
+  PropertyType,
+} from "./assets/housePref";
 // --------------- User interfaces -----------------
 
 //interface when getting full data of users
@@ -18,6 +23,7 @@ export interface User {
   occupation?: string;
   connectionEmail?: string;
 
+  rating: number;
   hasHouse: boolean;
   lookingForPeople: boolean;
   lookingForHouse: boolean;
@@ -92,6 +98,25 @@ export interface HousePref {
   minBathrooms?: number;
 }
 
+//---------------rate------------------------------
+//interface for user rating table
+export interface RateUser {
+  raterId: number;
+  ratedUserId: number;
+
+  ratingScore: number; // 1 to 5 starts
+  ratingMessage: string;
+}
+
+export interface RateHouse {
+  raterId: number;
+  ratedHouseId: number;
+
+  ratingScore: number; // 1 to 5 starts
+  ratingMessage: string;
+}
+
+//---------------------props-----------------------
 //interface for props of the PleaseLogin component
 export interface PleaseLoginProps {
   text: string;
@@ -105,8 +130,8 @@ export interface GoNextProp {
 //interface for props of the FindRoommateSlide and FindRoommateCard component
 export interface FindRoommateProps {
   isLoggedIn: boolean;
- 
-  roommatePref: User[];
+
+  roommatePref: UserNecesarry[];
 }
 
 //interface for props of the FindHouseCard component
@@ -120,19 +145,17 @@ export interface HouseListingProps {
   houseListing: HouseListing;
 }
 
-//interface for props of rating page
-export interface RatingProp{
-  id : number;
-  houseOrRoommate: string;
-}
-
 //interface for the DialogContent when you click a user (so u can see more of their data)
-export interface DialogContentProps{
+export interface DialogContentProps {
   id: number;
   prefList: User[];
   onDislike: (id: number) => void;
   onLike: (id: number) => void;
-  triggerAnimation: (id: number, dir: "left" | "right", action: "like" | "dislike") => void;
+  triggerAnimation: (
+    id: number,
+    dir: "left" | "right",
+    action: "like" | "dislike",
+  ) => void;
 }
 
 //---------------context interfaces-------------------
@@ -159,6 +182,7 @@ export interface UserContextType {
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
   getLikes: () => Promise<UserNecesarry[]>;
+  rateUser: (id: number, data: Partial<RateUser>) => void,
 }
 
 //interface for the managemant of the house data in housecontext
@@ -166,7 +190,10 @@ export interface HouseContextType {
   //houselisting
   getHouseListings: () => Promise<HouseListing[]>;
   addHouseListing: (newData: Omit<HouseListing, "idHouse">) => Promise<void>;
-  editHouseListing: (idHouse: number, newData: Partial<HouseListing>) => Promise<void>;
+  editHouseListing: (
+    idHouse: number,
+    newData: Partial<HouseListing>,
+  ) => Promise<void>;
   deleteHouseListing: (idHouse: number) => Promise<void>;
   //housepref
   getHasHousePref: () => Promise<boolean>;
@@ -175,4 +202,5 @@ export interface HouseContextType {
   getMatches: () => Promise<HouseListing[]>;
   addLiked: (id: number) => void;
   getLikes: () => Promise<HouseListing[]>;
+  rateHouse: (id: number, data: Partial<RateHouse>) => void,
 }

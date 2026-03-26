@@ -7,6 +7,8 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { /*useContext,*/ useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
 import { HouseContext } from "@/context/houseContext";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 //import { UserContext } from "@/context/userContext";
 
 export function FindHouseCard(props: FindHouseProps) {
@@ -16,6 +18,8 @@ export function FindHouseCard(props: FindHouseProps) {
   const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
     null,
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function set() {
@@ -160,6 +164,21 @@ export function FindHouseCard(props: FindHouseProps) {
                 >
                   <Heart fill="red" stroke="red" />
                 </button>
+                <Button
+                  data-dialog-ignore
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent dialog
+                    navigate("/rate", {
+                      state: {
+                        id: pref.idHouse,
+                        houseOrRoommate: "house",
+                      },
+                    });
+                  }}
+                  className="primary-btn"
+                >
+                  Rate
+                </Button>
               </div>
             </Card>
           </DialogTrigger>

@@ -7,6 +7,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import type {
+  RateUser,
   RoommatePref,
   User,
   UserContextType,
@@ -28,6 +29,7 @@ const defaultUserContext: UserContextType = {
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   addLiked: async (_id: number) => {},
   getLikes: async () => [] as UserNecesarry[],
+  rateUser: async (_id: number, _data: Partial<RateUser>) => {},
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -256,6 +258,26 @@ export function UserContextProvider(props: PropsWithChildren) {
         throw new Error("Server did not return JSON");
       }
       return likedList as UserNecesarry[];
+    },
+
+    async rateUser(id: number, data: Partial<RateUser>): Promise<void> {
+      const response = await fetch(
+        API_URL + `/user/rate/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+          body: JSON.stringify(data)
+        },
+      );
+
+      if (!response.ok) {
+        errorCheckUser(response);
+      }
+
+      console.log("siker")
     },
   };
 

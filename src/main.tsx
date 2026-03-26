@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
       { path: "/profile", Component: Profile }, // to see own profile
       { path: "/editprofile", Component: EditProfile }, // to edit own profile
       { path: "/admin", Component: Admin }, // admin page ?? 
-      {path: "/rate", Component: Rate},
+      {path: "/rate", Component: Rate}, //to rate a user
     ],
   },
 ]);
