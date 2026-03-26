@@ -38,7 +38,7 @@ export function LikeUserCard(props: LikedUserProps) {
     await context.addLiked(id);
   }
 
-  if (likedUsers.length === 0 && props.isLoggedIn) {
+  if (likedUsers == undefined || likedUsers.length === 0 && props.isLoggedIn) {
     return (
       <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
         No more roommates available right now.
