@@ -67,6 +67,27 @@ export function FindRoommateSlide(props: FindRoommateProps) {
       console.log("nem volt elég nagy húzás");
     }
   };
+  
+function getAge(birthDay: Date | undefined) {
+  if (!birthDay) return "Unknown";
+
+  const date = birthDay instanceof Date ? birthDay : new Date(birthDay);
+
+  if (isNaN(date.getTime())) return "Unknown";
+
+  const now = new Date();
+  let age = now.getFullYear() - date.getFullYear();
+
+  const hasHadBirthdayThisYear =
+    now.getMonth() > date.getMonth() ||
+    (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age;
+}
 
   function whatToShow(string: string | undefined | null) {
     if (string === undefined || string === "" || string === null) {
@@ -98,12 +119,16 @@ export function FindRoommateSlide(props: FindRoommateProps) {
                     <img
                       src="https://github.com/shadcn.png"
                       className="w-full h-56 object-cover rounded-t-md"
+                      
                     />
                   </CardContent>
-                  <div className="py-2 text-center text-sm text-muted-foreground">
+                  <div className="py-2 text-center text-sm text-black font-semibold"
+>
                     {p
-                      ? ` ${p.firstName} Language:${p.language} Gender:${p.gender}`
-                      : "Loding..."}
+                      ? ` ${p.firstName} ${p.lastName} - ${getAge(p.birthDay)} 
+                      
+                        Gender:${p.gender} Language:${whatToShow(p.language)}`  
+                      : "Loding..."} 
                   </div>
                 </Card>
 
