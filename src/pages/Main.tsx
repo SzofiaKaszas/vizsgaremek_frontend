@@ -18,7 +18,7 @@ export function Main() {
           </Button>
 
           <Button
-            onClick={() => (window.location.href = "/login")}
+            onClick={() => (window.location.href = "/register")}
             className="sec-btn"
           >
             Create Account

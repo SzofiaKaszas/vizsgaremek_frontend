@@ -11,7 +11,7 @@ import { Button } from "@base-ui/react";
 //import { UserContext } from "@/context/userContext";
 
 export function LikeUserCard(props: LikedUserProps) {
-  const [likedUsers, setLikedUsers] = useState<User[]>([]);
+  const [likedUsers, setLikedUsers] = useState<User[]>(props.likedUsers);
 
   const [animatingId, setAnimatingId] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
@@ -38,10 +38,13 @@ export function LikeUserCard(props: LikedUserProps) {
     await context.addLiked(id);
   }
 
-  if (likedUsers == undefined || likedUsers.length === 0 && props.isLoggedIn) {
+  if (
+    likedUsers == undefined ||
+    (likedUsers.length === 0 && props.isLoggedIn)
+  ) {
     return (
       <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
-        No more roommates available right now.
+        You havent liked any roommates yet.
       </div>
     );
   }
@@ -49,71 +52,73 @@ export function LikeUserCard(props: LikedUserProps) {
   return props.isLoggedIn === true ? (
     <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
       {likedUsers.map((pref) => (
-            <Card
-              className={`
+        <Card
+          className={`
     col-auto card w-full p-4
     ${animatingId === pref.idUser && direction === "right" ? "swipe-right" : ""}
     ${animatingId === pref.idUser && direction === "left" ? "swipe-left" : ""}
   `}
-              onAnimationEnd={async () => {
-                if (animatingId === pref.idUser) {
-                  if (pendingAction === "like") {
-                    LikeClick(pref.idUser);
-                  }
-                  removeUser(pref.idUser);
+          onAnimationEnd={async () => {
+            if (animatingId === pref.idUser) {
+              if (pendingAction === "like") {
+                LikeClick(pref.idUser);
+              }
+              removeUser(pref.idUser);
 
-                  setAnimatingId(null);
-                  setDirection(null);
-                  setPendingAction(null);
-                }
+              setAnimatingId(null);
+              setDirection(null);
+              setPendingAction(null);
+            }
+          }}
+        >
+          <Carousel>
+            <CarouselContent className="image-wrapper">
+              <img
+                src="https://github.com/shadcn.png"
+                alt={`${pref.firstName} ${pref.lastName}'s profile picture`}
+                className="w-full h-48 object-cover rounded-md"
+              />
+            </CarouselContent>
+          </Carousel>
+          <Field>
+            {pref.firstName} {pref.lastName} - {getAge(pref.birthDay)}
+            <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
+          </Field>
+          <Field>{pref.userBio}</Field>
+          <Field>Language: {whatToShow(pref.language)}</Field>
+          <Field>Occupation: {whatToShow(pref.occupation)}</Field>
+          <div className="w-full flex gap-4 justify-center">
+            <button
+              className="likeButton h-10 w-10 rounded-full flex items-center justify-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setAnimatingId(pref.idUser);
+                setDirection("right");
+                setPendingAction("like");
               }}
             >
-              <Carousel>
-                <CarouselContent className="image-wrapper">
-                  <img
-                    src="https://github.com/shadcn.png"
-                    alt={`${pref.firstName} ${pref.lastName}'s profile picture`}
-                    className="w-full h-48 object-cover rounded-md"
-                  />
-                </CarouselContent>
-              </Carousel>
-              <Field>
-                {pref.firstName} {pref.lastName} - {getAge(pref.birthDay)}
-                <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
-              </Field>
-              <Field>{pref.userBio}</Field>
-              <Field>Language: {whatToShow(pref.language)}</Field>
-              <Field>Occupation: {whatToShow(pref.occupation)}</Field>
-              <div className="w-full flex gap-4 justify-center">
-                <button
-                  className="likeButton h-10 w-10 rounded-full flex items-center justify-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setAnimatingId(pref.idUser);
-                    setDirection("right");
-                    setPendingAction("like");
-                  }}
-                >
-                  <Heart fill="red" stroke="red" />
-                </button>
-                <Button
-                  data-dialog-ignore
-                  onClick={(e) => {
-                    e.stopPropagation(); // prevent dialog
-                    navigate("/rate", {
-                      state: {
-                        id: pref.idUser,
-                        houseOrRoommate: "roommate",
-                      },
-                    });
-                  }}
-                  className="primary-btn"
-                >
-                  Rate
-                </Button>
-              </div>
-            </Card>
+              <Heart fill="red" stroke="red" />
+            </button>
+            <div className="my-button-scope">
+              <Button
+                data-dialog-ignore
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent dialog
+                  navigate("/rate", {
+                    state: {
+                      id: pref.idUser,
+                      houseOrRoommate: "roommate",
+                    },
+                  });
+                }}
+                className="primary-btn"
+              >
+                Rate
+              </Button>
+            </div>
+          </div>
+        </Card>
       ))}
     </div>
   ) : (

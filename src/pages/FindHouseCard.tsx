@@ -36,7 +36,7 @@ export function FindHouseCard(props: FindHouseProps) {
     }
   }
 
-  function removeUser(id: number) {
+  function removeHouse(id: number) {
     sethousePrefList((prev) => prev.filter((house) => house.idHouse !== id));
   }
 
@@ -70,7 +70,7 @@ export function FindHouseCard(props: FindHouseProps) {
                   if (pendingAction === "like") {
                     LikeClick(pref.idHouse);
                   }
-                  removeUser(pref.idHouse);
+                  removeHouse(pref.idHouse);
 
                   setAnimatingId(null);
                   setDirection(null);

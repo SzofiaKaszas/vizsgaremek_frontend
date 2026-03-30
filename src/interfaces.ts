@@ -139,6 +139,13 @@ export interface FindHouseProps {
   housePref: HouseListing[];
 }
 
+//interface for props of the LikedHouseCard component
+export interface LikedHouseProps {
+  isLoggedIn: boolean;
+  likedHouses: HouseListing[];
+}
+
+//interface for props of the LikedUserCard component
 export interface LikedUserProps {
   isLoggedIn: boolean;
   likedUsers: User[];
@@ -185,7 +192,7 @@ export interface UserContextType {
   getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
-  getLikes: () => Promise<UserNecesarry[]>;
+  getLikes: () => Promise<User[]>;
   rateUser: (id: number, data: Partial<RateUser>) => void;
 }
 

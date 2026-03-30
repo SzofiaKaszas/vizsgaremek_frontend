@@ -28,7 +28,7 @@ const defaultUserContext: UserContextType = {
   getMatches: async () => [] as UserNecesarry[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   addLiked: async (_id: number) => {},
-  getLikes: async () => [] as UserNecesarry[],
+  getLikes: async () => [] as User[],
   rateUser: async (_id: number, _data: Partial<RateUser>) => {},
 };
 
@@ -233,7 +233,7 @@ export function UserContextProvider(props: PropsWithChildren) {
       }
     },
 
-    async getLikes(): Promise<UserNecesarry[]> {
+    async getLikes(): Promise<User[]> {
       const response = await fetch(
         API_URL + "/user/liked",
         {
@@ -257,7 +257,7 @@ export function UserContextProvider(props: PropsWithChildren) {
       } catch {
         throw new Error("Server did not return JSON");
       }
-      return likedList as UserNecesarry[];
+      return likedList as User[];
     },
 
     async rateUser(id: number, data: Partial<RateUser>): Promise<void> {
