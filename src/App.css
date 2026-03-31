@@ -250,6 +250,7 @@ body {
         padding: 2rem;
         width: 100%;
         max-width: 480px;
+        min-width: 300px;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 

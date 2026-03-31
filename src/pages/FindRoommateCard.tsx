@@ -1,23 +1,28 @@
 import { Card } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
-import type { FindRoommateProps, User } from "@/interfaces";
+import type { FindRoommateProps, User, UserNecesarry } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
 import { /*useContext,*/ useContext, useEffect, useState } from "react";
-import { Heart, Star, ThumbsDown } from "lucide-react";
+import { Heart, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
+import { StarRating } from "./StarRating";
+import { useNavigate } from "react-router";
+import { Button } from "@base-ui/react";
 //import { UserContext } from "@/context/userContext";
 
 export function FindRoommateCard(props: FindRoommateProps) {
-  const [roommatePrefList, setroommatePrefList] = useState<User[]>([]);
+  const [roommatePrefList, setroommatePrefList] = useState<UserNecesarry[]>([]);
 
   const [animatingId, setAnimatingId] = useState<number | null>(null);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
   const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
     null,
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function set() {
@@ -33,9 +38,9 @@ export function FindRoommateCard(props: FindRoommateProps) {
   const context = useContext(UserContext);
 
   async function LikeClick(id: number) {
-    console.log(id);
     await context.addLiked(id);
   }
+
   if (roommatePrefList.length === 0 && props.isLoggedIn) {
     return (
       <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
@@ -82,7 +87,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
                 <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
               </Field>
               <Field>{pref.userBio}</Field>
-              <Field>Language: {whatToShow(pref.language)}</Field>
               <div className="w-full flex gap-4 justify-center">
                 <button
                   className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
@@ -111,6 +115,21 @@ export function FindRoommateCard(props: FindRoommateProps) {
                 >
                   <Heart fill="red" stroke="red" />
                 </button>
+                <Button
+                  data-dialog-ignore
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent dialog
+                    navigate("/rate", {
+                      state: {
+                        id: pref.idUser,
+                        houseOrRoommate: "roommate",
+                      },
+                    });
+                  }}
+                  className="primary-btn"
+                >
+                  Rate
+                </Button>
               </div>
             </Card>
           </DialogTrigger>

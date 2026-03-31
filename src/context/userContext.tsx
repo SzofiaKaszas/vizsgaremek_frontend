@@ -7,6 +7,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import type {
+  RateUser,
   RoommatePref,
   User,
   UserContextType,
@@ -27,7 +28,8 @@ const defaultUserContext: UserContextType = {
   getMatches: async () => [] as UserNecesarry[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   addLiked: async (_id: number) => {},
-  getLikes: async () => [] as UserNecesarry[],
+  getLikes: async () => [] as User[],
+  rateUser: async (_id: number, _data: Partial<RateUser>) => {},
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -231,7 +233,7 @@ export function UserContextProvider(props: PropsWithChildren) {
       }
     },
 
-    async getLikes(): Promise<UserNecesarry[]> {
+    async getLikes(): Promise<User[]> {
       const response = await fetch(
         API_URL + "/user/liked",
         {
@@ -255,7 +257,27 @@ export function UserContextProvider(props: PropsWithChildren) {
       } catch {
         throw new Error("Server did not return JSON");
       }
-      return likedList as UserNecesarry[];
+      return likedList as User[];
+    },
+
+    async rateUser(id: number, data: Partial<RateUser>): Promise<void> {
+      const response = await fetch(
+        API_URL + `/user/rate/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+          body: JSON.stringify(data)
+        },
+      );
+
+      if (!response.ok) {
+        errorCheckUser(response);
+      }
+
+      console.log("siker")
     },
   };
 

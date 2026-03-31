@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import type { User } from "../interfaces";
 import {
@@ -15,6 +15,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { isDate } from "date-fns";
 
 export function Register() {
+  //needed for registration, but not for the component itself, so it is passed to the handleSubmit function
   const context = useContext(AuthContext);
 
   return (
@@ -25,6 +26,7 @@ export function Register() {
           handleSubmit(e, context);
         }}
       >
+        {/**all fields required except for the checkboxes */}
         <Card className="form-card w-full max-w-sm p-4">
           <CardTitle className="text-center text-xl font-bold">
             Register
@@ -38,7 +40,7 @@ export function Register() {
                 type="text"
                 id="first-name"
                 name="firstName"
-                placeholder="Jordan"
+                placeholder="Lee"
                 required
               />
               <FieldDescription
@@ -54,16 +56,22 @@ export function Register() {
                 type="text"
                 id="last-name"
                 name="lastName"
-                placeholder="Lee"
+                placeholder="Jordan"
                 required
               />
             </Field>
           </FieldGroup>
-          <Field className="m-2">
+          <Field>
             <FieldLabel htmlFor="age">
               Birthday <span className="text-destructive">*</span>
             </FieldLabel>
-            <Input type="date" name="age" placeholder="20" id="age"></Input>
+            <Input
+              type="date"
+              name="age"
+              placeholder="20"
+              id="age"
+              required
+            ></Input>
             <FieldDescription
               id="ageErr"
               className="text-red-600 text-sm mt-1"
@@ -160,12 +168,14 @@ export function Register() {
   );
 }
 
+/**creates a new user */
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof AuthContext>,
 ) {
   e.preventDefault();
 
+  /** Get form data */
   const form = new FormData(e.currentTarget);
   const firstName = form.get("firstName") as string;
   const lastName = form.get("lastName") as string;
@@ -176,37 +186,59 @@ async function handleSubmit(
   const email = form.get("email") as string;
   const password = form.get("password") as string;
 
+  /** Clear previous error messages */
   document.getElementById("nameErr")!.innerHTML = "";
   document.getElementById("passwordErr")!.innerHTML = "";
+  document.getElementById("ageErr")!.innerHTML = "";
   document.getElementById("emailErr")!.innerHTML = "";
   document.getElementById("phoneErr")!.innerHTML = "";
   document.getElementById("backendErr")!.innerHTML = "";
 
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
-  const regexPhone =
-    /^\+?\d{1,3}[-\s.]?\(?\d{2,3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/; // Simplified phone number regex
-  const regexPassword = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // At least 6 characters, one uppercase letter, one number
+  const regexPhone = /^\+?[0-9]{1,3}([-\s.]?[0-9]{2,4}){2,4}$/; // Simplified phone number regex
+  const regexUppercase = /[A-Z]/;
+  const regexNumber = /[0-9]/;
+  const regexMinLength = /.{6,}/;
 
   let hasError = false;
 
+  /**------------------------------- Validation -------------------------------*/
+
+  /** Name validation */
   if (!firstName || !lastName) {
     document.getElementById("nameErr")?.append("Please fill in all fields");
     hasError = true;
   }
 
+  /** Password validation */
+  const passwordErrors = [];
+  let hasPassword = true; // Since the password field is required, we can assume it exists
+
   if (!password) {
-    document.getElementById("passwordErr")?.append("Give password");
+    passwordErrors.push("Please enter a password");
     hasError = true;
-  } else if (!regexPassword.test(password as string)) {
-    document
-      .getElementById("passwordErr")
-      ?.append(
-        "Password must be at least 6 characters long \n contain an uppercase letter\n contain a number.",
-      );
+    hasPassword = false;
+  } 
+  
+  if (!regexMinLength.test(password as string) && hasPassword) {
+    passwordErrors.push("Password must be at least 6 characters long");
+    hasError = true;
+  } 
+  
+  if (!regexUppercase.test(password as string) && hasPassword) {
+    passwordErrors.push("Password must contain at least one uppercase letter");
+    hasError = true;
+  } 
+  
+  if (!regexNumber.test(password as string) && hasPassword) {
+    passwordErrors.push("Password must contain at least one number");
     hasError = true;
   }
 
+  document.getElementById("passwordErr")?.append(passwordErrors.join("\n"));
+
+  /** Email validation */
   if (!email) {
     document.getElementById("emailErr")?.append("Give Email");
     hasError = true;
@@ -215,11 +247,12 @@ async function handleSubmit(
     hasError = true;
   }
 
+  /** Phone number validation */
   if (!phoneNumber) {
-    document.getElementById("phoneErr")?.append("Give Phonenumber");
+    document.getElementById("phoneErr")?.append("Please enter a phone number");
     hasError = true;
   } else if (!regexPhone.test(phoneNumber as string)) {
-    document.getElementById("phoneErr")?.append("Invalid Phonenumber");
+    document.getElementById("phoneErr")?.append("Invalid phone number format");
     hasError = true;
   }
 
@@ -231,7 +264,7 @@ async function handleSubmit(
 
   if (!birthDay) {
     hasError = true;
-    document.getElementById("ageErr")?.append("Give birthday");
+    document.getElementById("ageErr")?.append("Please enter your birthday");
   } else if (!(isDate(birthDay) && eighteenYearsAgo > birthDay)) {
     hasError = true;
     document
@@ -246,6 +279,7 @@ async function handleSubmit(
     lastName,
     birthDay,
     phoneNumber,
+    rating: 0,
     hasHouse,
     lookingForPeople,
     lookingForHouse,

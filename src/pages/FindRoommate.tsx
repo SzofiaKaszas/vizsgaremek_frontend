@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/userContext";
-import type { User, UserNecesarry } from "@/interfaces";
+import type { UserNecesarry } from "@/interfaces";
 import { FindRoommateCard } from "./FindRoommateCard";
 import { LayoutGrid, GalleryHorizontal } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -43,13 +43,13 @@ export function FindRoommate() {
       <TabsContent value="grid">
         <FindRoommateCard
           isLoggedIn={isLoggedIn}
-          roommatePref={roommatePref as User[]}
+          roommatePref={roommatePref}
         />
       </TabsContent>
       <TabsContent value="list">
         <FindRoommateSlide
           isLoggedIn={isLoggedIn}
-          roommatePref={roommatePref as User[]}
+          roommatePref={roommatePref}
         />
       </TabsContent>
     </Tabs>

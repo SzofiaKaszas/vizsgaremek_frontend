@@ -1,7 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Users, Home, Shield, Sparkles } from "lucide-react";
+import { CheckCircle, Users, Home } from "lucide-react";
 
 export function Main() {
   return (
@@ -19,7 +18,7 @@ export function Main() {
           </Button>
 
           <Button
-            onClick={() => (window.location.href = "/login")}
+            onClick={() => (window.location.href = "/register")}
             className="sec-btn"
           >
             Create Account

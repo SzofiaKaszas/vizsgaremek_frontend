@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import type { HouseContextType, HouseListing, HousePref } from "@/interfaces";
+import type { HouseContextType, HouseListing, HousePref, RateHouse } from "@/interfaces";
 import { useContext, type PropsWithChildren, createContext } from "react";
 import { UserContext } from "./userContext";
 import { errorCheckHouse } from "./errorCheck";
@@ -23,6 +23,7 @@ const defaultUserContext: HouseContextType = {
   getMatches: async () => [] as HouseListing[],
   addLiked: async (_id: number) => {},
   getLikes: async () => [] as HouseListing[],
+  rateHouse: async (_id, _data) => {},
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -228,6 +229,23 @@ export function HouseContextProvider(props: PropsWithChildren) {
         throw new Error("Server did not return JSON");
       }
       return likedList as HouseListing[];
+    },
+
+    async rateHouse(id: number, data: Partial<RateHouse>): Promise<void> {
+      const response = await fetch(API_URL + `/house-listing/rate/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        errorCheckHouse(response);
+      }
+
+      console.log("siker");
     },
   };
 

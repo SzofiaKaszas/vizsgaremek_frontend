@@ -11,7 +11,7 @@ export function errorCheckUser(response: Response) {
     case response.status === 404:
       throw new Error("Wrong email or password");
     case response.status === 409:
-      throw new Error("User with same data already exists");
+      throw new Error("Email already in use");
     case response.status >= 500 && response.status < 600:
       throw new Error("Server error");
     default:
