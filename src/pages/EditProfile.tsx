@@ -23,6 +23,10 @@ import { isDate } from "date-fns";
 export function EditProfile() {
   const context = useContext(UserContext);
 
+  const birthday = context.userData?.birthDay
+    ? new Date(context.userData.birthDay).toISOString().split("T")[0]
+    : "";
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -34,7 +38,7 @@ export function EditProfile() {
           <DialogDescription>You can edit your profile here</DialogDescription>
         </DialogHeader>
         <form
-        className="form-scope"
+          className="form-scope"
           onSubmit={async (e) => {
             handleSubmit(e, context);
           }}
@@ -68,11 +72,17 @@ export function EditProfile() {
                 className="text-red-600 text-sm mt-1"
               ></FieldDescription>
             </Field>
-            <Field className="m-2">
+            <Field>
               <FieldLabel htmlFor="age">
                 Birthday <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input type="date" name="age" placeholder="20" id="age"></Input>
+              <Input
+                type="date"
+                name="age"
+                placeholder="20"
+                id="age"
+                defaultValue={birthday}
+              ></Input>
               <FieldDescription
                 id="ageErr"
                 className="text-red-600 text-sm mt-1"
@@ -155,7 +165,9 @@ export function EditProfile() {
           </FieldGroup>
           <DialogFooter>
             <div className="my-button-scope">
-              <Button type="submit" className="primary-btn">Save changes</Button>
+              <Button type="submit" className="primary-btn">
+                Save changes
+              </Button>
             </div>
           </DialogFooter>
         </form>

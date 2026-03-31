@@ -154,7 +154,6 @@ export function Register() {
           <Field>
             <FieldLabel htmlFor="has-house">
               Do you want to rent out a house to others?
-              <span className="text-destructive">*</span>
               <Checkbox id="has-house" name="hasHouse"></Checkbox>
             </FieldLabel>
           </Field>
@@ -162,7 +161,6 @@ export function Register() {
           <Field>
             <FieldLabel htmlFor="looking-for-house">
               Are you looking for a house?
-              <span className="text-destructive">*</span>
               <Checkbox
                 id="looking-for-house"
                 name="lookingForHouse"
@@ -173,7 +171,6 @@ export function Register() {
           <Field>
             <FieldLabel htmlFor="looking-for-roommate">
               Are you looking for a roommate?
-              <span className="text-destructive">*</span>
               <Checkbox
                 id="looking-for-roommate"
                 name="lookingForRoommate"
@@ -271,7 +268,7 @@ async function handleSubmit(
 
   /** Email validation */
   if (!email) {
-    document.getElementById("emailErr")?.append("Give Email");
+    document.getElementById("emailErr")?.append("Please enter an email address");
     hasError = true;
   } else if (!regexEmail.test(email as string)) {
     document.getElementById("emailErr")?.append("Invalid Email");

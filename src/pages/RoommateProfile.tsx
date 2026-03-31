@@ -19,12 +19,12 @@ import type { GoNextProp } from "@/interfaces";
 import filter from "leo-profanity";
 import { Checkbox } from "@/components/ui/checkbox";
 
+/**RoommateProfile component for updating user profile */
 export function RoommateProfile({ goNext }: GoNextProp) {
+  /**Variable to show email input if checkbox is checked */
   const [showEmailInput, setShowEmailInput] = useState(false);
 
   const context = useContext(UserContext);
-
-  //TODO: error handling
   return (
     <form
       className="form-scope"
@@ -50,9 +50,15 @@ export function RoommateProfile({ goNext }: GoNextProp) {
       </Field>
 
       <Field className="m-2">
-        <FieldLabel>Gender:</FieldLabel>
-        <Combobox items={Genders}>
-          <ComboboxInput placeholder="Select a gender" />
+        <FieldLabel htmlFor="gender">Your Gender:</FieldLabel>
+        <Combobox
+          items={Genders}
+          name="gender"
+        >
+          <ComboboxInput
+            placeholder="Select a gender"
+            id="gender"
+          />
           <ComboboxContent>
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>
@@ -64,12 +70,23 @@ export function RoommateProfile({ goNext }: GoNextProp) {
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+        <FieldDescription
+          id="genderErr"
+          className="text-red-600 text-sm mt-1"
+        ></FieldDescription>
+        <input type="hidden" name="gender" />
       </Field>
 
       <Field className="m-2">
-        <FieldLabel>Language you speak:</FieldLabel>
-        <Combobox items={Languages}>
-          <ComboboxInput placeholder="Select a language" />
+        <FieldLabel htmlFor="language">Language you speak:</FieldLabel>
+        <Combobox
+          items={Languages}
+          name="language"
+        >
+          <ComboboxInput
+            placeholder="Select a language"
+            id="language"
+          />
           <ComboboxContent>
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>
@@ -81,6 +98,11 @@ export function RoommateProfile({ goNext }: GoNextProp) {
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+        <FieldDescription
+          id="languageErr"
+          className="text-red-600 text-sm mt-1"
+        ></FieldDescription>
+        <input type="hidden" name="language" />
       </Field>
 
       <Field className="m-2">
@@ -91,6 +113,10 @@ export function RoommateProfile({ goNext }: GoNextProp) {
           id="occupation"
           placeholder="teacher"
         />
+        <FieldDescription
+          id="occErr"
+          className="text-red-600 text-sm mt-1"
+        ></FieldDescription>
       </Field>
 
       <Field className="m-2">
@@ -101,6 +127,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
           Use a separate email for roommate/client contact
           <Checkbox
             id="wantsConnectionEmail"
+            name="wantsConnectionEmail"
             checked={showEmailInput}
             onCheckedChange={(checked) => setShowEmailInput(!!checked)}
           />
@@ -109,9 +136,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
 
       {showEmailInput && (
         <Field className="m-2">
-          <FieldLabel htmlFor="connectionEmail">
-            Connection email:
-          </FieldLabel>
+          <FieldLabel htmlFor="connectionEmail">Connection email:</FieldLabel>
           <Input
             type="email"
             name="connectionEmail"
@@ -119,7 +144,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
             placeholder="profeshemail@gmail.com"
           />
           <FieldDescription
-            id="connectionEmailErr"
+            id="emailErr"
             className="text-red-600 text-sm mt-1"
           ></FieldDescription>
         </Field>
@@ -149,6 +174,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
   );
 }
 
+/**Main handleSubmit function for updating user profile */
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof UserContext>,
@@ -157,30 +183,60 @@ async function handleSubmit(
   /* Prevent page refreshing */
   e.preventDefault();
 
+  /* Get form data */
   const form = new FormData(e.currentTarget);
-  const userBio = (form.get("userBio") as string) || undefined; //check if normal later
-  const gender = (form.get("gender") as string) || undefined; //check if normal later
-  const language = (form.get("language") as string) || undefined;
-  const occupation = (form.get("occupation") as string) || undefined; //check if normal later
-  const connectionEmail = (form.get("connectionEmail") as string) || undefined;
+  const userBio = (form.get("userBio") as string) || undefined;
+  const gender = form.get("gender") as string; // "" if empty
+  const language = form.get("language") as string; // "" if empty
+  const occupation = (form.get("occupation") as string) || undefined;
+  const wantsConnectionEmail = form.get("wantsConnectionEmail") === "on";
+  let connectionEmail = undefined;
+
+  /* Clear previous error messages */
+  if (wantsConnectionEmail) {
+    /* Only get connection email if user wants to provide one */
+    connectionEmail = (form.get("connectionEmail") as string) || undefined;
+    document.getElementById("emailErr")!.innerHTML = "";
+  }
 
   document.getElementById("userBioErr")!.innerHTML = "";
-  document.getElementById("emailErr")!.innerHTML = "";
+  document.getElementById("occErr")!.innerHTML = "";
+  document.getElementById("genderErr")!.innerHTML = "";
+  document.getElementById("languageErr")!.innerHTML = "";
+  document.getElementById("backendErr")!.innerHTML = "";
 
-  /* Validate user bio for inappropriate content -- leo-profanity */
-  if (!filter.check(userBio as string)) {
+  /**-----------------------------------Validation-------------------------------- */
+  let hasError = false;
+
+  /**Validate user bio for inappropriate content */
+  if (userBio && filter.check(userBio)) {
     document
       .getElementById("userBioErr")!
       .append("Inappropriate content detected in user bio");
-    return;
+    hasError = true;
   }
 
-  /* Validate email format if a connection email is provided */
-  const regex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
-  if (connectionEmail && !regex.test(connectionEmail as string)) {
-    document.getElementById("emailErr")?.append("Invalid Email");
-    return;
+  /**Validate occupation */
+  if (occupation && filter.check(occupation)) {
+    document
+      .getElementById("occErr")!
+      .append("Inappropriate content detected in occupation");
+    hasError = true;
   }
+
+  /**Validate email */
+  const emailRegex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
+
+  if (wantsConnectionEmail) {
+    const connectionEmail = form.get("connectionEmail") as string;
+
+    if (!connectionEmail || !emailRegex.test(connectionEmail)) {
+      document.getElementById("emailErr")!.append("Invalid Email");
+      hasError = true;
+    }
+  }
+
+  if (hasError) return;
 
   /** Attempt to update user data */
   try {
@@ -193,8 +249,10 @@ async function handleSubmit(
     });
     alert("Preferences saved successfully");
 
+    /**go to next step */
     goNext();
   } catch (error) {
+    /**Display backend error */
     console.error("Registration error:", error);
     document.getElementById("backendErr")!.innerHTML = (error as Error).message;
   }

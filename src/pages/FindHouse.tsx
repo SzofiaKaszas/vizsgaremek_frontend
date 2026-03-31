@@ -6,19 +6,26 @@ import type { HouseListing } from "@/interfaces";
 import { UserContext } from "@/context/userContext";
 import { HouseContext } from "@/context/houseContext";
 import { PleaseLogin } from "./PleaseLogin";
+import { Field } from "@/components/ui/field";
+import { useNavigate } from "react-router";
+import { Button } from "@/components/ui/button";
 export function FindHouse() {
   const [housePref, setHousePref] = useState<HouseListing[]>([]);
   const isMobile = useIsMobile();
   const [tab, setTab] = useState(isMobile ? "list" : "grid");
-
+  const [hasHousePref, setHasHousePref] = useState<boolean | null>(null);
   const context = useContext(UserContext);
   const houseContext = useContext(HouseContext);
   const isLoggedIn = context.userData ? true : false;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoggedIn) return;
 
     houseContext.getMatches().then((prefs) => setHousePref(prefs));
+    houseContext.getHasHousePref().then((res) => {
+      setHasHousePref(res);
+    });
   }, [isLoggedIn, context]);
 
   useEffect(() => {
@@ -26,20 +33,48 @@ export function FindHouse() {
     setTab(isMobile ? "list" : "grid");
   }, [isMobile]);
 
-  return isLoggedIn ? (
+  if (!isLoggedIn) {
+    return <PleaseLogin text="Please login to find houses" />;
+  }
+
+  // Logged in but no house preference
+  if (hasHousePref === false) {
+    return (
+      <div className="flex justify-center-safe content-center w-fit max-w-sm p-2 mx-auto mt-20">
+        <div className="my-button-scope">
+          <Field className="text center flex-auto">
+            <p>Set up profile to find houses</p>
+            <Button
+              className="primary-btn"
+              onClick={() => navigate("/setupprofile")}
+            >
+              Set Up Profile
+            </Button>
+          </Field>
+        </div>
+      </div>
+    );
+  }
+
+  // Still loading preference
+  if (hasHousePref === null) {
+    return <div>Loading...</div>;
+  }
+
+  return (
     <>
       <Tabs value={tab} onValueChange={setTab} className="find-scope relative">
         <div className="tabs-wrapper flex w-full justify-end">
-        <TabsList className="tabs-list">
-          <TabsTrigger value="grid" className="tabs-trigger">
-            <LayoutGrid />
-          </TabsTrigger>
+          <TabsList className="tabs-list">
+            <TabsTrigger value="grid" className="tabs-trigger">
+              <LayoutGrid />
+            </TabsTrigger>
 
-          <TabsTrigger value="list" className="tabs-trigger">
-            <GalleryHorizontal />
-          </TabsTrigger>
-        </TabsList>
-      </div>
+            <TabsTrigger value="list" className="tabs-trigger">
+              <GalleryHorizontal />
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="grid">
           <FindHouseCard isLoggedIn={isLoggedIn} housePref={housePref} />
@@ -51,8 +86,6 @@ export function FindHouse() {
         </TabsContent>
       </Tabs>
     </>
-  ) : (
-    <PleaseLogin text="Please login to find house"></PleaseLogin>
   );
 }
 

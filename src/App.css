@@ -46,7 +46,7 @@ body {
         text-transform: uppercase;
     }
 
-    /* */
+    /*link hover effect*/
     .navigation-menu_link:hover {
         color: var(--color-text-light);
     }

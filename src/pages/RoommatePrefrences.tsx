@@ -3,7 +3,7 @@ import Languages from "../assets/languages";
 import { UserContext } from "../context/userContext";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import {
   Combobox,
   ComboboxContent,
@@ -27,7 +27,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
 
   return (
     <form
-    className="form-scope"
+      className="form-scope"
       onSubmit={async (e) => {
         handleSubmit(e, context, ages, goNext);
       }}
@@ -37,7 +37,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
       </CardTitle>
       <Field className="age-slider-scope m-2">
         <FieldLabel>
-          Age range: {ages[0]} – {ages[1]}
+          Your age prefrence (roommate): {ages[0]} – {ages[1]}
         </FieldLabel>
         <Slider
           defaultValue={[25, 50]}
@@ -50,15 +50,18 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
             setAges(value as [number, number]);
           }}
         />
+        <FieldDescription
+          id="ageErr"
+          className="text-red-600 text-sm mt-1"
+        ></FieldDescription>
       </Field>
+
       <Field className="m-2">
-        <FieldLabel htmlFor="gender">Language you speak:</FieldLabel>
-        <Combobox items={GendersForPref}>
-          <ComboboxInput
-            placeholder="Select a gender"
-            name="gender"
-            id="gender"
-          />
+        <FieldLabel htmlFor="gender">Your Gender:</FieldLabel>
+        <Combobox
+          items={GendersForPref}
+        >
+          <ComboboxInput placeholder="Select a gender" id="gender" />
           <ComboboxContent>
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>
@@ -70,16 +73,19 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+        <FieldDescription
+          id="genderErr"
+          className="text-red-600 text-sm mt-1"
+        ></FieldDescription>
+        <input type="hidden" name="gender" />
       </Field>
 
       <Field className="m-2">
         <FieldLabel htmlFor="language">Language you speak:</FieldLabel>
-        <Combobox items={Languages}>
-          <ComboboxInput
-            placeholder="Select a language"
-            name="language"
-            id="language"
-          />
+        <Combobox
+          items={Languages}
+        >
+          <ComboboxInput placeholder="Select a language" id="language" />
           <ComboboxContent>
             <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>
@@ -91,6 +97,11 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+        <FieldDescription
+          id="languageErr"
+          className="text-red-600 text-sm mt-1"
+        ></FieldDescription>
+        <input type="hidden" name="language" />
       </Field>
 
       <div className="my-button-scope">
@@ -118,14 +129,28 @@ async function handleSubmit(
   ages: [number, number],
   goNext: () => void,
 ) {
+  /**Prevent page refreshing */
   e.preventDefault();
+  /**Get form data */
   const form = new FormData(e.currentTarget);
 
+  /**Blur the active element to lose focus */
+  (document.activeElement as HTMLElement)?.blur();
+
+  /**Check wether we need to add or edit roommate preferences */
   const hasRoommatePref = await context.getHasRoommatePref();
 
+  /*get data */
   const minAge = ages[0];
   const maxAge = ages[1];
+  const gender = (form.get("gender") as string) || undefined;
+  const language = (form.get("language") as string) || undefined;
 
+  document.getElementById("ageErr")!.innerHTML = "";
+  document.getElementById("genderErr")!.innerHTML = "";
+  document.getElementById("languageErr")!.innerHTML = "";
+
+  /**Validate ages */
   switch (true) {
     case minAge === undefined || maxAge === undefined:
       return;
@@ -143,19 +168,19 @@ async function handleSubmit(
       return;
   }
 
-  const gender = form.get("gender") as string;
-  const language = form.get("language") as string;
+  /* Create roommate preferences object */
+  const pref = {
+    minAge: minAge ? Number(minAge) : undefined,
+    maxAge: maxAge ? Number(maxAge) : undefined,
+    gender: gender,
+    language: language,
+  };
 
-  console.log(hasRoommatePref);
+  /* If no validation errors, add or edit roommate preferences */
   if (hasRoommatePref == false) {
-    console.log("nincs pref");
+    /* No roommate preferences, add new one*/
     try {
-      await context.addRoommatePref({
-        minAge: minAge ? Number(minAge) : undefined,
-        maxAge: maxAge ? Number(maxAge) : undefined,
-        gender: gender,
-        language: language,
-      });
+      await context.addRoommatePref(pref);
       alert("Preferences saved successfully");
       if (context.userData?.lookingForHouse) {
         goNext();
@@ -166,14 +191,9 @@ async function handleSubmit(
       alert((err as Error).message);
     }
   } else {
-    console.log("van pref");
+    /** Edit existing roommate preferences */
     try {
-      await context.editRoommatePref({
-        minAge: minAge ? Number(minAge) : undefined,
-        maxAge: maxAge ? Number(maxAge) : undefined,
-        gender: gender,
-        language: language,
-      });
+      await context.editRoommatePref(pref);
       alert("Preferences saved successfully");
       if (context.userData?.lookingForHouse) {
         goNext();
