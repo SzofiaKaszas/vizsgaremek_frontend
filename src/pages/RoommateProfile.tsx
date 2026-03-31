@@ -3,7 +3,7 @@ import Languages from "../assets/languages";
 import { UserContext } from "../context/userContext";
 import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Combobox,
@@ -23,7 +23,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
   //TODO: error handling
   return (
     <form
-    className="form-scope"
+      className="form-scope"
       onSubmit={async (e) => {
         handleSubmit(e, context, goNext);
       }}
@@ -31,7 +31,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
       <CardTitle className="text-center text-xl font-bold p-2">
         Your Profile
       </CardTitle>
-    
+
       <Field className="m-2">
         <FieldLabel htmlFor="userBio">Description about you:</FieldLabel>
         <Textarea
@@ -85,6 +85,11 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         />
       </Field>
 
+      <FieldDescription
+        id="backendErr"
+        className="text-red-600 text-sm mt-1"
+      ></FieldDescription>
+
       <div className="my-button-scope">
         <Button variant={"default"} type="submit" className="primary-btn m-1">
           Next
@@ -110,22 +115,24 @@ async function handleSubmit(
   goNext: () => void,
 ) {
   e.preventDefault();
+
   const form = new FormData(e.currentTarget);
-
   const userBio = (form.get("userBio") as string) || undefined; //check if normal later
-
   const gender = (form.get("gender") as string) || undefined; //check if normal later
   const language = (form.get("language") as string) || undefined;
   const occupation = (form.get("occupation") as string) || undefined; //check if normal later
-
   const connectionEmail = (form.get("connectionEmail") as string) || undefined;
 
+  document.getElementById("emailErr")!.innerHTML = "";
+
+  /* Validate email format if a connection email is provided */
   const regex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
   if (connectionEmail && !regex.test(connectionEmail as string)) {
-    console.log("Invalid email format");
+    document.getElementById("emailErr")?.append("Invalid Email");
     return;
   }
 
+  /** Attempt to update user data */
   try {
     await context.changeUserData({
       userBio: userBio as string,
@@ -137,7 +144,8 @@ async function handleSubmit(
     alert("Preferences saved successfully");
 
     goNext();
-  } catch (err) {
-    alert((err as Error).message);
+  } catch (error) {
+    console.error("Registration error:", error);
+    document.getElementById("backendErr")!.innerHTML = (error as Error).message;
   }
 }
