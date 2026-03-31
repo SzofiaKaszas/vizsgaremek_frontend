@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import type { User } from "../interfaces";
 import {
@@ -13,8 +13,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { isDate } from "date-fns";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate, type NavigateFunction } from "react-router";
 
 export function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+
   //needed for registration, but not for the component itself, so it is passed to the handleSubmit function
   const context = useContext(AuthContext);
 
@@ -23,7 +29,7 @@ export function Register() {
       <form
         className="form-scope"
         onSubmit={(e) => {
-          handleSubmit(e, context);
+          handleSubmit(e, context, navigate);
         }}
       >
         {/**all fields required except for the checkboxes */}
@@ -48,6 +54,7 @@ export function Register() {
                 className="text-red-600 text-sm mt-1"
               ></FieldDescription>
             </Field>
+
             <Field>
               <FieldLabel htmlFor="last-name">
                 Last Name <span className="text-destructive">*</span>
@@ -61,6 +68,7 @@ export function Register() {
               />
             </Field>
           </FieldGroup>
+
           <Field>
             <FieldLabel htmlFor="age">
               Birthday <span className="text-destructive">*</span>
@@ -77,6 +85,7 @@ export function Register() {
               className="text-red-600 text-sm mt-1"
             ></FieldDescription>
           </Field>
+
           <Field>
             <FieldLabel htmlFor="phone-number">
               Phone Number <span className="text-destructive">*</span>
@@ -93,6 +102,7 @@ export function Register() {
               className="text-red-600 text-sm mt-1"
             ></FieldDescription>
           </Field>
+
           <Field>
             <FieldLabel htmlFor="email">
               Email <span className="text-destructive">*</span>
@@ -109,22 +119,37 @@ export function Register() {
               className="text-red-600 text-sm mt-1"
             ></FieldDescription>
           </Field>
+
           <Field>
             <FieldLabel htmlFor="password">
               Password <span className="text-destructive">*</span>
             </FieldLabel>
-            <Input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="password"
-              required
-            />
+
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                placeholder="password"
+                required
+                className="pr-10"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
             <FieldDescription
               id="passwordErr"
               className="text-red-600 text-sm mt-1"
             ></FieldDescription>
           </Field>
+
           <FieldSeparator />
           <Field>
             <FieldLabel htmlFor="has-house">
@@ -133,6 +158,7 @@ export function Register() {
               <Checkbox id="has-house" name="hasHouse"></Checkbox>
             </FieldLabel>
           </Field>
+
           <Field>
             <FieldLabel htmlFor="looking-for-house">
               Are you looking for a house?
@@ -143,6 +169,7 @@ export function Register() {
               ></Checkbox>
             </FieldLabel>
           </Field>
+
           <Field>
             <FieldLabel htmlFor="looking-for-roommate">
               Are you looking for a roommate?
@@ -157,6 +184,7 @@ export function Register() {
               className="text-red-600 text-sm mt-1"
             ></FieldDescription>
           </Field>
+
           <div className="my-button-scope">
             <Button variant={"default"} type="submit" className="primary-btn">
               Register
@@ -172,7 +200,9 @@ export function Register() {
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof AuthContext>,
+  navigate: NavigateFunction
 ) {
+  /**prevent reloading*/
   e.preventDefault();
 
   /** Get form data */
@@ -197,9 +227,9 @@ async function handleSubmit(
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
   const regexPhone = /^\+?[0-9]{1,3}([-\s.]?[0-9]{2,4}){2,4}$/; // Simplified phone number regex
-  const regexUppercase = /[A-Z]/;
-  const regexNumber = /[0-9]/;
-  const regexMinLength = /.{6,}/;
+  const regexUppercase = /[A-Z]/; /** Uppercase letter regex for password complexity */
+  const regexNumber = /[0-9]/; /** Number regex for password complexity */
+  const regexMinLength = /.{6,}/; /** Minimum length regex for password complexity */
 
   let hasError = false;
 
@@ -219,18 +249,19 @@ async function handleSubmit(
     passwordErrors.push("Please enter a password");
     hasError = true;
     hasPassword = false;
-  } 
-  
+  }
+
+  /** Password complexity checks */
   if (!regexMinLength.test(password as string) && hasPassword) {
     passwordErrors.push("Password must be at least 6 characters long");
     hasError = true;
-  } 
-  
+  }
+
   if (!regexUppercase.test(password as string) && hasPassword) {
     passwordErrors.push("Password must contain at least one uppercase letter");
     hasError = true;
-  } 
-  
+  }
+
   if (!regexNumber.test(password as string) && hasPassword) {
     passwordErrors.push("Password must contain at least one number");
     hasError = true;
@@ -256,6 +287,8 @@ async function handleSubmit(
     hasError = true;
   }
 
+  /** Age validation */
+  /** User must be at least 18 years old */
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
@@ -274,6 +307,7 @@ async function handleSubmit(
 
   if (hasError) return;
 
+  /** Create user object */
   const user: Omit<User, "idUser"> = {
     firstName,
     lastName,
@@ -287,16 +321,20 @@ async function handleSubmit(
     password,
     role: "user",
   };
+
+  /** Attempt registration and login */
   try {
     await context.register(user);
     alert("Registration successful!");
+    /** Attempt login if registered successfully */
     await context.login(email, password);
     if (lookingForPeople || lookingForHouse || hasHouse) {
-      window.location.href = "/setupprofile";
+      navigate("/setupprofile");
     } else {
-      window.location.href = "/main";
+      navigate("/main");
     }
   } catch (error) {
+    /* Handle registration or login errors */
     console.error("Registration error:", error);
     document.getElementById("backendErr")!.innerHTML = (error as Error).message;
   }

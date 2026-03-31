@@ -1,11 +1,14 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
 
 export function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+
   const context = useContext(AuthContext);
 
   if (!context.currentUserId) {
@@ -38,21 +41,34 @@ export function Login() {
               ></FieldDescription>
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">
-                Password <span className="text-destructive">*</span>
-              </FieldLabel>
+            <FieldLabel htmlFor="password">
+              Password <span className="text-destructive">*</span>
+            </FieldLabel>
+
+            <div className="relative">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 placeholder="password"
                 required
+                className="pr-10"
               />
-              <FieldDescription
-                id="passwordErr"
-                className="text-red-600 text-sm"
-              ></FieldDescription>
-            </Field>
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            <FieldDescription
+              id="passwordErr"
+              className="text-red-600 text-sm mt-1"
+            ></FieldDescription>
+          </Field>
             <div className="my-button-scope">
               <Button variant={"default"} type="submit" className="primary-btn">
                 Login

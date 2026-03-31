@@ -359,6 +359,17 @@ body {
         transition: all 0.25s ease;
     }
 
+    /* Hide password reveal icon (Edge/Chrome) */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+
+    /* Hide password reveal icon (Safari) */
+    input[type="password"]::-webkit-textfield-decoration-container {
+        display: none;
+    }
+
     /* when clicking on a input -- color and shadow*/
     .form-scope input:focus,
     .form-scope textarea:focus {
