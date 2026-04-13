@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Languages from "../assets/languages";
 import { UserContext } from "../context/userContext";
 import { CardTitle } from "@/components/ui/card";
@@ -21,10 +21,27 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 /**RoommateProfile component for updating user profile */
 export function RoommateProfile({ goNext }: GoNextProp) {
+  const context = useContext(UserContext);
+
   /**Variable to show email input if checkbox is checked */
   const [showEmailInput, setShowEmailInput] = useState(false);
+  /**Variable for gender and language combobox */
+  const [gender, setGender] = useState("");
+  const [language, setLanguage] = useState("");
 
-  const context = useContext(UserContext);
+  /**useEffect to get default values for the form -- if user already set it but wants to change it */
+  useEffect(() => {
+    if (context.userData?.gender) {
+      setGender(context.userData.gender);
+    }
+
+    if (context.userData?.language) {
+      setLanguage(context.userData.language);
+    }
+
+    setShowEmailInput(!!context.userData?.connectionEmail);
+  }, [context.userData]);
+
   return (
     <form
       className="form-scope"
@@ -36,12 +53,14 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         Your Profile
       </CardTitle>
 
+      {/**BIO */}
       <Field className="m-2">
         <FieldLabel htmlFor="userBio">Description about you:</FieldLabel>
         <Textarea
           name="userBio"
           id="userBio"
           placeholder="Im 20. I have a dog. I love skateboarding <3"
+          defaultValue={context.userData?.userBio}
         ></Textarea>
         <FieldDescription
           id="userBioErr"
@@ -49,11 +68,14 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         ></FieldDescription>
       </Field>
 
+      {/**GENDER */}
       <Field className="m-2">
         <FieldLabel htmlFor="gender">Your Gender:</FieldLabel>
         <Combobox
           items={Genders}
           name="gender"
+          value={gender}
+          onValueChange={(value) => setGender(value ?? "")}
         >
           <ComboboxInput
             placeholder="Select a gender"
@@ -77,11 +99,14 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         <input type="hidden" name="gender" />
       </Field>
 
+      {/**LANGUAGE */}
       <Field className="m-2">
         <FieldLabel htmlFor="language">Language you speak:</FieldLabel>
         <Combobox
           items={Languages}
           name="language"
+          value={language}
+          onValueChange={(value) => setLanguage(value ?? "")}
         >
           <ComboboxInput
             placeholder="Select a language"
@@ -105,6 +130,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         <input type="hidden" name="language" />
       </Field>
 
+      {/**OCCUPATION */}
       <Field className="m-2">
         <FieldLabel htmlFor="occupation">Your Occupation:</FieldLabel>
         <Input
@@ -112,6 +138,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
           name="occupation"
           id="occupation"
           placeholder="teacher"
+          defaultValue={context.userData?.occupation}
         />
         <FieldDescription
           id="occErr"
@@ -119,6 +146,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         ></FieldDescription>
       </Field>
 
+      {/**CHECKBOX FOR EMAIL */}
       <Field className="m-2">
         <FieldLabel
           htmlFor="wantsConnectionEmail"
@@ -134,6 +162,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         </FieldLabel>
       </Field>
 
+      {/**EMAIL */}
       {showEmailInput && (
         <Field className="m-2">
           <FieldLabel htmlFor="connectionEmail">Connection email:</FieldLabel>
@@ -142,6 +171,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
             name="connectionEmail"
             id="connectionEmail"
             placeholder="profeshemail@gmail.com"
+            defaultValue={context.userData?.connectionEmail}
           />
           <FieldDescription
             id="emailErr"
@@ -150,6 +180,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         </Field>
       )}
 
+      {/**backend errors */}
       <FieldDescription
         id="backendErr"
         className="text-red-600 text-sm mt-1"
@@ -159,7 +190,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         <Button variant={"default"} type="submit" className="primary-btn m-1">
           Next
         </Button>
-        <Button
+        {context.hasCompletedStepOne ? <Button
           variant={"outline"}
           type="button"
           className="sec-btn m-1"
@@ -168,7 +199,7 @@ export function RoommateProfile({ goNext }: GoNextProp) {
           }}
         >
           Skip
-        </Button>
+        </Button> : <></>}
       </div>
     </form>
   );
@@ -185,17 +216,17 @@ async function handleSubmit(
 
   /* Get form data */
   const form = new FormData(e.currentTarget);
-  const userBio = (form.get("userBio") as string) || undefined;
-  const gender = form.get("gender") as string; // "" if empty
-  const language = form.get("language") as string; // "" if empty
-  const occupation = (form.get("occupation") as string) || undefined;
+  const userBio = (form.get("userBio") as string) || null;
+  const gender = (form.get("gender") as string) || null;
+  const language = (form.get("language") as string) || null;
+  const occupation = (form.get("occupation") as string) || null;
   const wantsConnectionEmail = form.get("wantsConnectionEmail") === "on";
-  let connectionEmail = undefined;
+  let connectionEmail = null;
 
   /* Clear previous error messages */
   if (wantsConnectionEmail) {
     /* Only get connection email if user wants to provide one */
-    connectionEmail = (form.get("connectionEmail") as string) || undefined;
+    connectionEmail = (form.get("connectionEmail") as string) || null;
     document.getElementById("emailErr")!.innerHTML = "";
   }
 
@@ -240,13 +271,14 @@ async function handleSubmit(
 
   /** Attempt to update user data */
   try {
-    await context.changeUserData({
+    context.changeUserData({
       userBio: userBio as string,
       gender: gender as string,
       language: language as string,
       occupation: occupation as string,
       connectionEmail: connectionEmail as string,
     });
+    context.setHasCompletedStepOne(true);
     alert("Preferences saved successfully");
 
     /**go to next step */

@@ -160,7 +160,8 @@ export function HousePrefrences() {
         <Button variant={"default"} type="submit" className="primary-btn m-1">
           Next
         </Button>
-        <Button
+        {/**TODO: Change to navigate*/}
+        {userContext.hasCompletedStepThree ? <Button
           variant={"outline"}
           type="button"
           className="sec-btn m-1"
@@ -169,7 +170,7 @@ export function HousePrefrences() {
           }}
         >
           Skip
-        </Button>
+        </Button> : <></>}
       </div>
     </form>
   );

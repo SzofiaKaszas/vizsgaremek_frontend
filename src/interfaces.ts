@@ -182,7 +182,15 @@ export interface AuthContextType {
 //interface for the managemant of the user data in usercontext
 export interface UserContextType {
   userData: User | undefined;
-  //userdata
+  
+  hasCompletedStepOne: boolean,
+  hasCompletedStepTwo: boolean,
+  hasCompletedStepThree: boolean,
+
+  setHasCompletedStepOne: (value: boolean) => void;
+  setHasCompletedStepTwo: (value: boolean) => void;
+  setHasCompletedStepThree: (value: boolean) => void;
+
   getUserById: (id: number) => Promise<User>;
   changeUserData: (newData: Partial<User>) => void;
   //roommatepref

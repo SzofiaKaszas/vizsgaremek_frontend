@@ -108,7 +108,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
         <Button variant={"default"} type="submit" className="primary-btn m-1">
           Next
         </Button>
-        <Button
+        {context.hasCompletedStepTwo ? <Button
           variant={"outline"}
           type="button"
           className="sec-btn m-1"
@@ -117,7 +117,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
           }}
         >
           Skip
-        </Button>
+        </Button> : <></>}
       </div>
     </form>
   );
@@ -136,9 +136,6 @@ async function handleSubmit(
 
   /**Blur the active element to lose focus */
   (document.activeElement as HTMLElement)?.blur();
-
-  /**Check wether we need to add or edit roommate preferences */
-  const hasRoommatePref = await context.getHasRoommatePref();
 
   /*get data */
   const minAge = ages[0];
@@ -177,7 +174,7 @@ async function handleSubmit(
   };
 
   /* If no validation errors, add or edit roommate preferences */
-  if (hasRoommatePref == false) {
+  if (context.hasCompletedStepTwo == false) {
     /* No roommate preferences, add new one*/
     try {
       await context.addRoommatePref(pref);

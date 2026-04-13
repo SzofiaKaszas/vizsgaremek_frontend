@@ -165,7 +165,7 @@
   --color-sky: oklch(0.7643 0.1375 237.81);
   --color-bluee: oklch(0.6348 0.195678 262.3284);
 
-  /*copilot colors*/
+  /*right now used colors*/
   --color-bg-dark: oklch(0.235 0 0); /* charcoal */
   --color-text-light: oklch(0.9612 0 0); /* cool white */
   --color-accent: oklch(0.6239 0.2251 318.91); /* purple */
