@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -20,6 +18,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { isDate } from "date-fns";
 
 export function EditProfile() {
   const context = useContext(UserContext);
@@ -27,7 +26,7 @@ export function EditProfile() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        <Button className="primary-btn">Edit Profile</Button>
       </DialogTrigger>
       <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-">
         <DialogHeader>
@@ -35,6 +34,7 @@ export function EditProfile() {
           <DialogDescription>You can edit your profile here</DialogDescription>
         </DialogHeader>
         <form
+        className="form-scope"
           onSubmit={async (e) => {
             handleSubmit(e, context);
           }}
@@ -65,6 +65,16 @@ export function EditProfile() {
               />
               <FieldDescription
                 id="lastNameErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+            <Field className="m-2">
+              <FieldLabel htmlFor="age">
+                Birthday <span className="text-destructive">*</span>
+              </FieldLabel>
+              <Input type="date" name="age" placeholder="20" id="age"></Input>
+              <FieldDescription
+                id="ageErr"
                 className="text-red-600 text-sm mt-1"
               ></FieldDescription>
             </Field>
@@ -144,11 +154,9 @@ export function EditProfile() {
             </Field>
           </FieldGroup>
           <DialogFooter>
-            {/*<DialogClose asChild>*/}
             <div className="my-button-scope">
-              <Button type="submit">Save changes</Button>
+              <Button type="submit" className="primary-btn">Save changes</Button>
             </div>
-            {/*</DialogClose>*/}
           </DialogFooter>
         </form>
       </DialogContent>
@@ -174,7 +182,8 @@ async function handleSubmit(
 
   const form = new FormData(e.currentTarget);
   //TODO: check wether they actually changed something
-  //TODO: check if any of the required fields are empty
+  //TODO: error handling
+  let hasError = false;
 
   const firstName = (form.get("firstName") as string) || undefined;
   const lastName = (form.get("lastName") as string) || undefined;
@@ -201,10 +210,29 @@ async function handleSubmit(
       return;
   }
 
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+  const birth = (form.get("age") as string) || undefined;
+  const birthDay = new Date(birth as string);
+
+  if (!birthDay) {
+    hasError = true;
+    document.getElementById("ageErr")?.append("Give birthday");
+  } else if (!(isDate(birthDay) && eighteenYearsAgo > birthDay)) {
+    hasError = true;
+    document
+      .getElementById("ageErr")
+      ?.append("User must be at least 18 years old");
+  }
+
+  if (hasError) return;
+
   try {
     await context.changeUserData?.({
       firstName: firstName,
       lastName: lastName,
+      birthDay: birthDay,
       phoneNumber: phoneNumber,
       email: email,
       hasHouse: hasHouse,

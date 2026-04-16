@@ -20,9 +20,10 @@ import type { GoNextProp } from "@/interfaces";
 export function RoommateProfile({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
 
-  //TODO: now it wants birthday and not age
+  //TODO: error handling
   return (
     <form
+    className="form-scope"
       onSubmit={async (e) => {
         handleSubmit(e, context, goNext);
       }}
@@ -36,14 +37,8 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         <Textarea
           name="userBio"
           id="userBio"
-          placeholder="Im 20. I have a dog. I love stalking <3"
+          placeholder="Im 20. I have a dog. I love skateboarding <3"
         ></Textarea>
-      </Field>
-
-      <Field className="m-2">
-        <FieldLabel htmlFor="age">Your age:</FieldLabel>
-        {/**maybe datepicker as birthday */}
-        <Input type="date" name="age" placeholder="20" id="age"></Input>
       </Field>
 
       <Field className="m-2">
@@ -91,13 +86,13 @@ export function RoommateProfile({ goNext }: GoNextProp) {
       </Field>
 
       <div className="my-button-scope">
-        <Button variant={"default"} type="submit" className="m-1">
+        <Button variant={"default"} type="submit" className="primary-btn m-1">
           Next
         </Button>
         <Button
           variant={"outline"}
           type="button"
-          className="m-1"
+          className="sec-btn m-1"
           onClick={() => {
             goNext();
           }}
@@ -118,12 +113,6 @@ async function handleSubmit(
   const form = new FormData(e.currentTarget);
 
   const userBio = (form.get("userBio") as string) || undefined; //check if normal later
-  const age = form.get("age");
-
-  if ((age && isNaN(Number(age))) || (age && Number(age) <= 17)) {
-    console.log("Invalid age input");
-    return;
-  }
 
   const gender = (form.get("gender") as string) || undefined; //check if normal later
   const language = (form.get("language") as string) || undefined;
@@ -140,7 +129,6 @@ async function handleSubmit(
   try {
     await context.changeUserData({
       userBio: userBio as string,
-      age: age ? Number(age) : undefined,
       gender: gender as string,
       language: language as string,
       occupation: occupation as string,

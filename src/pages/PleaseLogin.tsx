@@ -8,7 +8,7 @@ export function PleaseLogin(props: PleaseLoginProps) {
       <div className="my-button-scope">
         <Field className="text center flex-auto">
           <p>{props.text}</p>
-          <Button onClick={() => (window.location.href = "/login")}>
+          <Button className="primary-btn" onClick={() => (window.location.href = "/login")}>
             Login
           </Button>
         </Field>

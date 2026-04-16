@@ -46,7 +46,7 @@ export function FindHouse() {
         </TabsContent>
         <TabsContent value="list">
           <div className="flex justify-center mt-10">
-            <h1 className="text-2xl font-bold text-center">Dolgozunk rajta m  </h1>
+            <h1 className="text-2xl font-bold text-center">Dolgozunk rajta </h1>
           </div>
 
 

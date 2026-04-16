@@ -10,16 +10,16 @@ import { UserContext } from "@/context/userContext";
 export function SetUpProfile() {
   const [step, setStep] = useState("account");
 
-  const {userData} = useContext(UserContext)
+  const { userData } = useContext(UserContext);
 
-  const steps = ["account"];  
+  const steps = ["account"];
 
-  if(userData?.lookingForPeople){
-    steps.push("accPref")
+  if (userData?.lookingForPeople) {
+    steps.push("accPref");
   }
 
-  if(userData?.lookingForHouse){
-    steps.push("housePref")
+  if (userData?.lookingForHouse) {
+    steps.push("housePref");
   }
 
   function isCompleted(currentStep: string, step: string) {
@@ -29,17 +29,16 @@ export function SetUpProfile() {
   const progress = (steps.indexOf(step) / (steps.length - 1)) * 100;
 
   function circleClass(stepName: string) {
-  if (step === stepName) {
-    return "bg-amber text-white";
-  }
+    if (step === stepName) {
+      return "bg-accent text-white";
+    }
 
-  if (isCompleted(step, stepName)) {
-    return "bg-deepamber text-white";
-  }
+    if (isCompleted(step, stepName)) {
+      return "bg-accent-hover text-white";
+    }
 
-  return "bg-gray-300 text-gray-600";
-}
-  /**might not be the best way to do it */
+    return "bg-gray-300 text-gray-600";
+  }
   const goNext = () => {
     switch (true) {
       case step === "account":
@@ -52,14 +51,14 @@ export function SetUpProfile() {
   };
 
   return (
-    <div className="flex justify-center mt-10">
-      <Card className="card w-full max-w-sm p-4">
-        <Tabs value={step} onValueChange={setStep} className="w-full ">
-          <TabsList className="w-full flex justify-center bg-transparent p-0">
+    <div className="flex justify-center mt-14">
+      <Card className="form-card w-full max-w-sm p-4">
+        <Tabs value={step} onValueChange={setStep} className="w-full">
+          <TabsList className="stepper w-full flex justify-center bg-transparent p-0">
             <div className="relative flex items-center gap-10 sm:gap-20">
-              <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-gray-300 -translate-y-1/2" />
+              <div className="stepper-line" />
               <div
-                className="absolute top-1/2 left-0 h-[2px] bg-deepamber -translate-y-1/2 transition-all duration-300"
+                className="stepper-progress "
                 style={{ width: `${progress}%` }}
               />
 
@@ -68,13 +67,13 @@ export function SetUpProfile() {
                   key={s}
                   value={s}
                   disabled={step !== s}
-                  className={`
+                  className={`step-circle
           relative z-10
           w-10 h-10 sm:w-12 sm:h-12
           flex items-center justify-center rounded-full
           text-sm sm:text-base
           data-[disabled]:opacity-100 data-[disabled]:cursor-default
-          data-[state=active]:bg-amber data-[state=active]:text-white
+          data-[state=active]:bg-accent data-[state=active]:text-white
           ${circleClass(s)}
         `}
                 >

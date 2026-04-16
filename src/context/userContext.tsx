@@ -16,7 +16,7 @@ import { AuthContext } from "./authContext";
 import { errorCheckUser, errorCheckUserEdit } from "./errorCheck";
 
 const API_URL = "http://localhost:3000";
-
+//TODO: get error from backend
 const defaultUserContext: UserContextType = {
   userData: undefined as User | undefined,
   getUserById: async (_id: number) => undefined as unknown as User,
@@ -26,7 +26,8 @@ const defaultUserContext: UserContextType = {
   editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   getMatches: async () => [] as UserNecesarry[],
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  addLiked: async(_id: number) => {},
+  addLiked: async (_id: number) => {},
+  getLikes: async () => [] as UserNecesarry[],
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -47,7 +48,6 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     if (!response.ok) {
       errorCheckUser(response);
-      return undefined;
     }
 
     const userData = (await response.json()) as User;
@@ -80,13 +80,12 @@ export function UserContextProvider(props: PropsWithChildren) {
 
       if (!response.ok) {
         errorCheckUser(response);
-        return undefined as unknown as User;
       }
 
       const roommateData = (await response.json()) as User;
       return roommateData;
     },
-    
+
     async changeUserData(newData: Partial<User>): Promise<void> {
       const response = await fetch(API_URL + `/user/${userData?.idUser}`, {
         method: "PATCH",
@@ -99,30 +98,39 @@ export function UserContextProvider(props: PropsWithChildren) {
 
       if (!response.ok) {
         errorCheckUserEdit(response);
-        return;
       }
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
     },
 
     async getHasRoommatePref(): Promise<boolean> {
-      const response = await fetch(
-        API_URL + `/roommates-prefrences/${userData?.idUser}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+      try {
+        const response = await fetch(
+          API_URL + `/roommates-prefrences/${userData?.idUser}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            },
           },
-        },
-      );
+        );
 
-      if (!response.ok) {
-        errorCheckUser(response);
+        if (!response.ok) {
+          return false; // backend error, no preferences
+        }
+
+        const data = await response.json();
+
+        if (!data || Object.keys(data).length === 0) {
+          return false;
+        }
+
+        return true;
+      } catch (err) {
+        console.error("getHasRoommatePref crashed:", err);
         return false;
       }
-
-      return true;
     },
 
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
@@ -208,22 +216,47 @@ export function UserContextProvider(props: PropsWithChildren) {
       setUserData(updatedUser);
     },
 
-    async addLiked(id: number): Promise<void>{
-      const response = await fetch(API_URL + ``,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-        }
-      )
+    async addLiked(id: number): Promise<void> {
+      const response = await fetch(API_URL + `/user/like/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
 
       if (!response.ok) {
         errorCheckUser(response);
         return;
       }
-    }
+    },
+
+    async getLikes(): Promise<UserNecesarry[]> {
+      const response = await fetch(
+        API_URL + "/user/liked",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      let likedList;
+      try {
+        likedList = await response.json();
+        console.log(likedList);
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+      return likedList as UserNecesarry[];
+    },
   };
 
   return (

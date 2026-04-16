@@ -18,7 +18,7 @@ export function Profile() {
   return (
     <div>
       {userData ? (
-        <div className="flex justify-center mt-10">
+        <div className="profile-scope flex justify-center mt-10">
           <Card className="card w-full max-w-sm p-6">
             <CardTitle className="text-center text-xl font-bold">
               Profile data
@@ -58,6 +58,7 @@ export function Profile() {
                 onClick={() => {
                   window.location.href = "/setupprofile";
                 }}
+                className="primary-btn"
               >
                 Setup profile
               </Button>
