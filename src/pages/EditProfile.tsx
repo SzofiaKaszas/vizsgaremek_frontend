@@ -32,13 +32,13 @@ export function EditProfile() {
       <DialogTrigger asChild>
         <Button className="primary-btn">Edit Profile</Button>
       </DialogTrigger>
-      <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-">
+      <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-auto flex flex-col">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>You can edit your profile here</DialogDescription>
         </DialogHeader>
         <form
-          className="form-scope"
+          className="form-scope flex flex-col gap-4 overflow-y-auto"
           onSubmit={async (e) => {
             handleSubmit(e, context);
           }}
@@ -163,7 +163,7 @@ export function EditProfile() {
               ></FieldDescription>
             </Field>
           </FieldGroup>
-          <DialogFooter>
+          <DialogFooter className="sticky bottom-0 bg-background pt-2">
             <div className="my-button-scope">
               <Button type="submit" className="primary-btn">
                 Save changes

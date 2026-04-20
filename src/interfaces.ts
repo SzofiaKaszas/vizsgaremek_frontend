@@ -196,6 +196,7 @@ export interface UserContextType {
   //roommatepref
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
   getHasRoommatePref: () => Promise<boolean>;
+  getRoommatePref: () => Promise<RoommatePref | undefined>;
   editRoommatePref: (newData: Partial<RoommatePref>) => void;
   getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
@@ -216,6 +217,7 @@ export interface HouseContextType {
   deleteHouseListing: (idHouse: number) => Promise<void>;
   //housepref
   getHasHousePref: () => Promise<boolean>;
+  getHousePref: () => Promise<HousePref | undefined>;
   changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
   getMatches: () => Promise<HouseListing[]>;

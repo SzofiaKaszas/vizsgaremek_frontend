@@ -289,7 +289,7 @@ async function handleSubmit(
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
-  const birth = (form.get("age") as string) || undefined;
+  const birth = (form.get("age") as string) || null;
   const birthDay = new Date(birth as string);
 
   if (!birthDay) {

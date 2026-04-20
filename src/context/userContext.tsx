@@ -27,20 +27,21 @@ const defaultUserContext: UserContextType = {
   hasCompletedStepTwo: false,
   hasCompletedStepThree: false,
 
-  setHasCompletedStepOne: () => { },
-  setHasCompletedStepTwo: () => { },
-  setHasCompletedStepThree: () => { },
+  setHasCompletedStepOne: () => {},
+  setHasCompletedStepTwo: () => {},
+  setHasCompletedStepThree: () => {},
 
   getUserById: async (_id: number) => undefined as unknown as User,
-  changeUserData: async (_newData: Partial<User>) => { },
+  changeUserData: async (_newData: Partial<User>) => {},
   getHasRoommatePref: async () => false,
-  addRoommatePref: async (_newData: Partial<RoommatePref>) => { },
-  editRoommatePref: async (_newData: Partial<RoommatePref>) => { },
+  getRoommatePref: async () => undefined as unknown as RoommatePref,
+  addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
   getMatches: async () => [] as UserNecesarry[],
-  changeRoommatePref: async (_newData: Partial<RoommatePref>) => { },
-  addLiked: async (_id: number) => { },
+  changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  addLiked: async (_id: number) => {},
   getLikes: async () => [] as User[],
-  rateUser: async (_id: number, _data: Partial<RateUser>) => { },
+  rateUser: async (_id: number, _data: Partial<RateUser>) => {},
 };
 
 export const UserContext = createContext(defaultUserContext);
@@ -144,7 +145,7 @@ export function UserContextProvider(props: PropsWithChildren) {
               "Content-Type": "application/json",
               Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
             },
-          }
+          },
         );
 
         if (!response.ok) return false;
@@ -153,6 +154,30 @@ export function UserContextProvider(props: PropsWithChildren) {
         return !!data && Object.keys(data).length > 0;
       } catch {
         return false;
+      }
+    },
+
+    async getRoommatePref(): Promise<RoommatePref | undefined> {
+      try {
+        const response = await fetch(
+          API_URL + `/roommates-prefrences/${userData?.idUser}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            },
+          },
+        );
+
+        if (!response.ok) {
+          errorCheckUserEdit(response);
+          return;
+        }
+
+        return (await response.json()) as RoommatePref;
+      } catch {
+        return;
       }
     },
 
@@ -168,17 +193,14 @@ export function UserContextProvider(props: PropsWithChildren) {
     },
 
     async editRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
-      await fetch(
-        API_URL + `/roommates-prefrences/${userData?.idUser}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-          body: JSON.stringify(newData),
-        }
-      );
+      await fetch(API_URL + `/roommates-prefrences/${userData?.idUser}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(newData),
+      });
     },
 
     async changeRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
@@ -191,7 +213,7 @@ export function UserContextProvider(props: PropsWithChildren) {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },
           body: JSON.stringify(newData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -212,7 +234,7 @@ export function UserContextProvider(props: PropsWithChildren) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {

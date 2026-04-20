@@ -24,7 +24,7 @@ export function Profile() {
               Profile data
             </CardTitle>
             <FieldSeparator />
-            <FieldGroup className="grid max-w-sm grid-cols-2">
+            <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <Field>
                 <FieldLabel>First Name:</FieldLabel> {userData.firstName}
               </Field>
