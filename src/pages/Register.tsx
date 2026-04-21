@@ -15,6 +15,8 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { isDate } from "date-fns";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate, type NavigateFunction } from "react-router";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 /**Add toast */
 export function Register() {
@@ -194,7 +196,7 @@ export function Register() {
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof AuthContext>,
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
 ) {
   /**prevent reloading*/
   e.preventDefault();
@@ -221,9 +223,11 @@ async function handleSubmit(
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
   const regexPhone = /^\+?[0-9]{1,3}([-\s.]?[0-9]{2,4}){2,4}$/; // Simplified phone number regex
-  const regexUppercase = /[A-Z]/; /** Uppercase letter regex for password complexity */
+  const regexUppercase =
+    /[A-Z]/; /** Uppercase letter regex for password complexity */
   const regexNumber = /[0-9]/; /** Number regex for password complexity */
-  const regexMinLength = /.{6,}/; /** Minimum length regex for password complexity */
+  const regexMinLength =
+    /.{6,}/; /** Minimum length regex for password complexity */
 
   let hasError = false;
 
@@ -265,7 +269,9 @@ async function handleSubmit(
 
   /** Email validation */
   if (!email) {
-    document.getElementById("emailErr")?.append("Please enter an email address");
+    document
+      .getElementById("emailErr")
+      ?.append("Please enter an email address");
     hasError = true;
   } else if (!regexEmail.test(email as string)) {
     document.getElementById("emailErr")?.append("Invalid Email");
@@ -319,14 +325,16 @@ async function handleSubmit(
   /** Attempt registration and login */
   try {
     await context.register(user);
-    alert("Registration successful!");
+    toast.success("Registration successful!");
     /** Attempt login if registered successfully */
-    await context.login(email, password);
-    if (lookingForPeople || lookingForHouse || hasHouse) {
-      navigate("/setupprofile");
-    } else {
-      navigate("/main");
-    }
+    setTimeout(async () => {
+      await context.login(email, password);
+      if (lookingForPeople || lookingForHouse || hasHouse) {
+        navigate("/setupprofile");
+      } else {
+        navigate("/main");
+      }
+    }, 800);
   } catch (error) {
     /* Handle registration or login errors */
     console.error("Registration error:", error);

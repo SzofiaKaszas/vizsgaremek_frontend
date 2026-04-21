@@ -20,7 +20,6 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { useNavigate, type NavigateFunction } from "react-router";
 
-/**TODO: If already has roommate pref, show the data in inputs */
 export function RoommatePrefrences({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
 
