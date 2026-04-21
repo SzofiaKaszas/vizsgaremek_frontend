@@ -15,6 +15,8 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { isDate } from "date-fns";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate, type NavigateFunction } from "react-router";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 /**Add toast */
 export function Register() {
@@ -26,171 +28,174 @@ export function Register() {
   const context = useContext(AuthContext);
 
   return (
-    <div className="flex justify-center mt-10">
-      <form
-        className="form-scope"
-        onSubmit={(e) => {
-          handleSubmit(e, context, navigate);
-        }}
-      >
-        {/**all fields required except for the checkboxes */}
-        <Card className="form-card w-full max-w-sm p-4">
-          <CardTitle className="text-center text-xl font-bold">
-            Register
-          </CardTitle>
-          <FieldGroup className="grid max-w-sm grid-cols-2">
+    <>
+      <Toaster position="top-center" />
+      <div className="flex justify-center mt-10">
+        <form
+          className="form-scope"
+          onSubmit={(e) => {
+            handleSubmit(e, context, navigate);
+          }}
+        >
+          {/**all fields required except for the checkboxes */}
+          <Card className="form-card w-full max-w-sm p-4">
+            <CardTitle className="text-center text-xl font-bold">
+              Register
+            </CardTitle>
+            <FieldGroup className="grid max-w-sm grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="first-name">
+                  First Name <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  type="text"
+                  id="first-name"
+                  name="firstName"
+                  placeholder="Lee"
+                  required
+                />
+                <FieldDescription
+                  id="nameErr"
+                  className="text-red-600 text-sm mt-1"
+                ></FieldDescription>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="last-name">
+                  Last Name <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  type="text"
+                  id="last-name"
+                  name="lastName"
+                  placeholder="Jordan"
+                  required
+                />
+              </Field>
+            </FieldGroup>
+
             <Field>
-              <FieldLabel htmlFor="first-name">
-                First Name <span className="text-destructive">*</span>
+              <FieldLabel htmlFor="age">
+                Birthday <span className="text-destructive">*</span>
               </FieldLabel>
               <Input
-                type="text"
-                id="first-name"
-                name="firstName"
-                placeholder="Lee"
+                type="date"
+                name="age"
+                placeholder="20"
+                id="age"
                 required
-              />
+              ></Input>
               <FieldDescription
-                id="nameErr"
+                id="ageErr"
                 className="text-red-600 text-sm mt-1"
               ></FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="last-name">
-                Last Name <span className="text-destructive">*</span>
+              <FieldLabel htmlFor="phone-number">
+                Phone Number <span className="text-destructive">*</span>
               </FieldLabel>
               <Input
-                type="text"
-                id="last-name"
-                name="lastName"
-                placeholder="Jordan"
+                type="tel"
+                id="phone-number"
+                name="phoneNumber"
+                placeholder="000-000-0000"
                 required
               />
+              <FieldDescription
+                id="phoneErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
             </Field>
-          </FieldGroup>
 
-          <Field>
-            <FieldLabel htmlFor="age">
-              Birthday <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="date"
-              name="age"
-              placeholder="20"
-              id="age"
-              required
-            ></Input>
-            <FieldDescription
-              id="ageErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="phone-number">
-              Phone Number <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="tel"
-              id="phone-number"
-              name="phoneNumber"
-              placeholder="000-000-0000"
-              required
-            />
-            <FieldDescription
-              id="phoneErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="email">
-              Email <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="lee.jordan@gmail.com"
-              required
-            />
-            <FieldDescription
-              id="emailErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="password">
-              Password <span className="text-destructive">*</span>
-            </FieldLabel>
-
-            <div className="relative">
+            <Field>
+              <FieldLabel htmlFor="email">
+                Email <span className="text-destructive">*</span>
+              </FieldLabel>
               <Input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                placeholder="password"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="lee.jordan@gmail.com"
                 required
-                className="pr-10"
               />
+              <FieldDescription
+                id="emailErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
 
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+            <Field>
+              <FieldLabel htmlFor="password">
+                Password <span className="text-destructive">*</span>
+              </FieldLabel>
+
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  placeholder="password"
+                  required
+                  className="pr-10"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+              <FieldDescription
+                id="passwordErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+
+            <FieldSeparator />
+            <Field>
+              <FieldLabel htmlFor="has-house">
+                Do you want to rent out a house to others?
+                <Checkbox id="has-house" name="hasHouse"></Checkbox>
+              </FieldLabel>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="looking-for-house">
+                Are you looking for a house?
+                <Checkbox
+                  id="looking-for-house"
+                  name="lookingForHouse"
+                ></Checkbox>
+              </FieldLabel>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="looking-for-roommate">
+                Are you looking for a roommate?
+                <Checkbox
+                  id="looking-for-roommate"
+                  name="lookingForRoommate"
+                ></Checkbox>
+              </FieldLabel>
+              <FieldDescription
+                id="backendErr"
+                className="text-red-600 text-sm mt-1"
+              ></FieldDescription>
+            </Field>
+
+            <div className="my-button-scope">
+              <Button variant={"default"} type="submit" className="primary-btn">
+                Register
+              </Button>
             </div>
-
-            <FieldDescription
-              id="passwordErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <FieldSeparator />
-          <Field>
-            <FieldLabel htmlFor="has-house">
-              Do you want to rent out a house to others?
-              <Checkbox id="has-house" name="hasHouse"></Checkbox>
-            </FieldLabel>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="looking-for-house">
-              Are you looking for a house?
-              <Checkbox
-                id="looking-for-house"
-                name="lookingForHouse"
-              ></Checkbox>
-            </FieldLabel>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="looking-for-roommate">
-              Are you looking for a roommate?
-              <Checkbox
-                id="looking-for-roommate"
-                name="lookingForRoommate"
-              ></Checkbox>
-            </FieldLabel>
-            <FieldDescription
-              id="backendErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <div className="my-button-scope">
-            <Button variant={"default"} type="submit" className="primary-btn">
-              Register
-            </Button>
-          </div>
-        </Card>
-      </form>
-    </div>
+          </Card>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -198,7 +203,7 @@ export function Register() {
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof AuthContext>,
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
 ) {
   /**prevent reloading*/
   e.preventDefault();
@@ -225,9 +230,11 @@ async function handleSubmit(
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
   const regexPhone = /^\+?[0-9]{1,3}([-\s.]?[0-9]{2,4}){2,4}$/; // Simplified phone number regex
-  const regexUppercase = /[A-Z]/; /** Uppercase letter regex for password complexity */
+  const regexUppercase =
+    /[A-Z]/; /** Uppercase letter regex for password complexity */
   const regexNumber = /[0-9]/; /** Number regex for password complexity */
-  const regexMinLength = /.{6,}/; /** Minimum length regex for password complexity */
+  const regexMinLength =
+    /.{6,}/; /** Minimum length regex for password complexity */
 
   let hasError = false;
 
@@ -269,7 +276,9 @@ async function handleSubmit(
 
   /** Email validation */
   if (!email) {
-    document.getElementById("emailErr")?.append("Please enter an email address");
+    document
+      .getElementById("emailErr")
+      ?.append("Please enter an email address");
     hasError = true;
   } else if (!regexEmail.test(email as string)) {
     document.getElementById("emailErr")?.append("Invalid Email");
@@ -323,14 +332,16 @@ async function handleSubmit(
   /** Attempt registration and login */
   try {
     await context.register(user);
-    alert("Registration successful!");
+    toast.success("Registration successful!");
     /** Attempt login if registered successfully */
-    await context.login(email, password);
-    if (lookingForPeople || lookingForHouse || hasHouse) {
-      navigate("/setupprofile");
-    } else {
-      navigate("/main");
-    }
+    setTimeout(async () => {
+      await context.login(email, password);
+      if (lookingForPeople || lookingForHouse || hasHouse) {
+        navigate("/setupprofile");
+      } else {
+        navigate("/main");
+      }
+    }, 800);
   } catch (error) {
     /* Handle registration or login errors */
     console.error("Registration error:", error);

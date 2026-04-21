@@ -8,6 +8,7 @@ import { Star } from "lucide-react";
 import { UserContext } from "@/context/userContext";
 import type { RateHouse, RateUser } from "@/interfaces";
 import { HouseContext } from "@/context/houseContext";
+import { toast, Toaster } from "sonner";
 
 export function Rate() {
   const [rating, setRating] = useState(0);
@@ -44,7 +45,7 @@ export function Rate() {
 
       userContext.rateUser(id, rate);
 
-      alert("siker");
+      toast.success("Successfully rated roommate");
     } else if (houseOrRoommate == "house") {
       const rate: Partial<RateHouse> = {
         ratingMessage: comment,
@@ -53,15 +54,18 @@ export function Rate() {
 
       houseContext.rateHouse(id, rate);
 
-      alert("siker");
+      toast.success("Successfully rated house");
     }
 
+    setTimeout(() => {
     e.currentTarget.reset();
     setRating(0);
-    navigate(-1);
+    navigate(-1);}, 800);
   }
 
   return (
+    <>
+    <Toaster position="top-center"/>
     <div className="flex justify-center mt-10">
       <form className="form-scope" onSubmit={handleSubmit}>
         <Card className="form-card w-full max-w-sm p-4 overflow-hidden">
@@ -111,5 +115,6 @@ export function Rate() {
         </Card>
       </form>
     </div>
+    </>
   );
 }
