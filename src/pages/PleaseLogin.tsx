@@ -11,7 +11,7 @@ export function PleaseLogin(props: PleaseLoginProps) {
       <div className="my-button-scope">
         <Field className="text center flex-auto">
           <p>{props.text}</p>
-          <Button className="primary-btn" onClick={() => (navigate("/login"))}>
+          <Button className="login-btn" onClick={() => (navigate("/login"))}>
             Login
           </Button>
         </Field>
