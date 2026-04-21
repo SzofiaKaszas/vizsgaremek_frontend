@@ -8,7 +8,6 @@ import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
 import { /*useContext,*/ useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
-import { StarRating } from "./StarRating";
 import { useNavigate } from "react-router";
 import { Button } from "@base-ui/react";
 //import { UserContext } from "@/context/userContext";

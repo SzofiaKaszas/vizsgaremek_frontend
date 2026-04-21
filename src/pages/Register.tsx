@@ -16,6 +16,7 @@ import { isDate } from "date-fns";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate, type NavigateFunction } from "react-router";
 
+/**Add toast */
 export function Register() {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -154,7 +155,6 @@ export function Register() {
           <Field>
             <FieldLabel htmlFor="has-house">
               Do you want to rent out a house to others?
-              <span className="text-destructive">*</span>
               <Checkbox id="has-house" name="hasHouse"></Checkbox>
             </FieldLabel>
           </Field>
@@ -162,7 +162,6 @@ export function Register() {
           <Field>
             <FieldLabel htmlFor="looking-for-house">
               Are you looking for a house?
-              <span className="text-destructive">*</span>
               <Checkbox
                 id="looking-for-house"
                 name="lookingForHouse"
@@ -173,7 +172,6 @@ export function Register() {
           <Field>
             <FieldLabel htmlFor="looking-for-roommate">
               Are you looking for a roommate?
-              <span className="text-destructive">*</span>
               <Checkbox
                 id="looking-for-roommate"
                 name="lookingForRoommate"
@@ -271,7 +269,7 @@ async function handleSubmit(
 
   /** Email validation */
   if (!email) {
-    document.getElementById("emailErr")?.append("Give Email");
+    document.getElementById("emailErr")?.append("Please enter an email address");
     hasError = true;
   } else if (!regexEmail.test(email as string)) {
     document.getElementById("emailErr")?.append("Invalid Email");
@@ -292,7 +290,7 @@ async function handleSubmit(
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
-  const birth = (form.get("age") as string) || undefined;
+  const birth = (form.get("age") as string) || null;
   const birthDay = new Date(birth as string);
 
   if (!birthDay) {

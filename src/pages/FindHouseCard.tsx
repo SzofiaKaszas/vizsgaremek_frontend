@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 //import { UserContext } from "@/context/userContext";
 
+/**TODO: rearrange data */
 export function FindHouseCard(props: FindHouseProps) {
   const [housePrefList, sethousePrefList] = useState<HouseListing[]>([]);
   const [animatingId, setAnimatingId] = useState<number | null>(null);

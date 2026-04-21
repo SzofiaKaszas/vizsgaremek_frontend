@@ -7,7 +7,7 @@ export function errorCheckUser(response: Response) {
     case response.status === 401:
       throw new Error("Only the admin can do this");
     case response.status === 403:
-      throw new Error("Invalid credentials");
+      throw new Error("Wrong email or password");
     case response.status === 404:
       throw new Error("Wrong email or password");
     case response.status === 409:

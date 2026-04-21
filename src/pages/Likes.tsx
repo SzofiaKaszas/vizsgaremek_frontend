@@ -5,6 +5,7 @@ import type { User, HouseListing } from "@/interfaces";
 import { LikeUserCard } from "./LikedUserCard";
 import { LikedHouseCard } from "./LikedHouseCard";
 
+/**TODO: make a switch to choose which likes to display */
 export function Likes() {
   const [likedUsers, setLikedUsers] = useState<User[]>([]);
   const [likedHouses, setLikedHouses] = useState<HouseListing[]>([]);

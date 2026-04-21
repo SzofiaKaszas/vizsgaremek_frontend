@@ -182,12 +182,13 @@ export interface AuthContextType {
 //interface for the managemant of the user data in usercontext
 export interface UserContextType {
   userData: User | undefined;
-  //userdata
+
   getUserById: (id: number) => Promise<User>;
   changeUserData: (newData: Partial<User>) => void;
   //roommatepref
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
   getHasRoommatePref: () => Promise<boolean>;
+  getRoommatePref: () => Promise<RoommatePref | undefined>;
   editRoommatePref: (newData: Partial<RoommatePref>) => void;
   getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
@@ -208,6 +209,7 @@ export interface HouseContextType {
   deleteHouseListing: (idHouse: number) => Promise<void>;
   //housepref
   getHasHousePref: () => Promise<boolean>;
+  getHousePref: () => Promise<HousePref | undefined>;
   changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
   getMatches: () => Promise<HouseListing[]>;

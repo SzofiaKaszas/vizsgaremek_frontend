@@ -23,18 +23,22 @@ import { isDate } from "date-fns";
 export function EditProfile() {
   const context = useContext(UserContext);
 
+  const birthday = context.userData?.birthDay
+    ? new Date(context.userData.birthDay).toISOString().split("T")[0]
+    : "";
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="primary-btn">Edit Profile</Button>
       </DialogTrigger>
-      <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-">
+      <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-auto flex flex-col">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>You can edit your profile here</DialogDescription>
         </DialogHeader>
         <form
-        className="form-scope"
+          className="form-scope flex flex-col gap-4 overflow-y-auto"
           onSubmit={async (e) => {
             handleSubmit(e, context);
           }}
@@ -68,11 +72,17 @@ export function EditProfile() {
                 className="text-red-600 text-sm mt-1"
               ></FieldDescription>
             </Field>
-            <Field className="m-2">
+            <Field>
               <FieldLabel htmlFor="age">
                 Birthday <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input type="date" name="age" placeholder="20" id="age"></Input>
+              <Input
+                type="date"
+                name="age"
+                placeholder="20"
+                id="age"
+                defaultValue={birthday}
+              ></Input>
               <FieldDescription
                 id="ageErr"
                 className="text-red-600 text-sm mt-1"
@@ -153,9 +163,11 @@ export function EditProfile() {
               ></FieldDescription>
             </Field>
           </FieldGroup>
-          <DialogFooter>
+          <DialogFooter className="sticky bottom-0 bg-background pt-2">
             <div className="my-button-scope">
-              <Button type="submit" className="primary-btn">Save changes</Button>
+              <Button type="submit" className="primary-btn">
+                Save changes
+              </Button>
             </div>
           </DialogFooter>
         </form>
