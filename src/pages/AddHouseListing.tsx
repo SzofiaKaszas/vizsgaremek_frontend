@@ -34,6 +34,7 @@ export function AddHouseListing() {
   const housecontext = useContext(HouseContext);
   const usercontext = useContext(UserContext);
 
+  /**Check - manual tests */
   return (
     <div className="form-scope flex justify-center mt-10">
       <Card className="form-card w-full max-w-sm p-4">

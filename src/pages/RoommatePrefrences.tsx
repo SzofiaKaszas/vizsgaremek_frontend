@@ -18,10 +18,15 @@ import { Button } from "@/components/ui/button";
 import type { GoNextProp } from "@/interfaces";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { useNavigate, type NavigateFunction } from "react-router";
 
 /**TODO: If already has roommate pref, show the data in inputs */
 export function RoommatePrefrences({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
+
+  /*for navigation with react router*/
+  const navigate = useNavigate();
+
   const [ages, setAges] = useState<[number | undefined, number | undefined]>([
     25, 50,
   ]);
@@ -60,7 +65,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
       <form
         className="form-scope"
         onSubmit={async (e) => {
-          handleSubmit(e, context, ages, goNext);
+          handleSubmit(e, context, ages, goNext, navigate);
         }}
       >
         <CardTitle className="text-center text-xl font-bold p-2">
@@ -170,6 +175,7 @@ async function handleSubmit(
   context: React.ContextType<typeof UserContext>,
   ages: [number, number],
   goNext: () => void,
+  navigate: NavigateFunction
 ) {
   /**Prevent page refreshing */
   e.preventDefault();
@@ -226,7 +232,7 @@ async function handleSubmit(
         if (context.userData?.lookingForHouse) {
           goNext();
         } else {
-          window.location.href = "/main";
+          navigate("/main");
         }
       }, 800);
     } catch (err) {
@@ -241,7 +247,7 @@ async function handleSubmit(
         if (context.userData?.lookingForHouse) {
           goNext();
         } else {
-          window.location.href = "/main";
+          navigate("/main");
         }
       }, 800);
     } catch (err) {

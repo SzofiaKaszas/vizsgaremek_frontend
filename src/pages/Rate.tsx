@@ -3,7 +3,7 @@ import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Star } from "lucide-react";
 import { UserContext } from "@/context/userContext";
 import type { RateHouse, RateUser } from "@/interfaces";
@@ -18,6 +18,8 @@ export function Rate() {
 
   const userContext = useContext(UserContext);
   const houseContext = useContext(HouseContext);
+
+  const navigate = useNavigate();
 
   if (!id || !houseOrRoommate) {
     return <div>Missing data</div>;
@@ -56,12 +58,13 @@ export function Rate() {
 
     e.currentTarget.reset();
     setRating(0);
+    navigate(-1);
   }
 
   return (
     <div className="flex justify-center mt-10">
       <form className="form-scope" onSubmit={handleSubmit}>
-        <Card className="form-card w-full max-w-sm p-4">
+        <Card className="form-card w-full max-w-sm p-4 overflow-hidden">
           <CardTitle className="text-center text-xl font-bold">
             Rating
           </CardTitle>
@@ -95,6 +98,7 @@ export function Rate() {
               name="comment"
               placeholder="Terrible living with him"
               required
+              className="w-full max-w-full whitespace-pre-wrap break-words"
             />
             <FieldDescription id="Err" className="text-red-600 text-sm" />
           </Field>

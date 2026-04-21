@@ -279,7 +279,6 @@ async function handleSubmit(
       occupation: occupation as string,
       connectionEmail: connectionEmail as string,
     });
-    context.setHasCompletedStepOne(true);
     toast.success("Profile data saved successfully");
 
     /* Wait a bit before going to the next step to ensure the user sees the success message */

@@ -170,6 +170,15 @@
   --color-text-light: oklch(0.9612 0 0); /* cool white */
   --color-accent: oklch(0.6239 0.2251 318.91); /* purple */
   --color-accent-hover: oklch(0.4882 0.2417 318.91); /* deep purple */
+
+  /*sziget colors*/
+  --color-menu-darkblue: oklch(0.1515 0.0913 279);
+  --color-text-yellow: oklch(0.9015 0.1806 97.94);
+  --color-text-pink: oklch(0.6566 0.24114305062004376 7.389546515057583);
+  --color-text-lighterpink: oklch(0.7103 0.19184319426533625 6.2152101457722555);
+  --color-shadow-pink: oklch(0.8162 0.1258 20.65);
+  --color-shadow-babyblue: oklch(0.7838 0.1061 256.76);
+  --color-bg-babypink: oklch(0.9074 0.0395 31.24);
 }
 
 @layer base {

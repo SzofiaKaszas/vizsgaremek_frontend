@@ -2,6 +2,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Home } from "lucide-react";
 
+/**TODO: Better main page this is shit + admin*/
 export function Main() {
   return (
     <div className="main-scope">

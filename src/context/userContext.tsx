@@ -23,14 +23,6 @@ const API_URL = "http://localhost:3000";
 const defaultUserContext: UserContextType = {
   userData: undefined as unknown as User,
 
-  hasCompletedStepOne: false,
-  hasCompletedStepTwo: false,
-  hasCompletedStepThree: false,
-
-  setHasCompletedStepOne: () => {},
-  setHasCompletedStepTwo: () => {},
-  setHasCompletedStepThree: () => {},
-
   getUserById: async (_id: number) => undefined as unknown as User,
   changeUserData: async (_newData: Partial<User>) => {},
   getHasRoommatePref: async () => false,
@@ -51,10 +43,6 @@ export function UserContextProvider(props: PropsWithChildren) {
 
   const [userData, setUserData] = useState<User | undefined>(undefined);
 
-  const [hasCompletedStepOne, setHasCompletedStepOne] = useState(false);
-  const [hasCompletedStepTwo, setHasCompletedStepTwo] = useState(false);
-  const [hasCompletedStepThree, setHasCompletedStepThree] = useState(false);
-
   async function getUser() {
     const response = await fetch(API_URL + `/user/me`, {
       method: "GET",
@@ -71,36 +59,14 @@ export function UserContextProvider(props: PropsWithChildren) {
   }
 
   useEffect(() => {
-    if (!currentUserId) {
-      setUserData(undefined);
-
-      setHasCompletedStepOne(false);
-      setHasCompletedStepTwo(false);
-      setHasCompletedStepThree(false);
-
-      return;
-    }
-
     (async () => {
       const user = await getUser();
       setUserData(user);
     })();
   }, [currentUserId]);
 
-  useEffect(() => {
-    console.log("STEP STATE:", hasCompletedStepOne);
-  }, [hasCompletedStepOne]);
-
   const contextValue: UserContextType = {
     userData,
-
-    hasCompletedStepOne,
-    hasCompletedStepTwo,
-    hasCompletedStepThree,
-
-    setHasCompletedStepOne,
-    setHasCompletedStepTwo,
-    setHasCompletedStepThree,
 
     async getUserById(id: number): Promise<User> {
       const response = await fetch(API_URL + `/user/${id}`, {

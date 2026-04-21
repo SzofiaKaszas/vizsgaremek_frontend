@@ -391,7 +391,10 @@ async function handleSubmit(
         minBathrooms: bathrooms ? Number(bathrooms) : null,
       });
       toast.success("House preferences saved successfully");
-      navigate("/main");
+      setTimeout(() => {
+        navigate("/main");
+      }, 800)
+
     } catch (err) {
       toast.error((err as Error).message);
       console.error("Error details:", err);
@@ -420,8 +423,8 @@ async function handleSubmit(
       });
       toast.success("House preferences saved successfully");
       setTimeout(() => {
-      navigate("/main");
-    }, 800);
+        navigate("/main");
+      }, 800);
     } catch (err) {
       toast.error((err as Error).message);
       console.error("Error details:", err);
