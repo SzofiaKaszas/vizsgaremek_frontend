@@ -16,6 +16,7 @@ import { isDate } from "date-fns";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate, type NavigateFunction } from "react-router";
 
+/**Add toast */
 export function Register() {
   const [showPassword, setShowPassword] = useState(false);
 
