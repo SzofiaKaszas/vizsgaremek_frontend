@@ -24,16 +24,16 @@ const defaultUserContext: UserContextType = {
   userData: undefined as unknown as User,
 
   getUserById: async (_id: number) => undefined as unknown as User,
-  changeUserData: async (_newData: Partial<User>) => {},
+  changeUserData: async (_newData: Partial<User>) => { },
   getHasRoommatePref: async () => false,
   getRoommatePref: async () => undefined as unknown as RoommatePref,
-  addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  addRoommatePref: async (_newData: Partial<RoommatePref>) => { },
+  editRoommatePref: async (_newData: Partial<RoommatePref>) => { },
   getMatches: async () => [] as UserNecesarry[],
-  changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  addLiked: async (_id: number) => {},
+  changeRoommatePref: async (_newData: Partial<RoommatePref>) => { },
+  addLiked: async (_id: number) => { },
   getLikes: async () => [] as User[],
-  rateUser: async (_id: number, _data: Partial<RateUser>) => {},
+  rateUser: async (_id: number, _data: Partial<RateUser>) => { },
 };
 
 export const UserContext = createContext(defaultUserContext);
@@ -59,6 +59,11 @@ export function UserContextProvider(props: PropsWithChildren) {
   }
 
   useEffect(() => {
+    if (!currentUserId) {
+      setUserData(undefined);
+      return;
+    }
+
     (async () => {
       const user = await getUser();
       setUserData(user);

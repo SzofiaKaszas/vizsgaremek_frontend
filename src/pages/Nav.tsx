@@ -1,167 +1,163 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router";
 import { AuthContext } from "../context/authContext";
 import { UserContext } from "../context/userContext";
 import {
-  NavigationMenu,
-  NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
-import {
   Sheet,
   SheetContent,
-  SheetDescription,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function NavBar() {
   const { currentUserId } = useContext(AuthContext);
   const { userData } = useContext(UserContext);
-  
+  const [open, setOpen] = useState(false);
+  const [_, setForceUpdate] = useState(0);
+
+  const navItems = [
+    { to: "/main", label: "Main" },
+    userData?.role === "admin" && { to: "/admin", label: "Admin" },
+    (userData?.lookingForPeople || userData === undefined) && {
+      to: "/findroomate",
+      label: "Roommates",
+    },
+    (userData?.lookingForHouse || userData === undefined) && {
+      to: "/findhouse",
+      label: "Houses",
+    },
+    userData && { to: "/likes", label: "Likes" },
+    (userData?.hasHouse || userData === undefined) && {
+      to: "/managehouselising",
+      label: "Listings",
+    },
+    currentUserId === undefined && { to: "/login", label: "Login" },
+  ].filter(Boolean) as { to: string; label: string }[];
+
+  useEffect(() => {
+  const sync = () => {
+    // force re-render trigger workaround
+    setForceUpdate((x) => x + 1);
+  };
+
+  window.addEventListener("auth-change", sync);
+
+  return () => window.removeEventListener("auth-change", sync);
+}, []);
+
   return (
-    <nav className="out-nav">
-      <div className="mx-auto flex items-center justify-between p-2">
-        {/**mobile */}
-        <div className="mobile-nav">
-          <Sheet>
-            <SheetTrigger asChild className="sm:hidden">
-              <Button className="sm:hidden" variant={"outline"}>
-                <Menu size={30} />
-              </Button>
+    <nav className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl">
+      <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+
+        {/* LEFT - HAMBURGER */}
+        <div className="sm:hidden">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <button className="relative w-8 h-8 flex items-center justify-center">
+
+                {/* HAMBURGER → X */}
+                <span
+                  className={`absolute h-0.5 w-6 bg-slate-800 transition-all duration-300 ${open ? "rotate-45" : "-translate-y-2"
+                    }`}
+                />
+                <span
+                  className={`absolute h-0.5 w-6 bg-slate-800 transition-all duration-300 ${open ? "opacity-0" : ""
+                    }`}
+                />
+                <span
+                  className={`absolute h-0.5 w-6 bg-slate-800 transition-all duration-300 ${open ? "-rotate-45" : "translate-y-2"
+                    }`}
+                />
+              </button>
             </SheetTrigger>
-            <SheetContent side="left">
-              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-              <SheetDescription className="sr-only">
-                Mobile navigation
-              </SheetDescription>
-              <div className="flex flex-col gap-4 mt-6">
-                <NavLink className={"navigation-menu_link"} to="/main">
-                  Main
-                </NavLink>
 
-                {userData?.role === "admin" && (
-                  <NavLink className={"navigation-menu_link"} to="/admin">
-                    Admin
-                  </NavLink>
-                )}
+            <SheetContent
+              side="left"
+              className="bg-white/95 backdrop-blur-xl border-r border-slate-200 p-0"
+            >
+              {/* SAFE AREA */}
+              <div className="pt-8 pb-[env(safe-area-inset-bottom)] px-6 flex flex-col">
 
-                {(userData?.lookingForPeople || userData === undefined) && (
-                  <NavLink className={"navigation-menu_link"} to="/findroomate">
-                    Roommate Find
-                  </NavLink>
-                )}
-
-                {(userData?.lookingForHouse || userData === undefined) && (
-                  <NavLink className={"navigation-menu_link"} to="/findhouse">
-                    House Listing Find
-                  </NavLink>
-                )}
-
-                {userData != undefined && (
-                  <NavLink className={"navigation-menu_link"} to="/likes">
-                    Likes
-                  </NavLink>
-                )}
-
-                {(userData?.hasHouse || userData === undefined) && (
+                {navItems.map((item) => (
                   <NavLink
-                    className={"navigation-menu_link"}
-                    to="/managehouselising"
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `py-4 text-base font-medium border-b border-slate-200 transition
+                      ${isActive
+                        ? "text-purple-600 scale-[1.03]"
+                        : "text-slate-700 hover:text-purple-600"
+                      }`
+                    }
                   >
-                    Your House Listings
+                    {item.label}
                   </NavLink>
-                )}
-
-                {currentUserId === undefined && (
-                  <NavLink className={"navigation-menu_link"} to="/login">
-                    Login
-                  </NavLink>
-                )}
+                ))}
               </div>
             </SheetContent>
           </Sheet>
         </div>
 
-        {/**desktop */}
-        <div className="flex-1 flex justify-center">
-          <NavigationMenu className="hidden sm:flex gap-3">
-            <NavigationMenuLink asChild>
-              <NavLink className={"navigation-menu_link"} to="/main">
-                Main
-              </NavLink>
-            </NavigationMenuLink>
-            {userData?.role === "admin" && (
-              <NavigationMenuLink asChild>
-                <NavLink className={"navigation-menu_link"} to="/admin">
-                  Admin
-                </NavLink>
-              </NavigationMenuLink>
-            )}
-
-            {(userData?.lookingForPeople || userData === undefined) && (
-              <NavigationMenuLink asChild>
-                <NavLink className={"navigation-menu_link"} to="/findroomate">
-                  Roomate Find
-                </NavLink>
-              </NavigationMenuLink>
-            )}
-
-            {(userData?.lookingForHouse || userData === undefined) && (
-              <NavigationMenuLink asChild>
-                <NavLink className={"navigation-menu_link"} to="/findhouse">
-                  House Listing Find
-                </NavLink>
-              </NavigationMenuLink>
-            )}
-
-            {
-              /*userData?.lookingForHouse === true || userData?.lookingForPeople === true ||*/ userData !=
-                undefined && (
-                <NavigationMenuLink asChild>
-                  <NavLink className={"navigation-menu_link"} to="/likes">
-                    Likes
-                  </NavLink>
-                </NavigationMenuLink>
-              )
-            }
-
-            {(userData?.hasHouse || userData === undefined) && (
-              <NavigationMenuLink asChild>
-                <NavLink
-                  className={"navigation-menu_link"}
-                  to="/managehouselising"
-                >
-                  Your House Listings
-                </NavLink>
-              </NavigationMenuLink>
-            )}
-
-            {currentUserId === undefined && (
-              <NavigationMenuLink asChild>
-                <NavLink className={"navigation-menu_link"} to="/login">
-                  Login
-                </NavLink>
-              </NavigationMenuLink>
-            )}
-          </NavigationMenu>
+        {/* CENTER - LOGO */}
+        <div className="flex-1 flex justify-center sm:justify-start">
+          <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent">
+            Roomie
+          </span>
         </div>
-        {currentUserId !== undefined && (
-          <>
-            <NavLink className={"navigation-menu_link"} to="/profile">
-              <Avatar className="avatar">
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                  className="grayscale"
-                />
-                <AvatarFallback>Profile</AvatarFallback>
+
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-4">
+
+          {/* DESKTOP NAV */}
+          <div className="hidden sm:flex items-center gap-6 mr-4">
+            {navItems.map((item) => (
+              <NavLink key={item.to} to={item.to}>
+                {({ isActive }) => (
+                  <span
+                    className={`relative text-[15px] font-semibold transition pb-1 cursor-pointer
+        ${isActive
+                        ? "text-purple-600 scale-105"
+                        : "text-slate-600 hover:text-purple-600"
+                      }`}
+                  >
+                    {item.label}
+
+                    {/* UNDERLINE */}
+                    <span
+                      className={`absolute left-0 -bottom-1 h-[2px] bg-purple-500 transition-all duration-300
+          ${isActive ? "w-full" : "w-0 group-hover:w-full"
+                        }`}
+                    />
+                  </span>
+                )}
+              </NavLink>
+            ))}
+          </div>
+
+          {/* NOTIFICATION */}
+          {currentUserId && (
+            <div className="relative">
+              <div className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition">
+                🔔
+              </div>
+              <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                3
+              </span>
+            </div>
+          )}
+
+          {/* AVATAR */}
+          {currentUserId && (
+            <NavLink to="/profile">
+              <Avatar className="h-9 w-9 ring-2 ring-transparent hover:ring-purple-500 transition">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>P</AvatarFallback>
               </Avatar>
             </NavLink>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </nav>
   );

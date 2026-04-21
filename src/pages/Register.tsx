@@ -19,181 +19,177 @@ import { useNavigate, type NavigateFunction } from "react-router";
 /**Add toast */
 export function Register() {
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
-
-  //needed for registration, but not for the component itself, so it is passed to the handleSubmit function
   const context = useContext(AuthContext);
 
   return (
-    <div className="flex justify-center mt-10">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 px-4 pt-24 pb-12 flex justify-center">
+      
       <form
-        className="form-scope"
+        className="w-full max-w-xl"
         onSubmit={(e) => {
           handleSubmit(e, context, navigate);
         }}
       >
-        {/**all fields required except for the checkboxes */}
-        <Card className="form-card w-full max-w-sm p-4">
-          <CardTitle className="text-center text-xl font-bold">
-            Register
+        <Card className="p-6 rounded-2xl shadow-xl border border-slate-200 bg-white/80 backdrop-blur">
+
+          {/* TITLE */}
+          <CardTitle className="text-2xl font-semibold text-center text-slate-800">
+            Create account
           </CardTitle>
-          <FieldGroup className="grid max-w-sm grid-cols-2">
+
+          <div className="space-y-4 mt-6">
+
+            {/* NAME */}
+            <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Field>
+                <FieldLabel className="text-slate-600 text-sm">
+                  First Name
+                </FieldLabel>
+                <Input
+                  type="text"
+                  name="firstName"
+                  placeholder="Lee"
+                  required
+                  className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
+                />
+                <FieldDescription id="nameErr" className="text-red-500 text-sm" />
+              </Field>
+
+              <Field>
+                <FieldLabel className="text-slate-600 text-sm">
+                  Last Name
+                </FieldLabel>
+                <Input
+                  type="text"
+                  name="lastName"
+                  placeholder="Jordan"
+                  required
+                  className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
+                />
+              </Field>
+            </FieldGroup>
+
+            {/* BIRTHDAY */}
             <Field>
-              <FieldLabel htmlFor="first-name">
-                First Name <span className="text-destructive">*</span>
+              <FieldLabel className="text-slate-600 text-sm">
+                Birthday
               </FieldLabel>
               <Input
-                type="text"
-                id="first-name"
-                name="firstName"
-                placeholder="Lee"
+                type="date"
+                name="age"
                 required
+                className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
               />
-              <FieldDescription
-                id="nameErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
+              <FieldDescription id="ageErr" className="text-red-500 text-sm" />
             </Field>
 
+            {/* PHONE */}
             <Field>
-              <FieldLabel htmlFor="last-name">
-                Last Name <span className="text-destructive">*</span>
+              <FieldLabel className="text-slate-600 text-sm">
+                Phone Number
               </FieldLabel>
               <Input
-                type="text"
-                id="last-name"
-                name="lastName"
-                placeholder="Jordan"
+                type="tel"
+                name="phoneNumber"
+                placeholder="+36 30 123 4567"
                 required
+                className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
               />
+              <FieldDescription id="phoneErr" className="text-red-500 text-sm" />
             </Field>
-          </FieldGroup>
 
-          <Field>
-            <FieldLabel htmlFor="age">
-              Birthday <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="date"
-              name="age"
-              placeholder="20"
-              id="age"
-              required
-            ></Input>
-            <FieldDescription
-              id="ageErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="phone-number">
-              Phone Number <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="tel"
-              id="phone-number"
-              name="phoneNumber"
-              placeholder="000-000-0000"
-              required
-            />
-            <FieldDescription
-              id="phoneErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="email">
-              Email <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="lee.jordan@gmail.com"
-              required
-            />
-            <FieldDescription
-              id="emailErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="password">
-              Password <span className="text-destructive">*</span>
-            </FieldLabel>
-
-            <div className="relative">
+            {/* EMAIL */}
+            <Field>
+              <FieldLabel className="text-slate-600 text-sm">
+                Email
+              </FieldLabel>
               <Input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                placeholder="password"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
                 required
-                className="pr-10"
+                className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
               />
+              <FieldDescription id="emailErr" className="text-red-500 text-sm" />
+            </Field>
 
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+            {/* PASSWORD */}
+            <Field>
+              <FieldLabel className="text-slate-600 text-sm">
+                Password
+              </FieldLabel>
+
+              <div className="relative mt-1">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                  className="rounded-lg border-slate-300 pr-10 focus:border-purple-500 focus:ring-purple-400"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600 transition"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+              <FieldDescription id="passwordErr" className="text-red-500 text-sm mt-1" />
+            </Field>
+
+            {/* OPTIONS */}
+            <div className="space-y-2 pt-2 border-t">
+
+              <div className="flex items-center gap-2">
+                <Checkbox id="has-house" name="hasHouse" />
+                <label htmlFor="has-house" className="text-sm text-slate-600 cursor-pointer">
+                  I want to rent out a house
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox id="looking-for-house" name="lookingForHouse" />
+                <label htmlFor="looking-for-house" className="text-sm text-slate-600 cursor-pointer">
+                  I am looking for a house
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox id="looking-for-roommate" name="lookingForRoommate" />
+                <label htmlFor="looking-for-roommate" className="text-sm text-slate-600 cursor-pointer">
+                  I am looking for a roommate
+                </label>
+              </div>
+
+              <FieldDescription id="backendErr" className="text-red-500 text-sm" />
             </div>
 
-            <FieldDescription
-              id="passwordErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <FieldSeparator />
-          <Field>
-            <FieldLabel htmlFor="has-house">
-              Do you want to rent out a house to others?
-              <Checkbox id="has-house" name="hasHouse"></Checkbox>
-            </FieldLabel>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="looking-for-house">
-              Are you looking for a house?
-              <Checkbox
-                id="looking-for-house"
-                name="lookingForHouse"
-              ></Checkbox>
-            </FieldLabel>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="looking-for-roommate">
-              Are you looking for a roommate?
-              <Checkbox
-                id="looking-for-roommate"
-                name="lookingForRoommate"
-              ></Checkbox>
-            </FieldLabel>
-            <FieldDescription
-              id="backendErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-
-          <div className="my-button-scope">
-            <Button variant={"default"} type="submit" className="primary-btn">
-              Register
+            {/* BUTTON */}
+            <Button
+              type="submit"
+              className="w-full rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium py-2 transition mt-4"
+            >
+              Create account
             </Button>
+
+            {/* LINK */}
+            <div className="text-center text-sm text-slate-500">
+              Already have an account?{" "}
+              <a href="/login" className="text-purple-600 font-medium hover:underline">
+                Sign in
+              </a>
+            </div>
+
           </div>
         </Card>
       </form>
     </div>
   );
 }
-
 /**creates a new user */
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,

@@ -7,91 +7,119 @@ import { UserContext } from "@/context/userContext";
 import { HouseContext } from "@/context/houseContext";
 import { PleaseLogin } from "./PleaseLogin";
 import { Field } from "@/components/ui/field";
-import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
+
 export function FindHouse() {
-  const [housePref, setHousePref] = useState<HouseListing[]>([]);
-  const isMobile = useIsMobile();
-  const [tab, setTab] = useState(isMobile ? "list" : "grid");
-  const [hasHousePref, setHasHousePref] = useState<boolean | null>(null);
-  const context = useContext(UserContext);
+  const userContext = useContext(UserContext);
   const houseContext = useContext(HouseContext);
-  const isLoggedIn = context.userData ? true : false;
   const navigate = useNavigate();
+
+  const isLoggedIn = !!userContext.userData;
+
+  const [housePref, setHousePref] = useState<HouseListing[]>([]);
+  const [hasHousePref, setHasHousePref] = useState<boolean | null>(null);
+  const [tab, setTab] = useState("grid");
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    houseContext.getMatches().then((prefs) => setHousePref(prefs));
-    houseContext.getHasHousePref().then((res) => {
-      setHasHousePref(res);
-    });
-  }, [isLoggedIn, context]);
+    houseContext.getMatches().then(setHousePref);
+    houseContext.getHasHousePref().then(setHasHousePref);
+  }, [isLoggedIn, houseContext]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTab(isMobile ? "list" : "grid");
   }, [isMobile]);
 
+  // ❌ not logged in
   if (!isLoggedIn) {
     return <PleaseLogin text="Please login to find houses" />;
   }
 
-  // Logged in but no house preference
+  // ❌ no setup
   if (hasHousePref === false) {
     return (
-      <div className="flex justify-center-safe content-center w-fit max-w-sm p-2 mx-auto mt-20">
-        <div className="my-button-scope">
-          <Field className="text center flex-auto">
-            <p>Set up profile to find houses</p>
-            <Button
-              className="primary-btn"
-              onClick={() => navigate("/setupprofile")}
-            >
-              Set Up Profile
-            </Button>
-          </Field>
+      <div className="flex justify-center mt-20 px-4">
+        <div className="w-full max-w-md rounded-xl border bg-background shadow-sm p-6 text-center space-y-4">
+          <p className="text-lg font-medium">
+            Set up your profile to start finding houses
+          </p>
+
+          <Button
+            className="primary-btn w-full"
+            onClick={() => navigate("/setupprofile")}
+          >
+            Set Up Profile
+          </Button>
         </div>
       </div>
     );
   }
 
-  // Still loading preference
+  // ⏳ loading
   if (hasHousePref === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center mt-20">
+        <p className="text-muted-foreground">Loading matches...</p>
+      </div>
+    );
   }
 
   return (
-    <>
-      <Tabs value={tab} onValueChange={setTab} className="find-scope relative">
-        <div className="tabs-wrapper flex w-full justify-end">
-          <TabsList className="tabs-list">
-            <TabsTrigger value="grid" className="tabs-trigger">
-              <LayoutGrid />
-            </TabsTrigger>
+    <div className="w-full max-w-6xl mx-auto px-4 mt-10 space-y-6">
 
-            <TabsTrigger value="list" className="tabs-trigger">
-              <GalleryHorizontal />
-            </TabsTrigger>
-          </TabsList>
+      {/* HEADER (same as roommate) */}
+      <div className="flex items-center justify-between border rounded-xl p-3 bg-background shadow-sm">
+
+        <div>
+          <h2 className="text-xl font-semibold">Find Houses</h2>
+          <p className="text-sm text-muted-foreground">
+            Discover listings and match with places
+          </p>
         </div>
 
-        <TabsContent value="grid">
-          <FindHouseCard isLoggedIn={isLoggedIn} housePref={housePref} />
+        <Tabs value={tab} onValueChange={setTab}>
+          <TabsList className="flex gap-1">
+            <TabsTrigger value="grid">
+              <LayoutGrid size={18} />
+            </TabsTrigger>
+
+            <TabsTrigger value="list">
+              <GalleryHorizontal size={18} />
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* CONTENT */}
+      <Tabs value={tab} onValueChange={setTab}>
+
+        <TabsContent value="grid" className="mt-4">
+          <FindHouseCard
+            isLoggedIn={isLoggedIn}
+            housePref={housePref}
+          />
         </TabsContent>
-        <TabsContent value="list">
+
+        <TabsContent value="list" className="mt-4">
           <div className="flex justify-center mt-10">
-            <h1 className="text-2xl font-bold text-center">Dolgozunk rajta</h1>
+            <h1 className="text-2xl font-bold text-center">
+              Dolgozunk rajta
+            </h1>
           </div>
         </TabsContent>
+
       </Tabs>
-    </>
+    </div>
   );
 }
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" ? window.innerWidth < 768 : false,
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
   );
 
   useEffect(() => {
