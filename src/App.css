@@ -1,0 +1,126 @@
+
+
+    /* --------------- SET UP --------------- */
+    .stepper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    /* grey line behind the colorful one -- animation */
+    .stepper-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--color-silver);
+        transform: translateY(-50%);
+    }
+
+    /* colorful line over the grey one - animation */
+    .stepper-progress {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        height: 3px;
+        background: var(--color-accent-hover);
+        transform: translateY(-50%);
+        transition: width 0.3s ease;
+    }
+
+    /* step circle design -- colors in tailwind classes */
+    .step-circle {
+        position: relative;
+        z-index: 10;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid transparent;
+        transition: all 0.25s ease;
+        cursor: pointer;
+    }
+
+
+    /* slider design -- it has its own scope */
+    .age-slider-scope [data-slot="slider"] {
+        width: 100%;
+        height: 28px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* background line color -- and so its seen */
+    .age-slider-scope [data-slot="slider-track"] {
+        width: 100%;
+        height: 4px;
+        background: var(--color-silver);
+    }
+
+    /* the actual range (colored part) */
+    .age-slider-scope [data-slot="slider-range"] {
+        position: absolute;
+        height: 4px;
+        background: var(--color-accent-hover);
+    }
+
+    /* style of the slider "buttons" that you slide */
+    .age-slider-scope [data-slot="slider-thumb"] {
+        width: 20px;
+        height: 20px;
+        background: var(--color-text-light);
+        border: 3px solid var(--color-accent);
+        border-radius: 30%;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    /* "buttons" when hovered */
+    .age-slider-scope [data-slot="slider-thumb"]:hover {
+        background: var(--color-shadow-babyblue);
+        transform: scale(1.1);
+    }
+
+
+/*------------- SWIPE ANIMATION ------------- */
+/* when liking or disliking a user/house */
+@keyframes swipe-right {
+    0% {
+        transform: translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(300px) rotate(15deg);
+        opacity: 0;
+    }
+}
+
+@keyframes swipe-left {
+    0% {
+        transform: translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-300px) rotate(-15deg);
+        opacity: 0;
+    }
+}
+
+.swipe-right {
+    animation: swipe-right 0.25s ease-out forwards;
+}
+
+.swipe-left {
+    animation: swipe-left 0.25s ease-out forwards;
+}

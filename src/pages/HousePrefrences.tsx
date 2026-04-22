@@ -25,11 +25,9 @@ import filter from "leo-profanity";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
-/**TODO: If already has house pref, show the data in inputs */
 export function HousePrefrences() {
   const userContext = useContext(UserContext);
   const context = useContext(HouseContext);
-
   const navigate = useNavigate();
 
   const [maxRent, setMaxRent] = useState<number | null>(null);
@@ -43,6 +41,7 @@ export function HousePrefrences() {
   const [minBathrooms, setMinBathrooms] = useState<number | null>(null);
 
   const [hasHousePref, setHasHousePref] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       const hasHousePreff = await context.getHasHousePref();
@@ -50,10 +49,8 @@ export function HousePrefrences() {
 
       if (hasHousePreff) {
         const housePref = await context.getHousePref();
-        if (!housePref) {
-          alert("Error fetching house preferences");
-          return;
-        }
+        if (!housePref) return;
+
         setMaxRent(housePref.maxRent);
         setMinSquareMeters(housePref.minSquareMeters);
         setMinRooms(housePref.minRooms);
@@ -68,73 +65,94 @@ export function HousePrefrences() {
 
     fetchData();
   }, [context]);
+
   return (
     <>
       <Toaster position="top-center" />
+
       <form
-        className="form-scope"
+        className="space-y-5 px-1 sm:px-2"
         onSubmit={(e) => handleSubmit(e, userContext, context, navigate)}
       >
-        <CardTitle className="text-center text-xl font-bold">
-          House Preference
-        </CardTitle>
+        {/* HEADER */}
+        <div className="text-center space-y-1">
+          <CardTitle className="text-lg sm:text-xl font-semibold">
+            House Preferences
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Define your ideal home
+          </p>
+        </div>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="rent">Max rent:</FieldLabel>
-          <Input
-            type="number"
-            id="rent"
-            name="rent"
-            placeholder="300 000"
-            value={maxRent ?? ""}
-            onChange={(e) =>
-              setMaxRent(e.target.value ? Number(e.target.value) : null)
-            }
-          ></Input>
-          <FieldDescription
-            id="rentErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
-        </Field>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="sqmeter">Minimum square meters:</FieldLabel>
-          <Input
-            type="number"
-            id="sqmeter"
-            name="sqmeter"
-            placeholder="5"
-            value={minSquareMeters ?? ""}
-            onChange={(e) =>
-              setMinSquareMeters(e.target.value ? Number(e.target.value) : null)
-            }
-          ></Input>
-          <FieldDescription
-            id="sqmeterErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
-        </Field>
+          <Field>
+            <FieldLabel htmlFor="rent">Max rent</FieldLabel>
+            <Input
+              type="number"
+              id="rent"
+              name="rent"
+              placeholder="300 000"
+              value={maxRent ?? ""}
+              onChange={(e) =>
+                setMaxRent(e.target.value ? Number(e.target.value) : null)
+              }
+            />
+            <FieldDescription id="rentErr" className="text-xs text-red-500" />
+          </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="minRoom">Minimum rooms:</FieldLabel>
-          <Input
-            type="number"
-            id="minRooms"
-            name="rooms"
-            placeholder="3"
-            value={minRooms ?? ""}
-            onChange={(e) =>
-              setMinRooms(e.target.value ? Number(e.target.value) : null)
-            }
-          ></Input>
-          <FieldDescription
-            id="minRoomsErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
-        </Field>
+          <Field>
+            <FieldLabel htmlFor="sqmeter">Min m²</FieldLabel>
+            <Input
+              type="number"
+              id="sqmeter"
+              name="sqmeter"
+              placeholder="50"
+              value={minSquareMeters ?? ""}
+              onChange={(e) =>
+                setMinSquareMeters(
+                  e.target.value ? Number(e.target.value) : null
+                )
+              }
+            />
+            <FieldDescription id="sqmeterErr" className="text-xs text-red-500" />
+          </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="city">City:</FieldLabel>
+          <Field>
+            <FieldLabel htmlFor="minRoom">Min rooms</FieldLabel>
+            <Input
+              type="number"
+              id="minRooms"
+              name="rooms"
+              placeholder="2"
+              value={minRooms ?? ""}
+              onChange={(e) =>
+                setMinRooms(e.target.value ? Number(e.target.value) : null)
+              }
+            />
+            <FieldDescription id="minRoomsErr" className="text-xs text-red-500" />
+          </Field>
+
+          {/* BATHROOMS */}
+          <Field>
+            <FieldLabel htmlFor="bathrooms">Min bathrooms</FieldLabel>
+            <Input
+              type="number"
+              id="bathrooms"
+              name="bathrooms"
+              placeholder="1"
+              value={minBathrooms ?? ""}
+              onChange={(e) =>
+                setMinBathrooms(Number(e.target.value) || null)
+              }
+            />
+            <FieldDescription id="bathroomsErr" className="text-xs text-red-500" />
+          </Field>
+        </div>
+
+        {/* CITY FULL WIDTH */}
+        <Field>
+          <FieldLabel htmlFor="city">City</FieldLabel>
           <Input
             type="text"
             id="city"
@@ -142,15 +160,14 @@ export function HousePrefrences() {
             placeholder="Budapest"
             value={city ?? ""}
             onChange={(e) => setCity(e.target.value)}
-          ></Input>
-          <FieldDescription
-            id="cityErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+          />
+          <FieldDescription id="cityErr" className="text-xs text-red-500" />
         </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="property">Property type:</FieldLabel>
+        <div className="space-y-3">
+
+          <Field>
+          <FieldLabel htmlFor="property">Property type</FieldLabel>
           <Combobox
             items={Property}
             value={propertyType}
@@ -178,15 +195,15 @@ export function HousePrefrences() {
           ></FieldDescription>
         </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="heating">Heating type:</FieldLabel>
+          <Field>
+          <FieldLabel htmlFor="heating">Heating</FieldLabel>
           <Combobox
             items={Heating}
             value={heatingType}
             onValueChange={(value) => setHeatingType(value ?? "")}
           >
             <ComboboxInput
-              placeholder="Select heating type"
+              placeholder="Select heating"
               id="heating"
               name="heatingType"
             />
@@ -207,8 +224,8 @@ export function HousePrefrences() {
           ></FieldDescription>
         </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="furnishing">Furnishing:</FieldLabel>
+          <Field>
+          <FieldLabel htmlFor="furnishing">Furnishing</FieldLabel>
           <Combobox
             items={Furnishing}
             value={furnishing}
@@ -236,8 +253,8 @@ export function HousePrefrences() {
           ></FieldDescription>
         </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="kitchen">Kitchen furnishing:</FieldLabel>
+          <Field>
+          <FieldLabel htmlFor="kitchen">Kitchen furnishing</FieldLabel>
           <Combobox
             items={KitchenFurnishing}
             value={kitchenFurnishing}
@@ -265,38 +282,30 @@ export function HousePrefrences() {
           ></FieldDescription>
         </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="bathrooms">Minimum bathrooms:</FieldLabel>
-          <Input
-            type="number"
-            id="bathrooms"
-            name="bathrooms"
-            placeholder="1"
-            value={minBathrooms ?? ""}
-            onChange={(e) => setMinBathrooms(Number(e.target.value) || null)}
-          ></Input>
-          <FieldDescription
-            id="bathroomsErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
-        </Field>
+        </div>
 
-        <div className="my-button-scope">
-          <Button variant={"default"} type="submit" className="primary-btn m-1">
+        {/* BUTTONS */}
+        <div className="space-y-2 pt-2">
+          <Button
+            type="submit"
+            className="w-full rounded-xl bg-accent hover:bg-accent/90"
+          >
             Next
           </Button>
-          {
-            /*hasHousePref ? */ <Button
-              variant={"outline"}
-              type="button"
-              className="sec-btn m-1"
-              onClick={() => {
-                navigate("/profile");
-              }}
-            >
-              Skip
-            </Button> /*: <></>*/
-          }
+
+          <Button
+            type="button"
+            variant="outline"
+            className="
+              w-full
+              border-accent text-accent
+              rounded-xl
+              py-2.5
+            "
+            onClick={() => navigate("/profile")}
+          >
+            Skip
+          </Button>
         </div>
       </form>
     </>

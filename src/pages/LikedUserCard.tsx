@@ -1,156 +1,203 @@
 import { Card } from "@/components/ui/card";
-import { Field, FieldDescription } from "@/components/ui/field";
-import type { LikedUserProps, User } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
-import { /*useContext,*/ useContext, useEffect, useState } from "react";
-import { Heart } from "lucide-react";
-import { UserContext } from "@/context/userContext";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Button } from "@base-ui/react";
-//import { UserContext } from "@/context/userContext";
+import type { LikedUserProps, User, UserNecesarry } from "@/interfaces";
+import { UserContext } from "@/context/userContext";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
 
 export function LikeUserCard(props: LikedUserProps) {
-  const [likedUsers, setLikedUsers] = useState<User[]>(props.likedUsers);
-
-  const [animatingId, setAnimatingId] = useState<number | null>(null);
-  const [direction, setDirection] = useState<"left" | "right" | null>(null);
-  const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
-    null,
-  );
+  const [likedUsers, setLikedUsers] = useState<UserNecesarry[]>([]);
+  const [fullUsers, setFullUsers] = useState<Record<number, User>>({});
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    async function set() {
-      setLikedUsers(await props.likedUsers);
-    }
-    set();
-  }, [props.likedUsers]);
-
-  function removeUser(id: number) {
-    setLikedUsers((prev) => prev.filter((user) => user.idUser !== id));
-  }
-
   const context = useContext(UserContext);
 
-  async function LikeClick(id: number) {
-    await context.addLiked(id);
+  useEffect(() => {
+    setLikedUsers(props.likedUsers);
+  }, [props.likedUsers]);
+
+  useEffect(() => {
+    if (!likedUsers.length) return;
+
+    let cancelled = false;
+
+    async function fetchFullUsers() {
+      setLoading(true);
+
+      const result: Record<number, User> = {};
+
+      await Promise.all(
+        likedUsers.map(async (u) => {
+          const full = await context.getUserById(u.idUser);
+          result[u.idUser] = full;
+        })
+      );
+
+      if (!cancelled) {
+        setFullUsers(result);
+        setLoading(false);
+      }
+    }
+
+    fetchFullUsers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [likedUsers, context]);
+
+  function removeUser(id: number) {
+    setLikedUsers((prev) => prev.filter((u) => u.idUser !== id));
   }
 
-  if (
-    likedUsers == undefined ||
-    (likedUsers.length === 0 && props.isLoggedIn)
-  ) {
+  async function toggleLike(id: number) {
+    await context.addLiked(id);
+    removeUser(id);
+  }
+
+  if (!props.isLoggedIn) {
+    return <PleaseLogin text="Please login to view liked users" />;
+  }
+
+  function getAge(birthDay?: Date) {
+    if (!birthDay) return "Unknown";
+
+    const date = new Date(birthDay);
+    if (isNaN(date.getTime())) return "Unknown";
+
+    const now = new Date();
+    let age = now.getFullYear() - date.getFullYear();
+
+    const hasHadBirthday =
+      now.getMonth() > date.getMonth() ||
+      (now.getMonth() === date.getMonth() &&
+        now.getDate() >= date.getDate());
+
+    if (!hasHadBirthday) age--;
+
+    return age;
+  }
+
+  if (loading || !likedUsers.length) {
     return (
-      <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
-        You havent liked any roommates yet.
-      </div>
+      <p className="text-muted-foreground text-center mt-6">
+        You haven't liked anyone yet.
+      </p>
     );
   }
 
-  return props.isLoggedIn === true ? (
-    <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
-      {likedUsers.map((pref) => (
-        <Card
-          className={`
-    col-auto card w-full p-4
-    ${animatingId === pref.idUser && direction === "right" ? "swipe-right" : ""}
-    ${animatingId === pref.idUser && direction === "left" ? "swipe-left" : ""}
-  `}
-          onAnimationEnd={async () => {
-            if (animatingId === pref.idUser) {
-              if (pendingAction === "like") {
-                LikeClick(pref.idUser);
-              }
-              removeUser(pref.idUser);
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-              setAnimatingId(null);
-              setDirection(null);
-              setPendingAction(null);
-            }
-          }}
-        >
-          <Carousel>
-            <CarouselContent className="image-wrapper">
-              <img
-                src="https://github.com/shadcn.png"
-                alt={`${pref.firstName} ${pref.lastName}'s profile picture`}
-                className="w-full h-48 object-cover rounded-md"
-              />
-            </CarouselContent>
-          </Carousel>
-          <Field>
-            {pref.firstName} {pref.lastName} - {getAge(pref.birthDay)}
-            <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
-          </Field>
-          <Field>{pref.userBio}</Field>
-          <Field>Language: {whatToShow(pref.language)}</Field>
-          <Field>Occupation: {whatToShow(pref.occupation)}</Field>
-          <div className="w-full flex gap-4 justify-center">
-            <button
-              className="likeButton h-10 w-10 rounded-full flex items-center justify-center"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                setAnimatingId(pref.idUser);
-                setDirection("right");
-                setPendingAction("like");
-              }}
-            >
-              <Heart fill="red" stroke="red" />
-            </button>
-            <div className="my-button-scope">
-              <Button
-                data-dialog-ignore
-                onClick={(e) => {
-                  e.stopPropagation(); // prevent dialog
+      {likedUsers.map((user) => {
+        const full = fullUsers[user.idUser];
+
+        return (
+          <Card
+            key={user.idUser}
+            className="p-5 space-y-4 hover:shadow-lg transition"
+          >
+
+            {/* HEADER */}
+            <div className="flex gap-4 items-center">
+
+              {/* IMAGE GALLERY */}
+              <div className="space-y-2">
+
+                {/* MAIN IMAGE */}
+                <Carousel>
+                  <CarouselContent className="image-wrapper">
+                    <div className="w-full h-52 rounded-xl overflow-hidden bg-muted">
+                      <img
+                        src={
+                          "https://github.com/shadcn.png"
+                        }
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </CarouselContent>
+                </Carousel>
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">
+                  {user.firstName} {user.lastName}
+                </h3>
+
+                <p className="text-sm text-muted-foreground">
+                  {user.gender ?? "Not specified"}
+                </p>
+              </div>
+
+            </div>
+
+            {/* BIO */}
+            <p className="text-sm text-muted-foreground border-l-2 border-purple-400 pl-3">
+              {user.userBio ?? "No bio available"}
+            </p>
+
+            {/* FULL DATA (hydrated) */}
+            {full ? (
+              <div className="grid grid-cols-2 gap-2 text-sm">
+
+                <div>
+                  <span className="text-muted-foreground">Age</span>
+                  <p className="font-medium break-all">{full ? getAge(full.birthDay) : "N/A"}</p>
+                </div>
+
+                <div>
+                  <span className="text-muted-foreground">Language</span>
+                  <p className="font-medium">{full.language ?? "N/A"}</p>
+                </div>
+
+                <div>
+                  <span className="text-muted-foreground">Occupation</span>
+                  <p className="font-medium">{full.occupation ?? "N/A"}</p>
+                </div>
+
+                <div>
+                  <span className="text-muted-foreground">Email</span>
+                  <p className="font-medium break-all">{full.email}</p>
+                </div>
+
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Loading details...
+              </p>
+            )}
+
+            {/* ACTIONS */}
+            <div className="flex justify-between pt-3 border-t">
+
+              <button
+                onClick={() => toggleLike(user.idUser)}
+                className="text-sm text-muted-foreground hover:text-red-500 transition"
+              >
+                Unlike
+              </button>
+
+              <button
+                onClick={() =>
                   navigate("/rate", {
                     state: {
-                      id: pref.idUser,
+                      id: user.idUser,
                       houseOrRoommate: "roommate",
                     },
-                  });
-                }}
-                className="primary-btn"
+                  })
+                }
+                className="px-3 py-1 rounded-md text-sm bg-purple-100 text-purple-700 hover:bg-purple-200 transition"
               >
                 Rate
-              </Button>
+              </button>
+
             </div>
-          </div>
-        </Card>
-      ))}
+
+          </Card>
+        );
+      })}
+
     </div>
-  ) : (
-    <PleaseLogin text="Please login to find a roommate" />
   );
-}
-
-function getAge(birthDay: Date | undefined) {
-  if (!birthDay) return "Unknown";
-
-  const date = birthDay instanceof Date ? birthDay : new Date(birthDay);
-
-  if (isNaN(date.getTime())) return "Unknown";
-
-  const now = new Date();
-  let age = now.getFullYear() - date.getFullYear();
-
-  const hasHadBirthdayThisYear =
-    now.getMonth() > date.getMonth() ||
-    (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
-
-  if (!hasHadBirthdayThisYear) {
-    age -= 1;
-  }
-
-  return age;
-}
-
-function whatToShow(string: string | undefined | null) {
-  if (string === undefined || string === "" || string === null) {
-    return "Not specified";
-  } else {
-    return string;
-  }
 }

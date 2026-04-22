@@ -136,8 +136,8 @@ export function NavBar() {
             ))}
           </div>
 
-          {/* NOTIFICATION */}
-          {currentUserId && (
+          
+          {/*currentUserId && (
             <div className="relative">
               <div className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition">
                 🔔
@@ -146,7 +146,7 @@ export function NavBar() {
                 3
               </span>
             </div>
-          )}
+          )*/}
 
           {/* AVATAR */}
           {currentUserId && (

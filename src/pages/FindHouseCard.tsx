@@ -4,30 +4,27 @@ import type { FindHouseProps, HouseListing } from "@/interfaces";
 import { useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
 import { HouseContext } from "@/context/houseContext";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
 
 export function FindHouseCard(props: FindHouseProps) {
-  const [housePrefList, setHousePrefList] = useState<HouseListing[]>([]);
+  const [list, setList] = useState<HouseListing[]>([]);
   const context = useContext(HouseContext);
 
   useEffect(() => {
-    async function load() {
-      const data = await props.housePref;
-      setHousePrefList(data);
-    }
-    load();
+    setList(props.housePref);
   }, [props.housePref]);
 
-  function removeHouse(id: number) {
-    setHousePrefList((prev) => prev.filter((h) => h.idHouse !== id));
-  }
-
-  async function likeHouse(id: number) {
+  async function like(id: number) {
     await context.addLiked(id);
-    removeHouse(id);
+    next();
   }
 
-  function dislikeHouse(id: number) {
-    removeHouse(id);
+  function dislike() {
+    next();
+  }
+
+  function next() {
+    setList((prev) => prev.slice(1));
   }
 
   if (!props.isLoggedIn) {
@@ -38,7 +35,7 @@ export function FindHouseCard(props: FindHouseProps) {
     );
   }
 
-  if (housePrefList.length === 0) {
+  if (list.length === 0) {
     return (
       <div className="text-center mt-10 text-muted-foreground">
         No more houses available
@@ -46,45 +43,43 @@ export function FindHouseCard(props: FindHouseProps) {
     );
   }
 
-  const active = housePrefList[0];
-  const preview = housePrefList.slice(1, 4);
+  const active = list[0];
+  const preview = list.slice(1, 4);
 
   return (
-    <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-3 gap-10">
+    <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-      {/* LEFT PREVIEW */}
-      <div className="space-y-4">
-        {preview.map((pref) => (
-          <Card
-            key={pref.idHouse}
-            className="p-4 opacity-60 scale-[0.95]"
-          >
+      {/* LEFT STACK */}
+      <div className="space-y-3 order-2 lg:order-1">
+        {preview.map((p) => (
+          <Card key={p.idHouse} className="p-3 opacity-60">
             <div className="font-medium">
-              {pref.city}, {pref.location}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {pref.rent} Ft • {pref.squareMeter} m²
+              {p.city}, {p.location}
             </div>
           </Card>
         ))}
       </div>
 
-      {/* MAIN CARD */}
-      <div className="flex justify-center">
-        <Card className="w-full h-[560px] p-5 flex flex-col justify-between shadow-lg">
+      {/* CENTER */}
+      <div className="order-1 lg:order-2">
+        <Card className="p-5 min-h-[520px] flex flex-col justify-between">
 
           <div>
-            <img
-              src="https://github.com/shadcn.png"
-              className="w-full h-56 object-cover rounded-md mb-4"
-            />
+            <Carousel>
+              <CarouselContent className="image-wrapper">
+                <img
+                  src="https://github.com/shadcn.png"
+                  className="w-full h-56 object-cover rounded-md mb-4"
+                />
+              </CarouselContent>
+            </Carousel>
 
             <Field>
               <div className="text-lg font-semibold">
                 {active.city}, {active.location}
               </div>
               <FieldDescription>
-                {active.description}
+                {active.description ?? "No description"}
               </FieldDescription>
             </Field>
 
@@ -99,28 +94,33 @@ export function FindHouseCard(props: FindHouseProps) {
           </div>
 
           {/* ACTIONS */}
-          <div className="flex justify-between mt-6">
-            <button
-              className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center"
-              onClick={() => dislikeHouse(active.idHouse)}
-            >
-              <ThumbsDown />
-            </button>
+          <div className="pt-6 pb-2">
+            <div className="flex justify-between">
+              <button
+                onClick={dislike}
+                className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <ThumbsDown />
+              </button>
 
-            <button
-              className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center"
-              onClick={() => likeHouse(active.idHouse)}
-            >
-              <Heart />
-            </button>
+              <button
+                onClick={() => like(active.idHouse)}
+                className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <Heart />
+              </button>
+            </div>
           </div>
         </Card>
       </div>
 
-      {/* RIGHT PANEL */}
-      <div>
-        <Card className="p-5 h-[560px]">
-          <h2 className="text-lg font-semibold mb-4">House details</h2>
+      {/* RIGHT DETAILS */}
+      <div className="order-3">
+        <Card className="p-5 min-h-[520px]">
+
+          <h2 className="text-lg font-semibold mb-4">
+            House details
+          </h2>
 
           <div className="space-y-2 text-sm">
             <p><b>Heating:</b> {active.heatingType}</p>
@@ -128,6 +128,7 @@ export function FindHouseCard(props: FindHouseProps) {
             <p><b>Kitchen:</b> {active.kitchenLevel}</p>
             <p><b>Air conditioning:</b> {active.airConditioner ? "Yes" : "No"}</p>
           </div>
+
         </Card>
       </div>
 

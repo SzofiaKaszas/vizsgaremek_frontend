@@ -4,11 +4,13 @@ import { HouseContext } from "@/context/houseContext";
 import type { User, HouseListing } from "@/interfaces";
 import { LikeUserCard } from "./LikedUserCard";
 import { LikedHouseCard } from "./LikedHouseCard";
+import { PleaseLogin } from "./PleaseLogin";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-/**TODO: make a switch to choose which likes to display */
 export function Likes() {
   const [likedUsers, setLikedUsers] = useState<User[]>([]);
   const [likedHouses, setLikedHouses] = useState<HouseListing[]>([]);
+  const [tab, setTab] = useState("users");
 
   const userContext = useContext(UserContext);
   const houseContext = useContext(HouseContext);
@@ -29,23 +31,56 @@ export function Likes() {
     loadLikes();
   }, [isLoggedIn]);
 
-  return (
-    <div className="w-full flex flex-col gap-10 px-4 py-6">
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Liked Roommates</h2>
-        <LikeUserCard 
-          isLoggedIn={isLoggedIn} 
-          likedUsers={likedUsers} 
-        />
-      </section>
+  if (!isLoggedIn) {
+    return <PleaseLogin text="Please login to view your likes" />;
+  }
 
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Liked Houses</h2>
-        <LikedHouseCard 
-          isLoggedIn={isLoggedIn} 
-          likedHouses={likedHouses} 
-        />
-      </section>
+  return (
+    <div className="w-full max-w-6xl mx-auto px-4 mt-10 space-y-6">
+
+      {/* HEADER */}
+      <div className="rounded-xl border bg-background shadow-sm p-5 flex items-center justify-between">
+
+        <div>
+          <h2 className="text-xl font-semibold">Your Likes</h2>
+          <p className="text-sm text-muted-foreground">
+            Manage your liked roommates and houses
+          </p>
+        </div>
+
+        {/* SWITCH */}
+        <Tabs value={tab} onValueChange={setTab}>
+          <TabsList className="bg-muted p-1 rounded-lg">
+            <TabsTrigger value="users">
+              Roommates
+            </TabsTrigger>
+            <TabsTrigger value="houses">
+              Houses
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+      </div>
+
+      {/* CONTENT */}
+      <Tabs value={tab} onValueChange={setTab}>
+
+        <TabsContent value="users" className="mt-4">
+          <LikeUserCard
+            isLoggedIn={isLoggedIn}
+            likedUsers={likedUsers}
+          />
+        </TabsContent>
+
+        <TabsContent value="houses" className="mt-4">
+          <LikedHouseCard
+            isLoggedIn={isLoggedIn}
+            likedHouses={likedHouses}
+          />
+        </TabsContent>
+
+      </Tabs>
+
     </div>
   );
 }

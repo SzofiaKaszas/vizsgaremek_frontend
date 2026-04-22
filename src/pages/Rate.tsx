@@ -1,13 +1,11 @@
 import { Card, CardTitle } from "@/components/ui/card";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { Textarea } from "@/components/ui/textarea";
 import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router";
 import { Star } from "lucide-react";
 import { UserContext } from "@/context/userContext";
-import type { RateHouse, RateUser } from "@/interfaces";
 import { HouseContext } from "@/context/houseContext";
+import type { RateHouse, RateUser } from "@/interfaces";
 import { toast, Toaster } from "sonner";
 
 export function Rate() {
@@ -19,102 +17,128 @@ export function Rate() {
 
   const userContext = useContext(UserContext);
   const houseContext = useContext(HouseContext);
-
   const navigate = useNavigate();
 
   if (!id || !houseOrRoommate) {
-    return <div>Missing data</div>;
+    return (
+      <div className="text-center mt-10 text-muted-foreground">
+        Missing data
+      </div>
+    );
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const form = new FormData(e.currentTarget);
     const comment = form.get("comment")?.toString() || "";
 
-    console.log("ID:", id);
-    console.log("Type:", houseOrRoommate);
-    console.log("Rating:", rating);
-    console.log("Comment:", comment);
-
-    if (houseOrRoommate == "roommate") {
+    if (houseOrRoommate === "roommate") {
       const rate: Partial<RateUser> = {
         ratingMessage: comment,
         ratingScore: rating,
       };
 
-      userContext.rateUser(id, rate);
-
+      await userContext.rateUser(id, rate);
       toast.success("Successfully rated roommate");
-    } else if (houseOrRoommate == "house") {
+    }
+
+    if (houseOrRoommate === "house") {
       const rate: Partial<RateHouse> = {
         ratingMessage: comment,
         ratingScore: rating,
       };
 
-      houseContext.rateHouse(id, rate);
-
+      await houseContext.rateHouse(id, rate);
       toast.success("Successfully rated house");
     }
 
-    setTimeout(() => {
-    e.currentTarget.reset();
-    setRating(0);
-    navigate(-1);}, 800);
+    setTimeout(() => navigate(-1), 600);
   }
 
   return (
     <>
-    <Toaster position="top-center"/>
-    <div className="flex justify-center mt-10">
-      <form className="form-scope" onSubmit={handleSubmit}>
-        <Card className="form-card w-full max-w-sm p-4 overflow-hidden">
-          <CardTitle className="text-center text-xl font-bold">
-            Rating
-          </CardTitle>
+      <Toaster position="top-center" />
 
-          <Field>
-            <FieldLabel>How many stars?</FieldLabel>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((star) => {
-                const filled = hover !== null ? star <= hover : star <= rating;
+      <div className="min-h-screen flex items-center justify-center px-4 bg-background">
 
-                return (
-                  <Star
-                    key={star}
-                    size={22}
-                    className="cursor-pointer transition-all"
-                    fill={filled ? "gold" : "none"}
-                    stroke={filled ? "gold" : "gray"}
-                    onMouseEnter={() => setHover(star)}
-                    onMouseLeave={() => setHover(null)}
-                    onClick={() => setRating(star)}
-                  />
-                );
-              })}
+        <form onSubmit={handleSubmit} className="w-full max-w-md">
+
+          <Card className="p-6 space-y-6 shadow-lg">
+
+            <CardTitle className="text-center text-2xl font-semibold">
+              Leave a rating
+            </CardTitle>
+
+            {/* STAR RATING */}
+            <div className="flex flex-col items-center gap-3">
+
+              <p className="text-sm text-muted-foreground">
+                How was your experience?
+              </p>
+
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((star) => {
+                  const filled =
+                    hover !== null ? star <= hover : star <= rating;
+
+                  return (
+                    <Star
+                      key={star}
+                      size={30}
+                      className="cursor-pointer transition-transform hover:scale-110"
+                      fill={filled ? "#a855f7" : "none"}
+                      stroke={filled ? "#a855f7" : "#bbb"}
+                      onMouseEnter={() => setHover(star)}
+                      onMouseLeave={() => setHover(null)}
+                      onClick={() => setRating(star)}
+                    />
+                  );
+                })}
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                {rating > 0 ? `${rating}/5 selected` : "Select a rating"}
+              </p>
             </div>
-          </Field>
 
-          <Field>
-            <FieldLabel htmlFor="comment">Your thoughts</FieldLabel>
-            <Textarea
-              id="comment"
-              name="comment"
-              placeholder="Terrible living with him"
-              required
-              className="w-full max-w-full whitespace-pre-wrap break-words"
-            />
-            <FieldDescription id="Err" className="text-red-600 text-sm" />
-          </Field>
+            {/* COMMENT */}
+            <div className="space-y-2">
 
-          <div className="my-button-scope">
-            <Button className="primary-btn" type="submit">
-              Rate
-            </Button>
-          </div>
-        </Card>
-      </form>
-    </div>
+              <label className="text-sm font-medium">
+                Your review
+              </label>
+
+              <textarea
+                name="comment"
+                placeholder="What was your experience like?"
+                required
+                className="
+                  w-full min-h-[120px]
+                  rounded-md border
+                  bg-background
+                  p-3 text-sm
+                  focus:outline-none focus:ring-2 focus:ring-purple-400
+                  resize-none
+                "
+              />
+            </div>
+
+            {/* ACTION */}
+            <div className="pt-2">
+              <Button
+                type="submit"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                Submit rating
+              </Button>
+            </div>
+
+          </Card>
+
+        </form>
+
+      </div>
     </>
   );
 }

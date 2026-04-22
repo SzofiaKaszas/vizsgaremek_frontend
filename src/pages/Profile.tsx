@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 import { EditProfile } from "./EditProfile";
 import { Logout } from "./Logout";
-import { Card, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   User,
@@ -66,7 +66,8 @@ export function Profile() {
               <EditProfile />
               <Button
                 onClick={() => (window.location.href = "/setupprofile")}
-                className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
+                className="rounded-xl px-4 py-2 text-white"
+                style={{ backgroundColor: "var(--color-accent)" }}
               >
                 Setup profile
               </Button>
@@ -132,10 +133,6 @@ export function Profile() {
     </div>
   );
 }
-
-/* =======================================================
-   SMALL COMPONENTS
-======================================================= */
 
 function InfoCard({
   icon,

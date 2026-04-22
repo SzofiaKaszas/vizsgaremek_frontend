@@ -1,167 +1,127 @@
 import { Card } from "@/components/ui/card";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
-import { Field, FieldDescription } from "@/components/ui/field";
+import { useState, useEffect, useContext } from "react";
 import type { HouseListing, LikedHouseProps } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
-import { useState, useEffect, useContext } from "react";
 import { Heart } from "lucide-react";
 import { HouseContext } from "@/context/houseContext";
 import { useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
 
 export function LikedHouseCard(props: LikedHouseProps) {
-  const [houses, setLikedHouses] = useState<HouseListing[]>([]);
-  const [animatingId, setAnimatingId] = useState<number | null>(null);
-  const [direction, setDirection] = useState<"left" | "right" | null>(null);
-  const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
-    null,
-  );
-
-  const houseContext = useContext(HouseContext);
+  const [houses, setHouses] = useState<HouseListing[]>([]);
   const navigate = useNavigate();
+  const houseContext = useContext(HouseContext);
 
   useEffect(() => {
-    async function set() {
-      setLikedHouses(await props.likedHouses);
-    }
-    set();
+    setHouses(props.likedHouses);
   }, [props.likedHouses]);
 
   function removeHouse(id: number) {
-    setLikedHouses((prev) => prev.filter((h) => h.idHouse !== id));
+    setHouses((prev) => prev.filter((h) => h.idHouse !== id));
   }
 
-  async function LikeClick(id: number) {
+  async function toggleLike(id: number) {
     await houseContext.addLiked(id);
+    removeHouse(id);
   }
 
   if (!props.isLoggedIn) {
-    return <PleaseLogin text="Please login to view your liked houses" />;
+    return <PleaseLogin text="Please login to view liked houses" />;
   }
 
-  if (!houses || houses.length === 0) {
+  if (!houses.length) {
     return (
-      <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
+      <p className="text-muted-foreground text-center mt-6">
         You haven't liked any houses yet.
-      </div>
+      </p>
     );
   }
 
-  return props.isLoggedIn === true ? (
-    <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
       {houses.map((house) => (
         <Card
-          className={`
-    col-auto card w-full p-4
-    ${animatingId === house.idHouse && direction === "right" ? "swipe-right" : ""}
-    ${animatingId === house.idHouse && direction === "left" ? "swipe-left" : ""}
-  `}
-          onAnimationEnd={async () => {
-            if (animatingId === house.idHouse) {
-              if (pendingAction === "like") {
-                LikeClick(house.idHouse);
-              }
-              removeHouse(house.idHouse);
-
-              setAnimatingId(null);
-              setDirection(null);
-              setPendingAction(null);
-            }
-          }}
+          key={house.idHouse}
+          className="p-5 flex flex-col h-full min-h-[420px] hover:shadow-lg transition"
         >
+
+          {/* IMAGE */}
           <Carousel>
-            <CarouselContent>
-              <img
-                src="https://github.com/shadcn.png"
-                alt={`${house.city} ${house.location}'s profile picture`}
-                className="w-full h-48 object-cover rounded-md"
-              />
+            <CarouselContent className="image-wrapper">
+              <div className="w-full h-44 rounded-xl overflow-hidden bg-muted">
+
+                <img
+                  src="https://github.com/shadcn.png"
+                  className="w-full h-full object-cover"
+                />
+
+              </div>
             </CarouselContent>
           </Carousel>
 
-          <Field>
-            <strong>Location:</strong> {house.city}, {house.location}
-            <FieldDescription>{house.description}</FieldDescription>
-          </Field>
-          <div className="grid grid-cols-2 gap-4">
-            <Field>
-              <strong>Rent:</strong> {house.rent} Ft
-            </Field>
+          {/* TITLE */}
+          <div>
+            <h3 className="font-semibold text-lg">
+              {house.city}, {house.location}
+            </h3>
 
-            <Field>
-              <strong>Property type:</strong> {`${house.propertyType}`}
-            </Field>
+            <p className="text-sm text-muted-foreground">
+              {house.propertyType} • {house.squareMeter} m²
+            </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Field>
-              <strong>Rooms:</strong> {house.numberOfRooms}
-            </Field>
 
-            <Field>
-              <strong>Bathrooms:</strong> {house.bathrooms}
-            </Field>
+          {/* CORE INFO GRID */}
+          <div className="grid grid-cols-2 gap-2 text-sm">
+
+            <p><span className="text-muted-foreground">Rent:</span> {house.rent} Ft</p>
+            <p><span className="text-muted-foreground">Rooms:</span> {house.numberOfRooms}</p>
+
+            <p><span className="text-muted-foreground">Bath:</span> {house.bathrooms}</p>
+            <p><span className="text-muted-foreground">Floor:</span> {house.whichFloor}</p>
+
+            <p><span className="text-muted-foreground">Heating:</span> {house.heatingType}</p>
+            <p><span className="text-muted-foreground">Kitchen:</span> {house.kitchenLevel}</p>
+
+            <p><span className="text-muted-foreground">Furnishing:</span> {house.furnishingLevel}</p>
+            <p><span className="text-muted-foreground">AC:</span> {house.airConditioner ? "Yes" : "No"}</p>
+
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Field>
-              <strong>Floor:</strong> {house.whichFloor}
-            </Field>
 
-            <Field>
-              <strong>Size:</strong> {house.squareMeter} m²
-            </Field>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <Field>
-              <strong>Heating:</strong> {`${house.heatingType}`}
-            </Field>
+          {/* DESCRIPTION (controlled density) */}
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {house.description}
+          </p>
 
-            <Field>
-              <strong>Furnishing:</strong> {`${house.furnishingLevel}`}
-            </Field>
+          {/* ACTIONS */}
+          <div className="flex justify-between items-center pt-4 mt-auto border-t">
 
-            <Field>
-              <strong>Kitchen:</strong> {`${house.kitchenLevel}`}
-            </Field>
-          </div>
-          <Field>
-            <strong>Air Conditioner:</strong>
-            {house.airConditioner ? "Yes" : "No"}
-          </Field>
-          <div className="w-full flex gap-4 justify-center">
             <button
-              className="likeButton h-10 w-10 rounded-full flex items-center justify-center"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                setAnimatingId(house.idHouse);
-                setDirection("right");
-                setPendingAction("like");
-              }}
+              onClick={() => toggleLike(house.idHouse)}
+              className="text-sm text-muted-foreground hover:text-red-500 transition flex items-center gap-1"
             >
-              <Heart fill="red" stroke="red" />
+              <Heart size={14} /> Unlike
             </button>
-            <div className="my-button-scope">
-            <Button
-              data-dialog-ignore
-              onClick={(e) => {
-                e.stopPropagation(); // prevent dialog
+
+            <button
+              onClick={() =>
                 navigate("/rate", {
                   state: {
                     id: house.idHouse,
                     houseOrRoommate: "house",
                   },
-                });
-              }}
-              className="primary-btn"
+                })
+              }
+              className="px-3 py-1 rounded-md text-sm bg-purple-100 text-purple-700 hover:bg-purple-200 transition"
             >
               Rate
-            </Button>
-            </div>
+            </button>
+
           </div>
+
         </Card>
       ))}
+
     </div>
-  ) : (
-    <PleaseLogin text="Please login to find a roommate" />
   );
 }

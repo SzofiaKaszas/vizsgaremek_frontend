@@ -21,17 +21,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
-/**RoommateProfile component for updating user profile */
 export function RoommateProfile({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
 
-  /**Variable to show email input if checkbox is checked */
   const [showEmailInput, setShowEmailInput] = useState(false);
-  /**Variable for gender and language combobox */
   const [gender, setGender] = useState("");
   const [language, setLanguage] = useState("");
 
-  /**useEffect to get default values for the form -- if user already set it but wants to change it */
   useEffect(() => {
     if (context.userData?.gender) {
       setGender(context.userData.gender);
@@ -46,34 +42,40 @@ export function RoommateProfile({ goNext }: GoNextProp) {
 
   return (
     <>
-      <Toaster position="top-center"/>
-      <form
-        className="form-scope"
-        onSubmit={async (e) => {
-          handleSubmit(e, context, goNext);
-        }}
-      >
-        <CardTitle className="text-center text-xl font-bold p-2">
-          Your Profile
-        </CardTitle>
+      <Toaster position="top-center" />
 
-        {/**BIO */}
-        <Field className="m-2">
-          <FieldLabel htmlFor="userBio">Description about you:</FieldLabel>
+      <form
+        className="space-y-6 sm:space-y-7 px-1 sm:px-2"
+        onSubmit={(e) => handleSubmit(e, context, goNext)}
+      >
+        {/* HEADER */}
+        <div className="text-center space-y-1 sm:space-y-2">
+          <CardTitle className="text-lg sm:text-xl font-semibold">
+            Your Profile
+          </CardTitle>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Tell others who you are
+          </p>
+        </div>
+
+        {/* BIO */}
+        <Field>
+          <FieldLabel htmlFor="userBio">About you</FieldLabel>
           <Textarea
             name="userBio"
             id="userBio"
-            placeholder="Im 20. I have a dog. I love skateboarding <3"
+            placeholder="I'm 20, I love skateboarding..."
             defaultValue={context.userData?.userBio}
-          ></Textarea>
+            className="min-h-[90px] sm:min-h-[110px]"
+          />
           <FieldDescription
             id="userBioErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+            className="text-xs text-red-500 mt-1"
+          />
         </Field>
 
-        {/**GENDER */}
-        <Field className="m-2">
+        {/* GENDER */}
+        <Field>
           <FieldLabel htmlFor="gender">Your Gender:</FieldLabel>
           <Combobox
             items={Genders}
@@ -93,15 +95,16 @@ export function RoommateProfile({ goNext }: GoNextProp) {
               </ComboboxList>
             </ComboboxContent>
           </Combobox>
+
           <FieldDescription
             id="genderErr"
             className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+          />
           <input type="hidden" name="gender" />
         </Field>
 
-        {/**LANGUAGE */}
-        <Field className="m-2">
+        {/* LANGUAGE */}
+        <Field>
           <FieldLabel htmlFor="language">Language you speak:</FieldLabel>
           <Combobox
             items={Languages}
@@ -121,85 +124,112 @@ export function RoommateProfile({ goNext }: GoNextProp) {
               </ComboboxList>
             </ComboboxContent>
           </Combobox>
+
           <FieldDescription
             id="languageErr"
             className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+          />
           <input type="hidden" name="language" />
         </Field>
 
-        {/**OCCUPATION */}
-        <Field className="m-2">
-          <FieldLabel htmlFor="occupation">Your Occupation:</FieldLabel>
+        {/* OCCUPATION */}
+        <Field>
+          <FieldLabel htmlFor="occupation">Occupation</FieldLabel>
           <Input
-            type="text"
             name="occupation"
-            id="occupation"
-            placeholder="teacher"
+            placeholder="Teacher, Developer..."
             defaultValue={context.userData?.occupation}
           />
           <FieldDescription
             id="occErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+            className="text-xs text-red-500 mt-1"
+          />
         </Field>
 
-        {/**CHECKBOX FOR EMAIL */}
-        <Field className="m-2">
-          <FieldLabel
-            htmlFor="wantsConnectionEmail"
-            className="flex items-center gap-2"
-          >
-            Use a separate email for roommate/client contact
+        {/* EMAIL SWITCH */}
+        <div
+          className="
+    flex items-center justify-between
+    rounded-2xl
+    border border-muted/60
+    bg-white
+    px-4 py-4
+    shadow-sm
+    hover:shadow-md
+    transition
+  "
+        >
+          <div className="space-y-0.5" >
+            <FieldLabel className="text-sm font-medium" htmlFor="wantsConnectionEmail">
+              Separate contact email
+            </FieldLabel>
+
+            <p className="text-xs text-muted-foreground">
+              Use a different email for contact
+            </p>
+          </div>
+
+          <div className="scale-110">
             <Checkbox
               id="wantsConnectionEmail"
               name="wantsConnectionEmail"
               checked={showEmailInput}
-              onCheckedChange={(checked) => setShowEmailInput(!!checked)}
+              onCheckedChange={(c) => setShowEmailInput(!!c)}
             />
-          </FieldLabel>
-        </Field>
+          </div>
+        </div>
 
-        {/**EMAIL */}
+        {/* EMAIL */}
         {showEmailInput && (
-          <Field className="m-2">
-            <FieldLabel htmlFor="connectionEmail">Connection email:</FieldLabel>
+          <Field>
+            <FieldLabel htmlFor="connectionEmail">Contact email</FieldLabel>
             <Input
               type="email"
               name="connectionEmail"
-              id="connectionEmail"
-              placeholder="profeshemail@gmail.com"
+              placeholder="you@email.com"
               defaultValue={context.userData?.connectionEmail}
             />
             <FieldDescription
               id="emailErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
+              className="text-xs text-red-500 mt-1"
+            />
           </Field>
         )}
 
-        {/**backend errors */}
+        {/* BACKEND ERROR */}
         <FieldDescription
           id="backendErr"
-          className="text-red-600 text-sm mt-1"
-        ></FieldDescription>
+          className="text-xs text-red-500"
+        />
 
-        <div className="my-button-scope">
-          <Button variant={"default"} type="submit" className="primary-btn m-1">
+        {/* BUTTONS */}
+        <div className="pt-2 space-y-3">
+          <Button
+            type="submit"
+            className="
+              w-full
+              bg-accent hover:bg-accent/90
+              text-white
+              rounded-xl
+              py-2.5
+            "
+          >
             Next
           </Button>
-          {
-            /*context.hasCompletedStepOne ? */ <Button
-              variant={"outline"}
-              type="button"
-              className="sec-btn m-1"
-              onClick={() => {
-                goNext();
-              }}
-            >
-              Skip
-            </Button> /*: <></>*/
-          }
+
+          <Button
+            type="button"
+            variant="outline"
+            className="
+              w-full
+              border-accent text-accent
+              rounded-xl
+              py-2.5
+            "
+            onClick={goNext}
+          >
+            Skip
+          </Button>
         </div>
       </form>
     </>
@@ -212,10 +242,8 @@ async function handleSubmit(
   context: React.ContextType<typeof UserContext>,
   goNext: () => void,
 ) {
-  /* Prevent page refreshing */
   e.preventDefault();
 
-  /* Get form data */
   const form = new FormData(e.currentTarget);
   const userBio = (form.get("userBio") as string) || null;
   const gender = (form.get("gender") as string) || null;
@@ -224,9 +252,7 @@ async function handleSubmit(
   const wantsConnectionEmail = form.get("wantsConnectionEmail") === "on";
   let connectionEmail = null;
 
-  /* Clear previous error messages */
   if (wantsConnectionEmail) {
-    /* Only get connection email if user wants to provide one */
     connectionEmail = (form.get("connectionEmail") as string) || null;
     document.getElementById("emailErr")!.innerHTML = "";
   }
@@ -237,27 +263,24 @@ async function handleSubmit(
   document.getElementById("languageErr")!.innerHTML = "";
   document.getElementById("backendErr")!.innerHTML = "";
 
-  /**-----------------------------------Validation-------------------------------- */
   let hasError = false;
 
-  /**Validate user bio for inappropriate content */
   if (userBio && filter.check(userBio)) {
-    document
-      .getElementById("userBioErr")!
-      .append("Inappropriate content detected in user bio");
+    document.getElementById("userBioErr")!.append(
+      "Inappropriate content detected in user bio"
+    );
     hasError = true;
   }
 
-  /**Validate occupation */
   if (occupation && filter.check(occupation)) {
-    document
-      .getElementById("occErr")!
-      .append("Inappropriate content detected in occupation");
+    document.getElementById("occErr")!.append(
+      "Inappropriate content detected in occupation"
+    );
     hasError = true;
   }
 
-  /**Validate email */
-  const emailRegex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
+  const emailRegex =
+    /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
 
   if (wantsConnectionEmail) {
     const connectionEmail = form.get("connectionEmail") as string;
@@ -270,7 +293,6 @@ async function handleSubmit(
 
   if (hasError) return;
 
-  /** Attempt to update user data */
   try {
     context.changeUserData({
       userBio: userBio as string,
@@ -279,15 +301,14 @@ async function handleSubmit(
       occupation: occupation as string,
       connectionEmail: connectionEmail as string,
     });
+
     toast.success("Profile data saved successfully");
 
-    /* Wait a bit before going to the next step to ensure the user sees the success message */
     setTimeout(() => {
       goNext();
     }, 800);
   } catch (error) {
-    /**Display backend error */
-    console.error("Registration error:", error);
-    document.getElementById("backendErr")!.innerHTML = (error as Error).message;
+    document.getElementById("backendErr")!.innerHTML =
+      (error as Error).message;
   }
 }

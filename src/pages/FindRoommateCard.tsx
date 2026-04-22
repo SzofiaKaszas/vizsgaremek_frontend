@@ -4,6 +4,7 @@ import type { FindRoommateProps, User, UserNecesarry } from "@/interfaces";
 import { useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
 
 export function FindRoommateCard(props: FindRoommateProps) {
   const [list, setList] = useState<UserNecesarry[]>([]);
@@ -17,11 +18,11 @@ export function FindRoommateCard(props: FindRoommateProps) {
     setList(props.roommatePref);
   }, [props.roommatePref]);
 
-  // hydrate full user data (occupation etc.)
+  // full user data (occupation etc.)
   useEffect(() => {
     if (!list.length) return;
 
-    let isCancelled = false;
+    let cancelled = false;
 
     async function fetchUsers() {
       setLoading(true);
@@ -35,7 +36,7 @@ export function FindRoommateCard(props: FindRoommateProps) {
         })
       );
 
-      if (!isCancelled) {
+      if (!cancelled) {
         setFullUsers(results);
         setLoading(false);
       }
@@ -44,7 +45,7 @@ export function FindRoommateCard(props: FindRoommateProps) {
     fetchUsers();
 
     return () => {
-      isCancelled = true;
+      cancelled = true;
     };
   }, [list, context]);
 
@@ -72,22 +73,21 @@ export function FindRoommateCard(props: FindRoommateProps) {
   if (loading || list.length === 0) {
     return (
       <div className="text-center mt-10 text-muted-foreground">
-        Loading roommates...
+        There's no more roommates..
       </div>
     );
   }
 
   const active = list[0];
   const activeFull = fullUsers[active.idUser];
-
   const preview = list.slice(1, 4);
 
   return (
-    <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-3 gap-8">
+    <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
       {/* LEFT STACK */}
-      <div className="space-y-3">
-        {preview.map((p, i) => (
+      <div className="space-y-3 order-2 lg:order-1">
+        {preview.map((p) => (
           <Card key={p.idUser} className="p-3 opacity-60">
             <div className="font-medium">
               {p.firstName} {p.lastName}
@@ -97,15 +97,18 @@ export function FindRoommateCard(props: FindRoommateProps) {
       </div>
 
       {/* CENTER */}
-      <div>
-        <Card className="p-5 h-[520px] flex flex-col justify-between">
+      <div className="order-1 lg:order-2">
+        <Card className="p-5 min-h-[520px] flex flex-col justify-between">
 
           <div>
-            <img
-              src="https://github.com/shadcn.png"
-              className="w-full h-56 object-cover rounded-md mb-4"
-            />
-
+            <Carousel>
+              <CarouselContent className="image-wrapper">
+                <img
+                  src="https://github.com/shadcn.png"
+                  className="w-full h-56 object-cover rounded-md mb-4"
+                />
+              </CarouselContent>
+            </Carousel>
             <Field>
               <div className="text-lg font-semibold">
                 {active.firstName} {active.lastName}
@@ -121,27 +124,29 @@ export function FindRoommateCard(props: FindRoommateProps) {
           </div>
 
           {/* ACTIONS */}
-          <div className="flex justify-between mt-6">
-            <button
-              onClick={dislike}
-              className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center"
-            >
-              <ThumbsDown />
-            </button>
+          <div className="pt-6 pb-2">
+            <div className="flex justify-between">
+              <button
+                onClick={dislike}
+                className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <ThumbsDown />
+              </button>
 
-            <button
-              onClick={() => like(active.idUser)}
-              className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center"
-            >
-              <Heart />
-            </button>
+              <button
+                onClick={() => like(active.idUser)}
+                className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <Heart />
+              </button>
+            </div>
           </div>
         </Card>
       </div>
 
-      {/* RIGHT DETAILS (FULL USER HERE) */}
-      <div>
-        <Card className="p-5 h-[520px]">
+      {/* RIGHT DETAILS */}
+      <div className="order-3">
+        <Card className="p-5 min-h-[520px]">
 
           <h2 className="text-lg font-semibold mb-4">
             Profile details
@@ -149,19 +154,16 @@ export function FindRoommateCard(props: FindRoommateProps) {
 
           {activeFull ? (
             <div className="space-y-2 text-sm">
-
               <p><b>Age:</b> {getAge(activeFull.birthDay)}</p>
               <p><b>Gender:</b> {activeFull.gender ?? "Not specified"}</p>
               <p><b>Bio:</b> {activeFull.userBio ?? "Not specified"}</p>
               <p><b>Language:</b> {activeFull.language ?? "Not specified"}</p>
               <p><b>Occupation:</b> {activeFull.occupation ?? "Not specified"}</p>
               <p><b>Email:</b> {activeFull.email ?? "Not specified"}</p>
-
             </div>
           ) : (
             <p className="text-muted-foreground">Loading details...</p>
           )}
-
         </Card>
       </div>
 
@@ -176,7 +178,6 @@ function getAge(birthDay: Date | undefined) {
   if (isNaN(date.getTime())) return "Unknown";
 
   const now = new Date();
-
   let age = now.getFullYear() - date.getFullYear();
 
   const hasHadBirthday =
