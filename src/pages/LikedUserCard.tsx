@@ -8,6 +8,8 @@ import { Carousel, CarouselContent } from "@/components/ui/carousel";
 
 export function LikeUserCard(props: LikedUserProps) {
   const [likedUsers, setLikedUsers] = useState<UserNecesarry[]>([]);
+  const [matches, setMatches] = useState<User[]>([]);
+  const [likedLoggedInUser, setLikedLoggedInUser] = useState<User[]>([])
   const [fullUsers, setFullUsers] = useState<Record<number, User>>({});
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +18,15 @@ export function LikeUserCard(props: LikedUserProps) {
 
   useEffect(() => {
     setLikedUsers(props.likedUsers);
-  }, [props.likedUsers]);
+    const fetchMatches = async () => {
+      const match = await context.likesMatches();
+      setMatches(match);
+
+      const likedloggedin = await context.likedUser();
+      setLikedLoggedInUser(likedloggedin);
+    };
+    fetchMatches();
+  }, [props.likedUsers, context]);
 
   useEffect(() => {
     if (!likedUsers.length) return;
@@ -48,18 +58,45 @@ export function LikeUserCard(props: LikedUserProps) {
     };
   }, [likedUsers, context]);
 
-  function removeUser(id: number) {
-    setLikedUsers((prev) => prev.filter((u) => u.idUser !== id));
-  }
+  const matchIds = new Set(matches.map((u) => u.idUser));
+  const likedYouIds = new Set(likedLoggedInUser.map((u) => u.idUser));
 
-  async function toggleLike(id: number) {
+  // 👍 csak TE like-oltad (nem match)
+  const onlyLiked = likedUsers.filter((u) => !matchIds.has(u.idUser));
+
+  // 🔁 csak ŐK like-oltak téged (nem match)
+  const onlyLikedYou = likedLoggedInUser.filter(
+    (u) => !matchIds.has(u.idUser)
+  );
+
+  /**Helper functions */
+  async function removeLike(id: number) {
     await context.addLiked(id);
-    removeUser(id);
+    setLikedUsers((prev) => prev.filter((u) => u.idUser !== id));
+    setMatches((prev) => prev.filter((u) => u.idUser !== id));
   }
 
-  if (!props.isLoggedIn) {
-    return <PleaseLogin text="Please login to view liked users" />;
+  async function handleLikeBack(user: User) {
+    await context.addLiked(user.idUser);
+
+    // töröld a likedYou listából
+    setLikedLoggedInUser((prev) =>
+      prev.filter((u) => u.idUser !== user.idUser)
+    );
+
+    // add hozzá a matches-hez
+    setMatches((prev) => [...prev, user]);
   }
+
+  async function removeMatch(user: User) {
+  await context.addLiked(user.idUser);
+
+  // töröld matches-ből
+  setMatches((prev) => prev.filter((u) => u.idUser !== user.idUser));
+
+  // add hozzá likedYou-hoz (instant UI update)
+  setLikedLoggedInUser((prev) => [...prev, user]);
+}
 
   function getAge(birthDay?: Date) {
     if (!birthDay) return "Unknown";
@@ -80,6 +117,10 @@ export function LikeUserCard(props: LikedUserProps) {
     return age;
   }
 
+  if (!props.isLoggedIn) {
+    return <PleaseLogin text="Please login to view liked users" />;
+  }
+
   if (loading || !likedUsers.length) {
     return (
       <p className="text-muted-foreground text-center mt-6">
@@ -89,115 +130,164 @@ export function LikeUserCard(props: LikedUserProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="max-w-4xl mx-auto px-3 space-y-8">
 
-      {likedUsers.map((user) => {
-        const full = fullUsers[user.idUser];
+      {/* ❤️ MATCHES */}
+      {matches.length > 0 && (
+        <div>
+          <h2 className="text-base font-semibold mb-3">
+            ❤️ Matches
+          </h2>
 
-        return (
-          <Card
-            key={user.idUser}
-            className="p-5 space-y-4 hover:shadow-lg transition"
-          >
+          <div className="space-y-2">
+            {matches.map((u) => {
+              const full = fullUsers[u.idUser];
 
-            {/* HEADER */}
-            <div className="flex gap-4 items-center">
+              return (
+                <div
+                  key={u.idUser}
+                  className="flex items-center justify-between p-3 rounded-xl border hover:shadow-sm transition"
+                  style={{ borderColor: "var(--color-accent)" }}
+                >
+                  <div className="flex items-center gap-3">
 
-              {/* IMAGE GALLERY */}
-              <div className="space-y-2">
+                    <img
+                      src="https://github.com/shadcn.png"
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
 
-                {/* MAIN IMAGE */}
-                <Carousel>
-                  <CarouselContent className="image-wrapper">
-                    <div className="w-full h-52 rounded-xl overflow-hidden bg-muted">
-                      <img
-                        src={
-                          "https://github.com/shadcn.png"
-                        }
-                        className="w-full h-full object-cover"
-                      />
+                    <div>
+                      <p className="font-medium text-sm">
+                        {u.firstName} {u.lastName}
+                      </p>
+
+                      <p className="text-xs text-muted-foreground">
+                        {u.gender ?? "Unknown"}
+                      </p>
                     </div>
-                  </CarouselContent>
-                </Carousel>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg">
-                  {user.firstName} {user.lastName}
-                </h3>
+                  </div>
 
-                <p className="text-sm text-muted-foreground">
-                  {user.gender ?? "Not specified"}
-                </p>
-              </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        navigate("/rate", {
+                          state: {
+                            id: u.idUser,
+                            houseOrRoommate: "roommate",
+                          },
+                        })
+                      }
+                      className="text-xs px-3 py-1 rounded-md text-white"
+                      style={{ backgroundColor: "var(--color-accent)" }}
+                    >
+                      Rate
+                    </button>
 
-            </div>
-
-            {/* BIO */}
-            <p className="text-sm text-muted-foreground border-l-2 border-purple-400 pl-3">
-              {user.userBio ?? "No bio available"}
-            </p>
-
-            {/* FULL DATA (hydrated) */}
-            {full ? (
-              <div className="grid grid-cols-2 gap-2 text-sm">
-
-                <div>
-                  <span className="text-muted-foreground">Age</span>
-                  <p className="font-medium break-all">{full ? getAge(full.birthDay) : "N/A"}</p>
+                    <button
+                      onClick={() => removeMatch(u)}
+                      className="text-xs px-3 py-1 rounded-md border text-red-500 hover:bg-red-50"
+                    >
+                      Unmatch
+                    </button>
+                  </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
-                <div>
-                  <span className="text-muted-foreground">Language</span>
-                  <p className="font-medium">{full.language ?? "N/A"}</p>
-                </div>
+      {/* 👍 YOU LIKED */}
+      {onlyLiked.length > 0 && (
+        <div>
+          <h2 className="text-base font-semibold mb-3">
+            👍 You liked
+          </h2>
 
-                <div>
-                  <span className="text-muted-foreground">Occupation</span>
-                  <p className="font-medium">{full.occupation ?? "N/A"}</p>
-                </div>
-
-                <div>
-                  <span className="text-muted-foreground">Email</span>
-                  <p className="font-medium break-all">{full.email}</p>
-                </div>
-
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Loading details...
-              </p>
-            )}
-
-            {/* ACTIONS */}
-            <div className="flex justify-between pt-3 border-t">
-
-              <button
-                onClick={() => toggleLike(user.idUser)}
-                className="text-sm text-muted-foreground hover:text-red-500 transition"
+          <div className="space-y-2">
+            {onlyLiked.map((u) => (
+              <div
+                key={u.idUser}
+                className="flex items-center justify-between p-3 rounded-xl border"
               >
-                Unlike
-              </button>
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://github.com/shadcn.png"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
 
-              <button
-                onClick={() =>
-                  navigate("/rate", {
-                    state: {
-                      id: user.idUser,
-                      houseOrRoommate: "roommate",
-                    },
-                  })
-                }
-                className="px-3 py-1 rounded-md text-sm bg-purple-100 text-purple-700 hover:bg-purple-200 transition"
+                  <div>
+                    <p className="font-medium text-sm">
+                      {u.firstName} {u.lastName}
+                    </p>
+
+                    <p className="text-xs text-muted-foreground">
+                      {u.gender ?? "Not specified"}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => removeLike(u.idUser)}
+                  className="text-xs text-muted-foreground hover:text-red-500"
+                >
+                  Unlike
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 🔁 LIKED YOU */}
+      {onlyLikedYou.length > 0 && (
+        <div>
+          <h2 className="text-base font-semibold mb-3">
+            🔁 Liked you
+          </h2>
+
+          <div className="space-y-2">
+            {onlyLikedYou.map((u) => (
+              <div
+                key={u.idUser}
+                className="flex items-center justify-between p-3 rounded-xl border"
               >
-                Rate
-              </button>
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://github.com/shadcn.png"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
 
-            </div>
+                  <div>
+                    <p className="font-medium text-sm">
+                      {u.firstName} {u.lastName}
+                    </p>
 
-          </Card>
-        );
-      })}
+                    <p className="text-xs text-muted-foreground">
+                      Wants to connect
+                    </p>
+                  </div>
+                </div>
 
+                <button
+                  onClick={() => handleLikeBack(u)}
+                  className="text-xs px-3 py-1 rounded-md text-white"
+                  style={{ backgroundColor: "var(--color-accent)" }}
+                >
+                  Like back
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* EMPTY STATE */}
+      {!matches.length && !onlyLiked.length && !onlyLikedYou.length && (
+        <p className="text-center text-muted-foreground mt-6">
+          No activity yet.
+        </p>
+      )}
     </div>
   );
 }

@@ -194,6 +194,8 @@ export interface UserContextType {
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
   getLikes: () => Promise<User[]>;
+  likesMatches: () => Promise<User[]>;
+  likedUser: () => Promise<User[]>;
   rateUser: (id: number, data: Partial<RateUser>) => void;
 }
 

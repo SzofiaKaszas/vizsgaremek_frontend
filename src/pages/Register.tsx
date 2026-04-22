@@ -18,7 +18,7 @@ import { useNavigate, type NavigateFunction } from "react-router";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
-/**Add toast */
+/**Add toast - * for needed shit also error on password*/
 export function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();

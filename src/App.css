@@ -86,7 +86,7 @@
 
     /* "buttons" when hovered */
     .age-slider-scope [data-slot="slider-thumb"]:hover {
-        background: var(--color-shadow-babyblue);
+        background: var(--color-accent);
         transform: scale(1.1);
     }
 

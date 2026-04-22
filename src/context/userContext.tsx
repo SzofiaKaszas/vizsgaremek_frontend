@@ -33,6 +33,8 @@ const defaultUserContext: UserContextType = {
   changeRoommatePref: async (_newData: Partial<RoommatePref>) => { },
   addLiked: async (_id: number) => { },
   getLikes: async () => [] as User[],
+  likesMatches: async () => [] as User[],
+  likedUser: async () => [] as User[],
   rateUser: async (_id: number, _data: Partial<RateUser>) => { },
 };
 
@@ -228,6 +230,40 @@ export function UserContextProvider(props: PropsWithChildren) {
 
     async getLikes(): Promise<User[]> {
       const response = await fetch(API_URL + "/user/liked", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      return (await response.json()) as User[];
+    },
+
+    async likesMatches(): Promise<User[]> {
+      const response = await fetch(API_URL + "/user/likes-matches", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      return (await response.json()) as User[];
+    },
+    
+    async likedUser(): Promise<User[]> {
+      const response = await fetch(API_URL + "/user/likes-received", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

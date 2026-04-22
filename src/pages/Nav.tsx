@@ -103,7 +103,7 @@ export function NavBar() {
         {/* CENTER - LOGO */}
         <div className="flex-1 flex justify-center sm:justify-start">
           <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent">
-            Roomie
+            Kezzy
           </span>
         </div>
 
