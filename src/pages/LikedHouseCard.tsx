@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useState, useEffect, useContext } from "react";
 import type { HouseListing, LikedHouseProps } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
-import { Heart } from "lucide-react";
+import { Heart, Trash } from "lucide-react";
 import { HouseContext } from "@/context/houseContext";
 import { useNavigate } from "react-router";
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
@@ -46,7 +46,6 @@ export function LikedHouseCard(props: LikedHouseProps) {
           className="p-5 flex flex-col h-full min-h-[420px] hover:shadow-lg transition"
         >
 
-          {/* IMAGE */}
           <Carousel>
             <CarouselContent className="image-wrapper">
               <div className="w-full h-44 rounded-xl overflow-hidden bg-muted">
@@ -59,8 +58,6 @@ export function LikedHouseCard(props: LikedHouseProps) {
               </div>
             </CarouselContent>
           </Carousel>
-
-          {/* TITLE */}
           <div>
             <h3 className="font-semibold text-lg">
               {house.city}, {house.location}
@@ -71,7 +68,6 @@ export function LikedHouseCard(props: LikedHouseProps) {
             </p>
           </div>
 
-          {/* CORE INFO GRID */}
           <div className="grid grid-cols-2 gap-2 text-sm">
 
             <p><span className="text-muted-foreground">Rent:</span> {house.rent} Ft</p>
@@ -88,7 +84,6 @@ export function LikedHouseCard(props: LikedHouseProps) {
 
           </div>
 
-          {/* DESCRIPTION (controlled density) */}
           <p className="text-sm text-muted-foreground line-clamp-2">
             {house.description}
           </p>
@@ -100,7 +95,7 @@ export function LikedHouseCard(props: LikedHouseProps) {
               onClick={() => toggleLike(house.idHouse)}
               className="text-sm text-muted-foreground hover:text-red-500 transition flex items-center gap-1"
             >
-              <Heart size={14} /> Unlike
+              <Trash size={22}/>
             </button>
 
             <button

@@ -7,6 +7,7 @@ import { LikedHouseCard } from "./LikedHouseCard";
 import { PleaseLogin } from "./PleaseLogin";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
+/**ne mutassa  a houses/roommate switchet ha csak az egyiket akarja a felhasznalo*/
 export function Likes() {
   const [likedUsers, setLikedUsers] = useState<User[]>([]);
   const [likedHouses, setLikedHouses] = useState<HouseListing[]>([]);

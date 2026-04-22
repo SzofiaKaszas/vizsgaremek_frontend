@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+/**ha van houselistingje up akkor is mutassa a navon a cuccot ha nincs berakva az hogy akar hazat eladni */
 export function NavBar() {
   const { currentUserId } = useContext(AuthContext);
   const { userData } = useContext(UserContext);
