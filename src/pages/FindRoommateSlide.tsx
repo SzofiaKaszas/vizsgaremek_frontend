@@ -1,7 +1,6 @@
 import type { FindRoommateProps, User } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 
-//import { IconUserCircle } from '@tabler/icons-react';
 import {
   CircleArrowUp,
   Languages,
@@ -9,10 +8,14 @@ import {
   Send,
   Contact,
   Image,
+  Heart,
+  X,
 } from "lucide-react";
+
 import * as React from "react";
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+
 import {
   Carousel,
   CarouselContent,
@@ -22,17 +25,15 @@ import {
 
 import {
   Drawer,
-  //DrawerClose,
   DrawerContent,
-  //DrawerDescription,
-  //DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-//import { UserContext } from "@/context/userContext";
+
 import { UserContext } from "@/context/userContext";
-//Húzogatás
+
+// swipe
 import { motion, type PanInfo } from "framer-motion";
 
 export function FindRoommateSlide(props: FindRoommateProps) {
@@ -40,19 +41,9 @@ export function FindRoommateSlide(props: FindRoommateProps) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-  //const [likedUsers, setLikedUsers] = useState<number[]>([]);
-  //const [dislikedUsers, setDislikedUsers] = useState<number[]>([]);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
-  React.useEffect(() => {
-    if (!api) {
-      return;
-    }
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
+
+  const context = useContext(UserContext);
 
   useEffect(() => {
     async function set() {
@@ -60,228 +51,214 @@ export function FindRoommateSlide(props: FindRoommateProps) {
     }
     set();
   }, [props.roommatePref]);
- // /*
-  const handleDragEnd = (
-    _: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo,
-  ) => {
-    const threshold = 20;
-    const currentUser = roommatePrefList[0];
 
-    if (info.offset.x > threshold) {
-      console.log("jobbra húzva"); // => LIKE
-      setDirection("right");
-      LikeClick(currentUser.idUser)
-      
-      
-      // props.triggerAnimation(roommatePrefList!.idUser, "left", "dislike");
-      setroommatePrefList((prev) => prev.slice(1));
-    } else if (info.offset.x < -threshold) {
-      console.log("balra húzva"); // <= DISLIKE
-      setDirection("left");
-      setroommatePrefList((prev) => prev.slice(1));   
-    } else {
-      console.log("nem volt elég nagy húzás");
-    }
-  };//*/
-  /*
-  const handleDragEnd = (
-  _: MouseEvent | TouchEvent | PointerEvent,
-  info: PanInfo,
-) => {
-  const threshold = 20;
-  const currentUser = roommatePrefList[0];
+  React.useEffect(() => {
+    if (!api) return;
 
-  if (!currentUser) return;
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
 
-  if (info.offset.x > threshold) {
-    console.log("jobbra húzva"); // LIKE
-    setDirection("right");
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
-    setLikedUsers((prev) => [...prev, currentUser.idUser]);
-
-  } else if (info.offset.x < -threshold) {
-    console.log("balra húzva"); // DISLIKE
-    setDirection("left");
-
-    setDislikedUsers((prev) => [...prev, currentUser.idUser]);
-
-  } else {
-    console.log("nem volt elég nagy húzás");
-    return;
-  }
-
-  // Kártya eltávolítása
-  setroommatePrefList((prev) => prev.slice(1));
-};
-*/
-  const context = useContext(UserContext);
   async function LikeClick(id: number) {
     await context.addLiked(id);
   }
+
+  function handleLike(user: User) {
+    setDirection("right");
+    LikeClick(user.idUser);
+    setTimeout(() => {
+      setroommatePrefList((prev) => prev.slice(1));
+      setDirection(null);
+    }, 300);
+  }
+
+  function handleDislike(user: User) {
+    setDirection("left");
+    setTimeout(() => {
+      setroommatePrefList((prev) => prev.slice(1));
+      setDirection(null);
+    }, 300);
+  }
+
+  const handleDragEnd = (
+    _: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    const threshold = 80;
+    const currentUser = roommatePrefList[0];
+    if (!currentUser) return;
+
+    if (info.offset.x > threshold) {
+      handleLike(currentUser);
+    } else if (info.offset.x < -threshold) {
+      handleDislike(currentUser);
+    }
+  };
+
   function getAge(birthDay: Date | undefined) {
     if (!birthDay) return "Unknown";
 
-    const date = birthDay instanceof Date ? birthDay : new Date(birthDay);
-
+    const date = new Date(birthDay);
     if (isNaN(date.getTime())) return "Unknown";
 
     const now = new Date();
     let age = now.getFullYear() - date.getFullYear();
 
-    const hasHadBirthdayThisYear =
-      now.getMonth() > date.getMonth() ||
-      (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
-
-    if (!hasHadBirthdayThisYear) {
-      age -= 1;
+    if (
+      now.getMonth() < date.getMonth() ||
+      (now.getMonth() === date.getMonth() &&
+        now.getDate() < date.getDate())
+    ) {
+      age--;
     }
 
     return age;
   }
 
-  function whatToShow(string: string | undefined | null) {
-    if (string === undefined || string === "" || string === null) {
-      return "Not specified";
-    } else {
-      return string;
-    }
+  function whatToShow(value: string | undefined | null) {
+    return value ? value : "Not specified";
   }
 
   return props.isLoggedIn ? (
-    <div className="flex justify-center mt-2">
-      <div className="mx-auto  sm:max-w-xs">
-        {/*<h1 className="text-2xl font-bold text-center">Hunor csinálja</h1>*/}
-        <div>
-          {roommatePrefList.length === 0 && (
-            <div className="text-center mt-10 space-y-2">
-              <p className="text-xl font-semibold">End</p>
-              <p className="text-sm text-gray-500">No more results</p>
-            </div>
-          )}
+    <div className="flex justify-center mt-4">
+      <div className="w-full max-w-sm">
 
-          {roommatePrefList.slice(0, 1).map((p, index) => (
-            <motion.div
-              key={p.idUser}
-              drag={index === 0 ? "x" : false}
-              onDragEnd={handleDragEnd}
-              style={{
-                zIndex: roommatePrefList.length - index,
-                top: index,
-              }}
+        {roommatePrefList.length === 0 && (
+          <div className="text-center mt-10">
+            <p className="text-xl font-semibold">End</p>
+            <p className="text-gray-500">No more results</p>
+          </div>
+        )}
 
-              whileTap={{ scale: 1.05 }}
+        {roommatePrefList.slice(0, 1).map((p, index) => (
+          <motion.div
+            key={p.idUser}
+            drag="x"
+            onDragEnd={handleDragEnd}
+            animate={{
+              x: direction === "right" ? 300 : direction === "left" ? -300 : 0,
+              opacity: direction ? 0 : 1,
+            }}
+            transition={{ duration: 0.3 }}
+            whileTap={{ scale: 1.03 }}
+          >
+            <Card className="rounded-2xl shadow-xl overflow-hidden bg-white">
+
+              {/* IMAGE */}
+              <div className="relative">
+                <img
+                  src="https://github.com/shadcn.png"
+                  className="w-full h-80 object-cover"
+                />
+
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
+                  <h2 className="text-lg font-semibold">
+                    {p.firstName} {p.lastName}
+                  </h2>
+                  <h3 className="text-lg font-semibold">
+                    {getAge(p.birthDay)}
+                  </h3>
+                  <p className="text-sm opacity-80">{p.gender}</p>
+                </div>
+              </div>
+
               
-            >
-              <Card className={`col-auto card w-full `}>
-                <Card className="m-px">
-                  {/*  shadow-none" >*/}
-                  <CardContent className="flex aspect-square items-center justify-center p-6">
-                    <img
-                      src="https://github.com/shadcn.png" //"https://cdn.pixabay.com/photo/2023/03/11/17/40/ai-generated-7844936_1280.jpg" //"https://cdn.pixabay.com/photo/2020/06/11/18/18/guinea-pig-5287749_1280.jpg"//"https://cdn.pixabay.com/photo/2023/03/11/17/40/ai-generated-7844936_1280.jpg"//"https://github.com/shadcn.png"
-                      className="w-full h-70 object-cover rounded-t-md"
-                    />
-                  </CardContent>
-                  <div className=" whitespace-pre-line py-2 text-center text-sm text-black ">
-                    {/* font-semibold">*/}
-                    {/*p
-                      ? ` ${p.firstName} ${p.lastName} - ${getAge(p.birthDay)} 
-                        Gender:${p.gender}
-                        Language:${whatToShow(p.language)}`
-                      : "Loding..." */}
-                    {p ? (
-                      <>
-                        <span className="font-semibold">
-                          {p.firstName} {p.lastName}
-                        </span>{" "}
-                        - {getAge(p.birthDay)}
-                        {"\n"}
-                        Gender: {p.gender}
-                        {"\n"}
-                        Language: {whatToShow(p.language)}
-                      </>
-                    ) : (
-                      "Loding..."
-                    )}
-                  </div>
-                </Card>
+              <CardContent className="text-center text-sm space-y-1 mt-2">
+                <p>
+                  <span className="font-medium">Language:</span>{" "}
+                  {whatToShow(p.language)}
+                </p>
+                <p>
+                  <span className="font-medium"></span>{" "}
+                  {whatToShow(p.userBio)}
+                </p>
+              </CardContent>
 
+              <div className="flex items-center justify-center gap-6 my-4">
+
+               
+                <button
+                  onClick={() => handleDislike(p)}
+                  className="bg-red-100 hover:bg-red-200 text-red-600 p-4 rounded-full shadow-md transition"
+                >
+                  <X size={28} />
+                </button>
+
+                
                 <Drawer>
-                  <DrawerTrigger className="flex justify-center mt-10">
-                    {" "}
-                    <CircleArrowUp />{" "}
+                  <DrawerTrigger className="bg-gray-100 hover:bg-gray-200 p-4 rounded-full shadow-md transition">
+                    <CircleArrowUp size={28} />
                   </DrawerTrigger>
+
                   <DrawerContent>
                     <DrawerHeader>
                       <DrawerTitle>
-                        {p ? `${p.firstName} ${p.lastName}` : "Loding..."}
+                        {p.firstName} {p.lastName}
                       </DrawerTitle>
 
-                      <div className="col-auto card w-full">
-                        <Carousel
-                          setApi={setApi}
-                          className="max-w-xs mx-auto flex justify-center"
-                        >
-                          <CarouselContent>
-                            {Array.from({ length: 3 }).map((_, index) => (
-                              <CarouselItem key={index}>
-                                <Card className="m-px">
-                                  <CardContent className="flex aspect-square items-center justify-center p-6">
-                                    <img
-                                      src="https://github.com/shadcn.png" //"https://cdn.pixabay.com/photo/2023/03/11/17/40/ai-generated-7844936_1280.jpg"//
-                                      className="w-full h-56 object-cover rounded-t-md"
-                                    />
-                                  </CardContent>
-                                </Card>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                        </Carousel>
-                        <div className="py-2 text-center text-sm text-black font-semibold flex items-center justify-center gap-2 ">
-                          {/*Image {current}/{count} <br></br>
-                           Image {current} of {count}*/}
-                          <Image /> {current} of {count}
-                          {/*<Image /> {current} / {count}*/}
-                        </div>
+                      <Carousel
+                        setApi={setApi}
+                        className="max-w-xs mx-auto"
+                      >
+                        <CarouselContent>
+                          {Array.from({ length: 3 }).map((_, index) => (
+                            <CarouselItem key={index}>
+                              <Card>
+                                <CardContent className="p-0">
+                                  <img
+                                    src="https://github.com/shadcn.png"
+                                    className="w-full h-56 object-cover"
+                                  />
+                                </CardContent>
+                              </Card>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                      </Carousel>
 
-                        <div className="mt-3 space-y-2 text-sm  ">
-                          <p className="flex items-center justify-center gap-2 ">
-                            <Contact className="w-4 h-4" />
-                            {p ? whatToShow(p.userBio) : "Loading..."}
-                          </p>
+                      <div className="text-center text-sm mt-2">
+                        <Image className="inline mr-1" />
+                        {current} / {count}
+                      </div>
 
-                          <p className="flex items-center justify-center gap-2">
-                            {/*<Languages/>*/}
-                            <Languages className="w-4 h-4" />
-                            <span className="font-medium"> Language:</span>{" "}
-                            {p ? whatToShow(p.language) : "Loading..."}
-                          </p>
+                      <div className="mt-4 space-y-2 text-sm text-center">
 
-                          <p className="flex items-center justify-center gap-2">
-                            <BriefcaseBusiness className=" w-4 h-4" />
-                            <span className="font-medium">Job:</span>{" "}
-                            {p ? whatToShow(p.occupation) : "Loading..."}
-                          </p>
+                        <p className="flex justify-center gap-2">
+                          <Contact /> {whatToShow(p.userBio)}
+                        </p>
 
-                          <p className="flex items-center justify-center gap-2">
-                            <Send className="w-4 h-4" />
-                            <span className="font-medium">Email:</span>{" "}
-                            {p ? p.email : "Loading..."}
-                          </p>
-                        </div>
-                        {/*p
-                            ? ` ${whatToShow(p.userBio)}  
-                              Language: ${whatToShow(p.language)}
-                               Jobb: ${whatToShow(p.occupation)}`
-                            : "Loding..."*/}
+                        <p className="flex justify-center gap-2">
+                          <Languages /> {whatToShow(p.language)}
+                        </p>
+
+                        <p className="flex justify-center gap-2">
+                          <BriefcaseBusiness /> {whatToShow(p.occupation)}
+                        </p>
+
+                        <p className="flex justify-center gap-2">
+                          <Send /> {p.email}
+                        </p>
+
                       </div>
                     </DrawerHeader>
                   </DrawerContent>
                 </Drawer>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+
+                <button
+                  onClick={() => handleLike(p)}
+                  className="bg-green-100 hover:bg-green-200 text-green-600 p-4 rounded-full shadow-md transition"
+                >
+                  <Heart size={28} />
+                </button>
+
+              </div>
+            </Card>
+          </motion.div>
+        ))}
       </div>
     </div>
   ) : (
