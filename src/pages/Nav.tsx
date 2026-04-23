@@ -36,6 +36,15 @@ export function NavBar() {
     currentUserId === undefined && { to: "/login", label: "Login" },
   ].filter(Boolean) as { to: string; label: string }[];
 
+  let profileImage;
+  if(userData?.images){
+    userData.images.forEach(element => {
+      if(element.IsProfile){
+        profileImage = element.url;
+      }
+    });
+  }
+
   useEffect(() => {
   const sync = () => {
     // force re-render trigger workaround
@@ -153,7 +162,7 @@ export function NavBar() {
           {currentUserId && (
             <NavLink to="/profile">
               <Avatar className="h-9 w-9 ring-2 ring-transparent hover:ring-purple-500 transition">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={profileImage} />
                 <AvatarFallback>P</AvatarFallback>
               </Avatar>
             </NavLink>

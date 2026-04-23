@@ -28,223 +28,289 @@ import { Textarea } from "@/components/ui/textarea";
 import { HouseContext } from "@/context/houseContext";
 import { UserContext } from "@/context/userContext";
 import type { HouseContextType, UserContextType } from "@/interfaces";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 /**TODO: toast és navigate */
 export function AddHouseListing() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+
   const housecontext = useContext(HouseContext);
   const usercontext = useContext(UserContext);
 
+  /*const handleImageUpload = async () => {
+    if (!selectedFile) return;
+    if (images.length >= 8) return;
+
+    setUploading(true);
+
+    try {
+      await housecontext.uploadHouseImage(selectedFile);
+
+      const previewUrl = URL.createObjectURL(selectedFile);
+
+      setImages((prev) => [...prev, previewUrl]);
+      setSelectedFile(null);
+
+      toast.success("Image uploaded");
+    } catch (err) {
+      console.error(err);
+      toast.error("Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };*/
+
   return (
-    <div className="w-full flex justify-center px-4 py-10">
-      <form
-        onSubmit={(e) => handleSubmit(e, usercontext, housecontext)}
-        className="w-full max-w-3xl space-y-6"
-      >
+    <>
+      <Toaster position="top-center" />
+      <div className="w-full flex justify-center px-4 py-10">
+        <form
+          onSubmit={(e) => handleSubmit(e, usercontext, housecontext)}
+          className="w-full max-w-3xl space-y-6"
+        >
 
-        {/* HEADER */}
-        <Card className="p-6">
-          <CardTitle className="text-xl font-bold">
-            Add House Listing
-          </CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
-            Create a new listing for your property
-          </p>
-        </Card>
+          {/* HEADER */}
+          <Card className="p-6">
+            <CardTitle className="text-xl font-bold">
+              Add House Listing
+            </CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">
+              Create a new listing for your property
+            </p>
+          </Card>
 
-        {/* BASIC INFO */}
-        <Card className="p-6 space-y-4">
+          {/* BASIC INFO */}
+          <Card className="p-6 space-y-4">
 
-          <h3 className="font-semibold">Basic information</h3>
-
-          <Field>
-            <FieldLabel>
-              Description <span className="text-red-500">*</span>
-            </FieldLabel>
-            <Textarea name="description" />
-          </Field>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h3 className="font-semibold">Basic information</h3>
 
             <Field>
               <FieldLabel>
-                City <span className="text-red-500">*</span>
+                Description <span className="text-red-500">*</span>
               </FieldLabel>
-              <Input name="city" />
+              <Textarea name="description" />
             </Field>
 
-            <Field>
-              <FieldLabel>
-                Address <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input name="location" />
-            </Field>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          </div>
+              <Field>
+                <FieldLabel>
+                  City <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Input name="city" />
+              </Field>
 
-          <Field>
-            <FieldLabel>
-              Rent <span className="text-red-500">*</span>
-            </FieldLabel>
-            <Input type="number" name="rent" />
-          </Field>
+              <Field>
+                <FieldLabel>
+                  Address <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Input name="location" />
+              </Field>
 
-        </Card>
-
-        {/* PROPERTY */}
-        <Card className="p-6 space-y-4">
-
-          <h3 className="font-semibold">Property details</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <Field>
-              <FieldLabel>
-                Property type <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={Property}>
-                <ComboboxInput name="propertyType" />
-                <ComboboxContent>
-                  <ComboboxEmpty>No items</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
-
-            <Field>
-              <FieldLabel>Floor</FieldLabel>
-              <Input type="number" name="floor" />
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Square meter <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input type="number" name="sqmeter" />
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Rooms <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input type="number" name="rooms" />
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Bathrooms <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input type="number" name="bathrooms" />
-            </Field>
-
-          </div>
-
-        </Card>
-
-        {/* COMFORT */}
-        <Card className="p-6 space-y-4">
-
-          <h3 className="font-semibold">Comfort</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <Field>
-              <FieldLabel>
-                Heating <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={Heating}>
-                <ComboboxInput name="heatingType" />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Furnishing <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={Furnishing}>
-                <ComboboxInput name="furnishing" />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Kitchen <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={KitchenFurnishing}>
-                <ComboboxInput name="kitchenFurnishing" />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
-
-            {/* SWITCH */}
-            <div className="flex items-center justify-between border rounded-md p-3">
-              <span>Air conditioner</span>
-
-              <Switch
-                name="airConditioner"
-                className="data-[state=checked]:bg-purple-600"
-              />
             </div>
 
+            <Field>
+              <FieldLabel>
+                Rent <span className="text-red-500">*</span>
+              </FieldLabel>
+              <Input type="number" name="rent" />
+            </Field>
+
+          </Card>
+
+          {/* PROPERTY */}
+          <Card className="p-6 space-y-4">
+
+            <h3 className="font-semibold">Property details</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <Field>
+                <FieldLabel>
+                  Property type <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Combobox items={Property}>
+                  <ComboboxInput name="propertyType" />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No items</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item) => (
+                        <ComboboxItem key={item} value={item}>
+                          {item}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </Field>
+
+              <Field>
+                <FieldLabel>Floor</FieldLabel>
+                <Input type="number" name="floor" />
+              </Field>
+
+              <Field>
+                <FieldLabel>
+                  Square meter <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Input type="number" name="sqmeter" />
+              </Field>
+
+              <Field>
+                <FieldLabel>
+                  Rooms <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Input type="number" name="rooms" />
+              </Field>
+
+              <Field>
+                <FieldLabel>
+                  Bathrooms <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Input type="number" name="bathrooms" />
+              </Field>
+
+            </div>
+
+          </Card>
+
+          {/* COMFORT */}
+          <Card className="p-6 space-y-4">
+
+            <h3 className="font-semibold">Comfort</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <Field>
+                <FieldLabel>
+                  Heating <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Combobox items={Heating}>
+                  <ComboboxInput name="heatingType" />
+                  <ComboboxContent>
+                    <ComboboxList>
+                      {(item) => (
+                        <ComboboxItem key={item} value={item}>
+                          {item}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </Field>
+
+              <Field>
+                <FieldLabel>
+                  Furnishing <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Combobox items={Furnishing}>
+                  <ComboboxInput name="furnishing" />
+                  <ComboboxContent>
+                    <ComboboxList>
+                      {(item) => (
+                        <ComboboxItem key={item} value={item}>
+                          {item}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </Field>
+
+              <Field>
+                <FieldLabel>
+                  Kitchen <span className="text-red-500">*</span>
+                </FieldLabel>
+                <Combobox items={KitchenFurnishing}>
+                  <ComboboxInput name="kitchenFurnishing" />
+                  <ComboboxContent>
+                    <ComboboxList>
+                      {(item) => (
+                        <ComboboxItem key={item} value={item}>
+                          {item}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </Field>
+
+              {/* SWITCH */}
+              <div className="flex items-center justify-between border rounded-md p-3">
+                <span>Air conditioner</span>
+
+                <Switch
+                  name="airConditioner"
+                  className="data-[state=checked]:bg-purple-600"
+                />
+              </div>
+
+            </div>
+
+          </Card>
+
+          <Field>
+            <FieldLabel>Images (max 8)</FieldLabel>
+
+            <div className="flex gap-2 items-center">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              />
+              {/*onClick={handleImageUpload}*/}
+              <Button
+                type="button"
+
+                disabled={!selectedFile || images.length >= 8 || uploading}
+                className="bg-accent text-white"
+              >
+                {uploading ? "Uploading..." : "Upload"}
+              </Button>
+            </div>
+
+            <p className="text-xs text-muted-foreground mt-2">
+              {images.length}/8 uploaded
+            </p>
+
+            {/* PREVIEW */}
+            <div className="grid grid-cols-3 gap-2 mt-3">
+              {images.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  className="w-full h-20 object-cover rounded-md border"
+                />
+              ))}
+            </div>
+          </Field>
+
+          {/* ACTIONS */}
+          <div className="flex justify-end gap-3">
+
+            <Button
+              type="button"
+              variant="outline"
+              className="border-gray-300"
+              onClick={() => (window.location.href = "/managehouselising")}
+            >
+              Back
+            </Button>
+
+            <Button
+              type="submit"
+              className="bg-purple-600 hover:bg-purple-500 text-white"
+            >
+              Add Listing
+            </Button>
           </div>
-
-        </Card>
-
-        {/* ACTIONS */}
-        <div className="flex justify-end gap-3">
-
-          <Button
-            type="button"
-            variant="outline"
-            className="border-gray-300"
-            onClick={() => (window.location.href = "/managehouselising")}
-          >
-            Back
-          </Button>
-
-          <Button
-            type="submit"
-            className="bg-purple-600 hover:bg-purple-500 text-white"
-          >
-            Add Listing
-          </Button>
-
-        </div>
-
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -294,11 +360,11 @@ async function handleSubmit(
   }
 
   const userId = userContext.userData?.idUser;
-    if (!userId) {
-      alert("User ID not found. Please log in again.");
-      return;
-    }
-    console.log("User ID for house listing:", userId);
+  if (!userId) {
+    alert("User ID not found. Please log in again.");
+    return;
+  }
+  console.log("User ID for house listing:", userId);
 
   try {
     await houseContext.addHouseListing({

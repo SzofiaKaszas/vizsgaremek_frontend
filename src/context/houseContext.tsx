@@ -11,20 +11,22 @@ const API_URL = "http://localhost:3000";
 // Default values so React has an initial context shape
 const defaultUserContext: HouseContextType = {
   getHouseListings: async () => [] as HouseListing[],
-  addHouseListing: async (_newData: Omit<HouseListing, "idHouse">) => {},
+  addHouseListing: async (_newData: Omit<HouseListing, "idHouse">) => { },
   editHouseListing: async (
     _idHouse: number,
     _newData: Partial<HouseListing>,
-  ) => {},
-  deleteHouseListing: async (_idHouse: number) => {},
+  ) => { },
+  deleteHouseListing: async (_idHouse: number) => { },
+  uploadHouseImage: async (_file: File, _houseId: number) => { },
+
   getHasHousePref: async (): Promise<boolean> => false,
   getHousePref: async (): Promise<HousePref | undefined> => undefined as unknown as HousePref,
-  changeHousePref: async (_newData: Partial<HousePref>) => {},
-  addHousePref: async (_newData: Omit<HousePref, "idHouse">) => {},
+  changeHousePref: async (_newData: Partial<HousePref>) => { },
+  addHousePref: async (_newData: Omit<HousePref, "idHouse">) => { },
   getMatches: async () => [] as HouseListing[],
-  addLiked: async (_id: number) => {},
+  addLiked: async (_id: number) => { },
   getLikes: async () => [] as HouseListing[],
-  rateHouse: async (_id, _data) => {},
+  rateHouse: async (_id, _data) => { },
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -111,6 +113,21 @@ export function HouseContextProvider(props: PropsWithChildren) {
         return;
       }
     },
+
+    async uploadHouseImage(file: File, houseId: number): Promise<void> {
+      const formData = new FormData();
+      formData.append("file", file);
+      console.log(formData)
+
+      await fetch(API_URL + `/images/upload-house/${houseId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // if needed
+        },
+        body: formData,
+      });
+    },
+
     async getHasHousePref(): Promise<boolean> {
       const response = await fetch(
         API_URL + `/house-search-prefrences/${context.userData?.idUser}`,
@@ -144,7 +161,7 @@ export function HouseContextProvider(props: PropsWithChildren) {
         errorCheckHouse(response);
         return;
       }
-      
+
       let prefrence;
       try {
         prefrence = await response.json();

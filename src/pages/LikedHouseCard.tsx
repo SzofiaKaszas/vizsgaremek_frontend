@@ -1,11 +1,11 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useState, useEffect, useContext } from "react";
-import type { HouseListing, LikedHouseProps } from "@/interfaces";
+import type { HouseListing, LikedHouseProps, User } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
 import { Heart, Trash } from "lucide-react";
 import { HouseContext } from "@/context/houseContext";
 import { useNavigate } from "react-router";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 export function LikedHouseCard(props: LikedHouseProps) {
   const [houses, setHouses] = useState<HouseListing[]>([]);
@@ -46,18 +46,35 @@ export function LikedHouseCard(props: LikedHouseProps) {
           className="p-5 flex flex-col h-full min-h-[420px] hover:shadow-lg transition"
         >
 
-          <Carousel>
-            <CarouselContent className="image-wrapper">
-              <div className="w-full h-44 rounded-xl overflow-hidden bg-muted">
-
+          {house?.images?.length ? (
+            <Carousel className="w-full">
+              <CarouselContent>
+                {house.images.map((img) => (
+                  <CarouselItem key={img.idHouseImage} className="basis-full">
+                    <Card className="p-0 overflow-hidden rounded-xl shadow-none border">
+                      <CardContent className="p-0">
+                        <div className="w-full h-90 overflow-hidden">
+                          <img
+                            src={img.url}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          ) : (
+            <Carousel>
+              <CarouselContent>
                 <img
                   src="https://github.com/shadcn.png"
-                  className="w-full h-full object-cover"
+                  className="w-full h-90 object-cover rounded-md mb-4"
                 />
-
-              </div>
-            </CarouselContent>
-          </Carousel>
+              </CarouselContent>
+            </Carousel>
+          )}
           <div>
             <h3 className="font-semibold text-lg">
               {house.city}, {house.location}
@@ -95,7 +112,7 @@ export function LikedHouseCard(props: LikedHouseProps) {
               onClick={() => toggleLike(house.idHouse)}
               className="text-sm text-muted-foreground hover:text-red-500 transition flex items-center gap-1"
             >
-              <Trash size={22}/>
+              <Trash size={22} />
             </button>
 
             <button
