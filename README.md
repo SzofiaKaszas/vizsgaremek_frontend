@@ -1,10 +1,45 @@
 <div align="left">
 
-#  Vizsgaremek Frontend
+# Kezzy (Vizsgaremek Frontend)
 
-Frontend alkalmazás a vizsgaremek projekthez.
+Frontend alkalmazás a **Kezzy** webalkalmazáshoz.
 
+</div>
 
+---
+
+## Bevezetés
+
+Ez a dokumentáció a vizsgaremek frontend alkalmazás felépítését és működését mutatja be.
+
+A frontend feladata:
+
+* a felhasználói felület megjelenítése
+* kommunikáció a backend API-val
+* adatok kezelése és megjelenítése
+
+### Projekt célja
+
+A **Kezzy** egy webalkalmazás, amely a lakótárs- és lakáskeresés megkönnyítésére jött létre.
+Célja, hogy a felhasználók egyszerűen és átlátható módon találjanak egymásra, illetve számukra megfelelő lakhatási lehetőségeket.
+
+Az alkalmazás:
+
+* felhasználóbarát felületet biztosít
+* alapvető keresési és szűrési funkciókat kínál
+
+---
+
+## Alkalmazott technológiák
+
+* Vite
+* React / TypeScript
+* Tailwind CSS
+* shadcn/ui
+* leo-profanity
+* lucide (ikonok)
+
+---
 ## Gyors indítás
 
 Kövesd az alábbi lépéseket a projekt futtatásához:
@@ -36,17 +71,88 @@ npm run dev
 
 ---
 
-## 🛠️ Használt technológiák
+## Architektúra
 
-*  JavaScript / TypeScript
-*  Tailwind CSS
-*  shadcn/ui
-*  leo-profanity
+Az alkalmazás komponens-alapú architektúrát használ.
+
+Fő részei:
+
+* **Komponensek** – újrafelhasználható UI elemek
+* **Oldalak (pages)** – route-okhoz tartozó nézetek
+* **Kontextusok** – backendről történő adatlekérés kezelése
+* **Hookok** – logika újrafelhasználására
 
 ---
 
-## Megjegyzés
+## 📁 Projekt struktúra
+```bash
+src/
+├── components/   # UI komponensek (shadcn/ui)
+├── pages/        # oldalak (saját komponensek)
+├── context/      # adatkezelés / fetch logika
+└── assets/       # statikus fájlok (pl. enumok)
+```
 
-Ha továbbra sem működik, érdemes újratelepíteni a függőségeket, vagy ellenőrizni a hiányzó package-eket.
+---
 
+## 🔌 API kommunikáció
+
+A frontend HTTP kéréseken keresztül kommunikál a backenddel.
+
+Példa:
+
+
+fetch("http://localhost:3000/api/data")
+
+
+Az API hívások külön logikában (pl. context / service réteg) vannak kezelve.
+
+---
+
+## UI és stíluskezelés
+
+* Tailwind CSS a gyors és hatékony stílusozáshoz
+* shadcn/ui komponensek az egységes megjelenésért
+* Reszponzív design (mobilbarát felület)
+
+---
+
+## Állapotkezelés
+
+Az alkalmazás lokális state-et használ:
+
+* `useState` – komponens szintű állapot
+* `useEffect` – lifecycle kezelés
+
+---
+
+## Validáció és adatkezelés
+
+* Input ellenőrzés frontend és backend oldalon
+* Nem megfelelő szavak szűrése (`leo-profanity`)
+
+---
+
+## Hibakezelés
+
+* API hibák kezelése (`try/catch`)
+* Hibák megjelenítése a felhasználónak
+* Konzol logolás fejlesztéshez
+
+---
+
+## Tesztelés
+
+* Manuális tesztelés frontend oldalon
+
+---
+
+## Továbbfejlesztési lehetőségek
+
+* Globális state management (Redux / Zustand)
+* Dark mode
+* Unit tesztek
+* Teljesítmény optimalizálás
+
+---
 </div>
