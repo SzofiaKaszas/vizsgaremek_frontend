@@ -1,73 +1,158 @@
-# React + TypeScript + Vite
+<div align="left">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Kezzy (Vizsgaremek Frontend)
 
-Currently, two official plugins are available:
+Frontend alkalmazás a **Kezzy** webalkalmazáshoz.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+</div>
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Bevezetés
 
-## Expanding the ESLint configuration
+Ez a dokumentáció a vizsgaremek frontend alkalmazás felépítését és működését mutatja be.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+A frontend feladata:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* a felhasználói felület megjelenítése
+* kommunikáció a backend API-val
+* adatok kezelése és megjelenítése
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Projekt célja
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+A **Kezzy** egy webalkalmazás, amely a lakótárs- és lakáskeresés megkönnyítésére jött létre.
+Célja, hogy a felhasználók egyszerűen és átlátható módon találjanak egymásra, illetve számukra megfelelő lakhatási lehetőségeket.
+
+Az alkalmazás:
+
+* felhasználóbarát felületet biztosít
+* alapvető keresési és szűrési funkciókat kínál
+
+---
+
+## Alkalmazott technológiák
+
+* Vite
+* React / TypeScript
+* Tailwind CSS
+* shadcn/ui
+* leo-profanity
+* lucide (ikonok)
+
+---
+## Gyors indítás
+
+Kövesd az alábbi lépéseket a projekt futtatásához:
+
+```bash
+git clone https://github.com/SzofiaKaszas/vizsgaremek_frontend.git
+cd vizsgaremek_frontend
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Ha nem indul el
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Előfordulhat, hogy néhány csomagot manuálisan kell telepíteni:
+
+```bash
+npm install shadcn
+npm install tailwindcss
+npm install leo-profanity
 ```
+
+Ezután indítsd újra:
+
+```bash
+npm run dev
+```
+
+---
+
+## Architektúra
+
+Az alkalmazás komponens-alapú architektúrát használ.
+
+Fő részei:
+
+* **Komponensek** – újrafelhasználható UI elemek
+* **Oldalak (pages)** – route-okhoz tartozó nézetek
+* **Kontextusok** – backendről történő adatlekérés kezelése
+* **Hookok** – logika újrafelhasználására
+
+---
+
+## 📁 Projekt struktúra
+```bash
+src/
+├── components/   # UI komponensek (shadcn/ui)
+├── pages/        # oldalak (saját komponensek)
+├── context/      # adatkezelés / fetch logika
+└── assets/       # statikus fájlok (pl. enumok)
+```
+
+---
+
+## 🔌 API kommunikáció
+
+A frontend HTTP kéréseken keresztül kommunikál a backenddel.
+
+Példa:
+
+
+fetch("http://localhost:3000/api/data")
+
+
+Az API hívások külön logikában (pl. context / service réteg) vannak kezelve.
+
+---
+
+## UI és stíluskezelés
+
+* Tailwind CSS a gyors és hatékony stílusozáshoz
+* shadcn/ui komponensek az egységes megjelenésért
+* Reszponzív design (mobilbarát felület)
+
+---
+
+## Állapotkezelés
+
+Az alkalmazás lokális state-et használ:
+
+* `useState` – komponens szintű állapot
+* `useEffect` – lifecycle kezelés
+
+---
+
+## Validáció és adatkezelés
+
+* Input ellenőrzés frontend és backend oldalon
+* Nem megfelelő szavak szűrése (`leo-profanity`)
+
+---
+
+## Hibakezelés
+
+* API hibák kezelése (`try/catch`)
+* Hibák megjelenítése a felhasználónak
+* Konzol logolás fejlesztéshez
+
+---
+
+## Tesztelés
+
+* Manuális tesztelés frontend oldalon
+
+---
+
+## Továbbfejlesztési lehetőségek
+
+* Globális state management (Redux / Zustand)
+* Dark mode
+* Unit tesztek
+* Teljesítmény optimalizálás
+
+---
+</div>

@@ -13,159 +13,195 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { isDate } from "date-fns";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate, type NavigateFunction } from "react-router";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
+/**Add toast - * for needed shit also error on password*/
 export function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const context = useContext(AuthContext);
 
   return (
-    <div className="flex justify-center mt-10">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 px-4 pt-24 pb-12 flex justify-center">
+      
       <form
-        className="form-scope"
+        className="w-full max-w-xl"
         onSubmit={(e) => {
-          handleSubmit(e, context);
+          handleSubmit(e, context, navigate);
         }}
       >
-        <Card className="form-card w-full max-w-sm p-4">
-          <CardTitle className="text-center text-xl font-bold">
-            Register
+        <Card className="p-6 rounded-2xl shadow-xl border border-slate-200 bg-white/80 backdrop-blur">
+
+          {/* TITLE */}
+          <CardTitle className="text-2xl font-semibold text-center text-slate-800">
+            Create account
           </CardTitle>
-          <FieldGroup className="grid max-w-sm grid-cols-2">
+
+          <div className="space-y-4 mt-6">
+
+            {/* NAME */}
+            <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Field>
+                <FieldLabel className="text-slate-600 text-sm">
+                  First Name
+                </FieldLabel>
+                <Input
+                  type="text"
+                  name="firstName"
+                  placeholder="Lee"
+                  required
+                  className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
+                />
+                <FieldDescription id="nameErr" className="text-red-500 text-sm" />
+              </Field>
+
+              <Field>
+                <FieldLabel className="text-slate-600 text-sm">
+                  Last Name
+                </FieldLabel>
+                <Input
+                  type="text"
+                  name="lastName"
+                  placeholder="Jordan"
+                  required
+                  className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
+                />
+              </Field>
+            </FieldGroup>
+
+            {/* BIRTHDAY */}
             <Field>
-              <FieldLabel htmlFor="first-name">
-                First Name <span className="text-destructive">*</span>
+              <FieldLabel className="text-slate-600 text-sm">
+                Birthday
               </FieldLabel>
               <Input
-                type="text"
-                id="first-name"
-                name="firstName"
-                placeholder="Jordan"
+                type="date"
+                name="age"
                 required
+                className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
               />
-              <FieldDescription
-                id="nameErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
+              <FieldDescription id="ageErr" className="text-red-500 text-sm" />
             </Field>
+
+            {/* PHONE */}
             <Field>
-              <FieldLabel htmlFor="last-name">
-                Last Name <span className="text-destructive">*</span>
+              <FieldLabel className="text-slate-600 text-sm">
+                Phone Number
               </FieldLabel>
               <Input
-                type="text"
-                id="last-name"
-                name="lastName"
-                placeholder="Lee"
+                type="tel"
+                name="phoneNumber"
+                placeholder="+36 30 123 4567"
                 required
+                className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
               />
+              <FieldDescription id="phoneErr" className="text-red-500 text-sm" />
             </Field>
-          </FieldGroup>
-          <Field className="m-2">
-            <FieldLabel htmlFor="age">
-              Birthday <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input type="date" name="age" placeholder="20" id="age"></Input>
-            <FieldDescription
-              id="ageErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="phone-number">
-              Phone Number <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="tel"
-              id="phone-number"
-              name="phoneNumber"
-              placeholder="000-000-0000"
-              required
-            />
-            <FieldDescription
-              id="phoneErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="email">
-              Email <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="lee.jordan@gmail.com"
-              required
-            />
-            <FieldDescription
-              id="emailErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="password">
-              Password <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="password"
-              required
-            />
-            <FieldDescription
-              id="passwordErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-          <FieldSeparator />
-          <Field>
-            <FieldLabel htmlFor="has-house">
-              Do you want to rent out a house to others?
-              <span className="text-destructive">*</span>
-              <Checkbox id="has-house" name="hasHouse"></Checkbox>
-            </FieldLabel>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="looking-for-house">
-              Are you looking for a house?
-              <span className="text-destructive">*</span>
-              <Checkbox
-                id="looking-for-house"
-                name="lookingForHouse"
-              ></Checkbox>
-            </FieldLabel>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="looking-for-roommate">
-              Are you looking for a roommate?
-              <span className="text-destructive">*</span>
-              <Checkbox
-                id="looking-for-roommate"
-                name="lookingForRoommate"
-              ></Checkbox>
-            </FieldLabel>
-            <FieldDescription
-              id="backendErr"
-              className="text-red-600 text-sm mt-1"
-            ></FieldDescription>
-          </Field>
-          <div className="my-button-scope">
-            <Button variant={"default"} type="submit" className="primary-btn">
-              Register
+
+            {/* EMAIL */}
+            <Field>
+              <FieldLabel className="text-slate-600 text-sm">
+                Email
+              </FieldLabel>
+              <Input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                required
+                className="mt-1 rounded-lg border-slate-300 focus:border-purple-500 focus:ring-purple-400"
+              />
+              <FieldDescription id="emailErr" className="text-red-500 text-sm" />
+            </Field>
+
+            {/* PASSWORD */}
+            <Field>
+              <FieldLabel className="text-slate-600 text-sm">
+                Password
+              </FieldLabel>
+
+              <div className="relative mt-1">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                  className="rounded-lg border-slate-300 pr-10 focus:border-purple-500 focus:ring-purple-400"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600 transition"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+              <FieldDescription id="passwordErr" className="text-red-500 text-sm mt-1" />
+            </Field>
+
+            {/* OPTIONS */}
+            <div className="space-y-2 pt-2 border-t">
+
+              <div className="flex items-center gap-2">
+                <Checkbox id="has-house" name="hasHouse" />
+                <label htmlFor="has-house" className="text-sm text-slate-600 cursor-pointer">
+                  I want to rent out a house
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox id="looking-for-house" name="lookingForHouse" />
+                <label htmlFor="looking-for-house" className="text-sm text-slate-600 cursor-pointer">
+                  I am looking for a house
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Checkbox id="looking-for-roommate" name="lookingForRoommate" />
+                <label htmlFor="looking-for-roommate" className="text-sm text-slate-600 cursor-pointer">
+                  I am looking for a roommate
+                </label>
+              </div>
+
+              <FieldDescription id="backendErr" className="text-red-500 text-sm" />
+            </div>
+
+            {/* BUTTON */}
+            <Button
+              type="submit"
+              className="w-full rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium py-2 transition mt-4"
+            >
+              Create account
             </Button>
+
+            {/* LINK */}
+            <div className="text-center text-sm text-slate-500">
+              Already have an account?{" "}
+              <a href="/login" className="text-purple-600 font-medium hover:underline">
+                Sign in
+              </a>
+            </div>
+
           </div>
         </Card>
       </form>
     </div>
   );
 }
-
+/**creates a new user */
 async function handleSubmit(
   e: React.FormEvent<HTMLFormElement>,
   context: React.ContextType<typeof AuthContext>,
+  navigate: NavigateFunction,
 ) {
+  /**prevent reloading*/
   e.preventDefault();
 
+  /** Get form data */
   const form = new FormData(e.currentTarget);
   const firstName = form.get("firstName") as string;
   const lastName = form.get("lastName") as string;
@@ -176,62 +212,92 @@ async function handleSubmit(
   const email = form.get("email") as string;
   const password = form.get("password") as string;
 
+  /** Clear previous error messages */
   document.getElementById("nameErr")!.innerHTML = "";
   document.getElementById("passwordErr")!.innerHTML = "";
+  document.getElementById("ageErr")!.innerHTML = "";
   document.getElementById("emailErr")!.innerHTML = "";
   document.getElementById("phoneErr")!.innerHTML = "";
   document.getElementById("backendErr")!.innerHTML = "";
 
   // Validation regex patterns
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
-  const regexPhone =
-    /^\+?\d{1,3}[-\s.]?\(?\d{2,3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/; // Simplified phone number regex
-  const regexPassword = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // At least 6 characters, one uppercase letter, one number
+  const regexPhone = /^\+?[0-9]{1,3}([-\s.]?[0-9]{2,4}){2,4}$/; // Simplified phone number regex
+  const regexUppercase =
+    /[A-Z]/; /** Uppercase letter regex for password complexity */
+  const regexNumber = /[0-9]/; /** Number regex for password complexity */
+  const regexMinLength =
+    /.{6,}/; /** Minimum length regex for password complexity */
 
   let hasError = false;
 
+  /**------------------------------- Validation -------------------------------*/
+
+  /** Name validation */
   if (!firstName || !lastName) {
     document.getElementById("nameErr")?.append("Please fill in all fields");
     hasError = true;
   }
 
+  /** Password validation */
+  const passwordErrors = [];
+  let hasPassword = true; // Since the password field is required, we can assume it exists
+
   if (!password) {
-    document.getElementById("passwordErr")?.append("Give password");
+    passwordErrors.push("Please enter a password");
     hasError = true;
-  } else if (!regexPassword.test(password as string)) {
-    document
-      .getElementById("passwordErr")
-      ?.append(
-        "Password must be at least 6 characters long \n contain an uppercase letter\n contain a number.",
-      );
+    hasPassword = false;
+  }
+
+  /** Password complexity checks */
+  if (!regexMinLength.test(password as string) && hasPassword) {
+    passwordErrors.push("Password must be at least 6 characters long");
     hasError = true;
   }
 
+  if (!regexUppercase.test(password as string) && hasPassword) {
+    passwordErrors.push("Password must contain at least one uppercase letter");
+    hasError = true;
+  }
+
+  if (!regexNumber.test(password as string) && hasPassword) {
+    passwordErrors.push("Password must contain at least one number");
+    hasError = true;
+  }
+
+  document.getElementById("passwordErr")?.append(passwordErrors.join("\n"));
+
+  /** Email validation */
   if (!email) {
-    document.getElementById("emailErr")?.append("Give Email");
+    document
+      .getElementById("emailErr")
+      ?.append("Please enter an email address");
     hasError = true;
   } else if (!regexEmail.test(email as string)) {
     document.getElementById("emailErr")?.append("Invalid Email");
     hasError = true;
   }
 
+  /** Phone number validation */
   if (!phoneNumber) {
-    document.getElementById("phoneErr")?.append("Give Phonenumber");
+    document.getElementById("phoneErr")?.append("Please enter a phone number");
     hasError = true;
   } else if (!regexPhone.test(phoneNumber as string)) {
-    document.getElementById("phoneErr")?.append("Invalid Phonenumber");
+    document.getElementById("phoneErr")?.append("Invalid phone number format");
     hasError = true;
   }
 
+  /** Age validation */
+  /** User must be at least 18 years old */
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
-  const birth = (form.get("age") as string) || undefined;
+  const birth = (form.get("age") as string) || null;
   const birthDay = new Date(birth as string);
 
   if (!birthDay) {
     hasError = true;
-    document.getElementById("ageErr")?.append("Give birthday");
+    document.getElementById("ageErr")?.append("Please enter your birthday");
   } else if (!(isDate(birthDay) && eighteenYearsAgo > birthDay)) {
     hasError = true;
     document
@@ -241,11 +307,13 @@ async function handleSubmit(
 
   if (hasError) return;
 
+  /** Create user object */
   const user: Omit<User, "idUser"> = {
     firstName,
     lastName,
     birthDay,
     phoneNumber,
+    rating: 0,
     hasHouse,
     lookingForPeople,
     lookingForHouse,
@@ -253,16 +321,22 @@ async function handleSubmit(
     password,
     role: "user",
   };
+
+  /** Attempt registration and login */
   try {
     await context.register(user);
-    alert("Registration successful!");
-    await context.login(email, password);
-    if (lookingForPeople || lookingForHouse || hasHouse) {
-      window.location.href = "/setupprofile";
-    } else {
-      window.location.href = "/main";
-    }
+    toast.success("Registration successful!");
+    /** Attempt login if registered successfully */
+    setTimeout(async () => {
+      await context.login(email, password);
+      if (lookingForPeople || lookingForHouse || hasHouse) {
+        navigate("/setupprofile");
+      } else {
+        navigate("/main");
+      }
+    }, 800);
   } catch (error) {
+    /* Handle registration or login errors */
     console.error("Registration error:", error);
     document.getElementById("backendErr")!.innerHTML = (error as Error).message;
   }

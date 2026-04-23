@@ -23,140 +23,199 @@ import { isDate } from "date-fns";
 export function EditProfile() {
   const context = useContext(UserContext);
 
+  const birthday = context.userData?.birthDay
+    ? new Date(context.userData.birthDay).toISOString().split("T")[0]
+    : "";
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="primary-btn">Edit Profile</Button>
+        <Button
+          className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
+        >
+          Edit Profile
+        </Button>
       </DialogTrigger>
-      <DialogContent className="card sm:max-w-md max-h-[80vh] overflow-y-">
-        <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
-          <DialogDescription>You can edit your profile here</DialogDescription>
+
+      <DialogContent className="card sm:max-w-lg max-h-[85vh] overflow-y-auto flex flex-col rounded-2xl p-0">
+        {/* HEADER */}
+        <DialogHeader className="px-6 pt-6 pb-3 border-b border-muted">
+          <DialogTitle className="text-lg font-semibold">
+            Edit your profile
+          </DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
+            Keep your information up to date
+          </DialogDescription>
         </DialogHeader>
+
         <form
-        className="form-scope"
+          className="form-scope flex flex-col gap-5 px-6 py-5"
           onSubmit={async (e) => {
             handleSubmit(e, context);
           }}
         >
-          <FieldGroup className="gap-1">
+          <FieldGroup className="space-y-4">
+
+            {/* NAME ROW */}
+            <div className="grid grid-cols-2 gap-3">
+              <Field>
+                <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                <Input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  defaultValue={context.userData?.firstName}
+                  required
+                  className="rounded-xl focus-visible:ring-[var(--color-accent)]"
+                />
+                <FieldDescription
+                  id="firstNameErr"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                <Input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  defaultValue={context.userData?.lastName}
+                  required
+                  className="rounded-xl focus-visible:ring-[var(--color-accent)]"
+                />
+                <FieldDescription
+                  id="lastNameErr"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </Field>
+            </div>
+
+            {/* BIRTHDAY */}
             <Field>
-              <FieldLabel htmlFor="firstName">First Name</FieldLabel>
-              <Input
-                type="text"
-                id="firstName"
-                name="firstName"
-                defaultValue={context.userData?.firstName}
-                required
-              />
-              <FieldDescription
-                id="firstNameErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
-              <Input
-                type="text"
-                id="lastName"
-                name="lastName"
-                defaultValue={context.userData?.lastName}
-                required
-              />
-              <FieldDescription
-                id="lastNameErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
-            </Field>
-            <Field className="m-2">
               <FieldLabel htmlFor="age">
                 Birthday <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input type="date" name="age" placeholder="20" id="age"></Input>
+              <Input
+                type="date"
+                name="age"
+                id="age"
+                defaultValue={birthday}
+                className="rounded-xl focus-visible:ring-[var(--color-accent)]"
+              />
               <FieldDescription
                 id="ageErr"
                 className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="phoneNumber">Phone Number</FieldLabel>
-              <Input
-                type="text"
-                id="phoneNumber"
-                name="phoneNumber"
-                defaultValue={context.userData?.phoneNumber}
-                required
-              />
-              <FieldDescription
-                id="phoneErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                type="email"
-                id="email"
-                name="email"
-                defaultValue={context.userData?.email}
-                required
               />
             </Field>
-            <Field>
-              <div className="flex items-center gap-2">
-                <FieldLabel htmlFor="hasHouse">
-                  Do you wanna rent house out for others
-                </FieldLabel>
-                <Checkbox
-                  id="hasHouse"
-                  name="hasHouse"
-                  defaultChecked={context.userData?.hasHouse}
-                />
-              </div>
-              <FieldDescription
-                id="hasHouseErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
-            </Field>
 
-            <Field>
-              <div className="flex items-center gap-2">
-                <FieldLabel htmlFor="lookingForHouse">
-                  Are you looking for a house
-                </FieldLabel>
-                <Checkbox
-                  id="lookingForHouse"
-                  name="lookingForHouse"
-                  defaultChecked={context.userData?.lookingForHouse}
+            {/* CONTACT ROW */}
+            <div className="grid grid-cols-2 gap-3">
+              <Field>
+                <FieldLabel htmlFor="phoneNumber">Phone Number</FieldLabel>
+                <Input
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  defaultValue={context.userData?.phoneNumber}
+                  required
+                  className="rounded-xl focus-visible:ring-[var(--color-accent)]"
                 />
-              </div>
-              <FieldDescription
-                id="lookingForPeopleErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
-            </Field>
+                <FieldDescription
+                  id="phoneErr"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </Field>
 
-            <Field>
-              <div className="flex items-center gap-2">
-                <FieldLabel htmlFor="lookingForPeople">
-                  Are you looking for a roommate
-                </FieldLabel>
-                <Checkbox
-                  id="lookingForPeople"
-                  name="lookingForPeople"
-                  defaultChecked={context.userData?.lookingForPeople}
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  type="email"
+                  id="email"
+                  name="email"
+                  defaultValue={context.userData?.email}
+                  required
+                  className="rounded-xl focus-visible:ring-[var(--color-accent)]"
                 />
-              </div>
-              <FieldDescription
-                id="lookingForPeopleErr"
-                className="text-red-600 text-sm mt-1"
-              ></FieldDescription>
-            </Field>
-          </FieldGroup>
-          <DialogFooter>
-            <div className="my-button-scope">
-              <Button type="submit" className="primary-btn">Save changes</Button>
+              </Field>
             </div>
+
+            {/* CHECKBOXES */}
+            <div className="space-y-3 pt-2">
+
+              <Field>
+                <div
+                  className="flex items-center justify-between rounded-xl border p-3"
+                  style={{ borderColor: "var(--color-accent)" }}
+                >
+                  <FieldLabel htmlFor="hasHouse" className="text-sm">
+                    Rent out your house
+                  </FieldLabel>
+                  <Checkbox
+                    id="hasHouse"
+                    name="hasHouse"
+                    defaultChecked={context.userData?.hasHouse}
+                  />
+                </div>
+                <FieldDescription
+                  id="hasHouseErr"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </Field>
+
+              <Field>
+                <div
+                  className="flex items-center justify-between rounded-xl border p-3"
+                  style={{ borderColor: "var(--color-accent)" }}
+                >
+                  <FieldLabel htmlFor="lookingForHouse" className="text-sm">
+                    Looking for house
+                  </FieldLabel>
+                  <Checkbox
+                    id="lookingForHouse"
+                    name="lookingForHouse"
+                    defaultChecked={context.userData?.lookingForHouse}
+                  />
+                </div>
+                <FieldDescription
+                  id="lookingForPeopleErr"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </Field>
+
+              <Field>
+                <div
+                  className="flex items-center justify-between rounded-xl border p-3"
+                  style={{ borderColor: "var(--color-accent)" }}
+                >
+                  <FieldLabel htmlFor="lookingForPeople" className="text-sm">
+                    Looking for roommate
+                  </FieldLabel>
+                  <Checkbox
+                    id="lookingForPeople"
+                    name="lookingForPeople"
+                    defaultChecked={context.userData?.lookingForPeople}
+                  />
+                </div>
+                <FieldDescription
+                  id="lookingForPeopleErr"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </Field>
+
+            </div>
+
+          </FieldGroup>
+
+          {/* FOOTER */}
+          <DialogFooter className="sticky bottom-0 bg-background pt-4 border-t border-muted">
+            <Button
+              type="submit"
+              className="w-full rounded-xl text-white"
+              style={{ backgroundColor: "var(--color-accent)" }}
+            >
+              Save changes
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -176,13 +235,9 @@ async function handleSubmit(
     "Are you sure you want to change your data?",
   );
 
-  if (!confirmed) {
-    return;
-  }
+  if (!confirmed) return;
 
   const form = new FormData(e.currentTarget);
-  //TODO: check wether they actually changed something
-  //TODO: error handling
   let hasError = false;
 
   const firstName = (form.get("firstName") as string) || undefined;
@@ -193,10 +248,9 @@ async function handleSubmit(
   const lookingForHouse = form.has("lookingForHouse");
   const email = (form.get("email") as string) || undefined;
 
-  // Validation regex patterns
-  const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/; // Simplified email regex
+  const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
   const regexPhone =
-    /^\+?\d{1,3}[-\s.]?\(?\d{2,3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/; // Simplified phone number regex
+    /^\+?\d{1,3}[-\s.]?\(?\d{2,3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/;
 
   switch (true) {
     case !firstName || !lastName || !phoneNumber || !email:
@@ -230,18 +284,19 @@ async function handleSubmit(
 
   try {
     await context.changeUserData?.({
-      firstName: firstName,
-      lastName: lastName,
-      birthDay: birthDay,
-      phoneNumber: phoneNumber,
-      email: email,
-      hasHouse: hasHouse,
-      lookingForPeople: lookingForPeople,
-      lookingForHouse: lookingForHouse,
+      firstName,
+      lastName,
+      birthDay,
+      phoneNumber,
+      email,
+      hasHouse,
+      lookingForPeople,
+      lookingForHouse,
     });
-    alert("Profile updated successfully"); //change later to better notification
+
+    alert("Profile updated successfully");
     window.location.href = "/profile";
   } catch (err) {
-    alert((err as Error).message); //change later to better error notification
+    alert((err as Error).message);
   }
 }

@@ -1,184 +1,137 @@
 import { Card } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
 import type { FindHouseProps, HouseListing } from "@/interfaces";
-import { PleaseLogin } from "./PleaseLogin";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { /*useContext,*/ useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
 import { HouseContext } from "@/context/houseContext";
-//import { UserContext } from "@/context/userContext";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
 
 export function FindHouseCard(props: FindHouseProps) {
-  const [housePrefList, sethousePrefList] = useState<HouseListing[]>([]);
-  const [animatingId, setAnimatingId] = useState<number | null>(null);
-  const [direction, setDirection] = useState<"left" | "right" | null>(null);
-  const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
-    null,
-  );
-
-  useEffect(() => {
-    async function set() {
-      sethousePrefList(await props.housePref);
-    }
-    set();
-  }, [props.housePref]);
-
-  function whatToShow(string: string | undefined | null) {
-    if (string === undefined || string === "" || string === null) {
-      return "Not specified";
-    } else {
-      return string;
-    }
-  }
-
-  function removeUser(id: number) {
-    sethousePrefList((prev) => prev.filter((house) => house.idHouse !== id));
-  }
-
+  const [list, setList] = useState<HouseListing[]>([]);
   const context = useContext(HouseContext);
 
-  async function LikeClick(id: number) {
-    console.log(id);
+  useEffect(() => {
+    setList(props.housePref);
+  }, [props.housePref]);
+
+  async function like(id: number) {
     await context.addLiked(id);
+    next();
   }
-  if (housePrefList.length === 0) {
+
+  function dislike() {
+    next();
+  }
+
+  function next() {
+    setList((prev) => prev.slice(1));
+  }
+
+  if (!props.isLoggedIn) {
     return (
-      <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
-        No more roommates available right now.
+      <div className="text-center mt-10 text-muted-foreground">
+        Please login to continue
       </div>
     );
   }
 
-  return props.isLoggedIn === true ? (
-    <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
-      {housePrefList.map((pref) => (
-        <Dialog key={pref.idHouse}>
-          <DialogTrigger asChild onClick={handleOpen}>
-            <Card
-              className={`
-    col-auto card w-full p-4
-    ${animatingId === pref.idHouse && direction === "right" ? "swipe-right" : ""}
-    ${animatingId === pref.idHouse && direction === "left" ? "swipe-left" : ""}
-  `}
-              onAnimationEnd={async () => {
-                if (animatingId === pref.idHouse) {
-                  if (pendingAction === "like") {
-                    LikeClick(pref.idHouse);
-                  }
-                  removeUser(pref.idHouse);
-
-                  setAnimatingId(null);
-                  setDirection(null);
-                  setPendingAction(null);
-                }
-              }}
-            >
-              <Carousel>
-                <CarouselContent>
-                  <img
-                    src="https://github.com/shadcn.png"
-                    alt={`${pref.city} ${pref.location}'s profile picture`}
-                    className="w-full h-48 object-cover rounded-md"
-                  />
-                </CarouselContent>
-              </Carousel>
-
-              <Field>
-                <strong>Location:</strong> {pref.city}, {pref.location}
-                <FieldDescription>{pref.description}</FieldDescription>
-              </Field>
-              <div className="grid grid-cols-2 gap-4">
-                <Field>
-                  <strong>Rent:</strong> {pref.rent} Ft
-                </Field>
-
-                <Field>
-                  <strong>Property type:</strong> {`${pref.propertyType}`}
-                </Field>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Field>
-                  <strong>Rooms:</strong> {pref.numberOfRooms}
-                </Field>
-
-                <Field>
-                  <strong>Bathrooms:</strong> {pref.bathrooms}
-                </Field>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Field>
-                  <strong>Floor:</strong> {pref.whichFloor}
-                </Field>
-
-                <Field>
-                  <strong>Size:</strong> {pref.squareMeter} m²
-                </Field>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <Field>
-                  <strong>Heating:</strong> {`${pref.heatingType}`}
-                </Field>
-
-                <Field>
-                  <strong>Furnishing:</strong> {`${pref.furnishingLevel}`}
-                </Field>
-
-                <Field>
-                  <strong>Kitchen:</strong> {`${pref.kitchenLevel}`}
-                </Field>
-              </div>
-              <Field>
-                <strong>Air Conditioner:</strong>
-                {pref.airConditioner ? "Yes" : "No"}
-              </Field>
-              <div className="w-full flex gap-4 justify-center">
-                <button
-                  className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setAnimatingId(pref.idHouse);
-                    setDirection("left");
-                    setPendingAction("dislike");
-                  }}
-                >
-                  <ThumbsDown
-                    fill="var(--color-bluee)"
-                    stroke="var(--color-bluee)"
-                  />
-                </button>
-                <button
-                  className="likeButton h-10 w-10 rounded-full flex items-center justify-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setAnimatingId(pref.idHouse);
-                    setDirection("right");
-                    setPendingAction("like");
-                  }}
-                >
-                  <Heart fill="red" stroke="red" />
-                </button>
-              </div>
-            </Card>
-          </DialogTrigger>
-        </Dialog>
-      ))}
-    </div>
-  ) : (
-    <PleaseLogin text="Please login to find a roommate" />
-  );
-}
-
-/**Making sure dialog doesnt open if your selecting text */
-function handleOpen(e: React.MouseEvent) {
-  const selection = window.getSelection();
-  const isSelecting = selection && selection.toString().length > 0;
-
-  if (isSelecting) {
-    e.preventDefault();
-    e.stopPropagation();
-    return;
+  if (list.length === 0) {
+    return (
+      <div className="text-center mt-10 text-muted-foreground">
+        No more houses available
+      </div>
+    );
   }
+
+  const active = list[0];
+  const preview = list.slice(1, 4);
+
+  return (
+    <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      {/* LEFT STACK */}
+      <div className="space-y-3 order-2 lg:order-1">
+        {preview.map((p) => (
+          <Card key={p.idHouse} className="p-3 opacity-60">
+            <div className="font-medium">
+              {p.city}, {p.location}
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* CENTER */}
+      <div className="order-1 lg:order-2">
+        <Card className="p-5 min-h-[520px] flex flex-col justify-between">
+
+          <div>
+            <Carousel>
+              <CarouselContent className="image-wrapper">
+                <img
+                  src="https://github.com/shadcn.png"
+                  className="w-full h-56 object-cover rounded-md mb-4"
+                />
+              </CarouselContent>
+            </Carousel>
+
+            <Field>
+              <div className="text-lg font-semibold">
+                {active.city}, {active.location}
+              </div>
+              <FieldDescription>
+                {active.description ?? "No description"}
+              </FieldDescription>
+            </Field>
+
+            <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+              <div><b>Rent:</b> {active.rent} Ft</div>
+              <div><b>Size:</b> {active.squareMeter} m²</div>
+              <div><b>Rooms:</b> {active.numberOfRooms}</div>
+              <div><b>Bath:</b> {active.bathrooms}</div>
+              <div><b>Floor:</b> {active.whichFloor}</div>
+              <div><b>Type:</b> {active.propertyType}</div>
+            </div>
+          </div>
+
+          {/* ACTIONS */}
+          <div className="pt-6 pb-2">
+            <div className="flex justify-between">
+              <button
+                onClick={dislike}
+                className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <ThumbsDown />
+              </button>
+
+              <button
+                onClick={() => like(active.idHouse)}
+                className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <Heart />
+              </button>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* RIGHT DETAILS */}
+      <div className="order-3">
+        <Card className="p-5 min-h-[520px]">
+
+          <h2 className="text-lg font-semibold mb-4">
+            House details
+          </h2>
+
+          <div className="space-y-2 text-sm">
+            <p><b>Heating:</b> {active.heatingType}</p>
+            <p><b>Furnishing:</b> {active.furnishingLevel}</p>
+            <p><b>Kitchen:</b> {active.kitchenLevel}</p>
+            <p><b>Air conditioning:</b> {active.airConditioner ? "Yes" : "No"}</p>
+          </div>
+
+        </Card>
+      </div>
+
+    </div>
+  );
 }

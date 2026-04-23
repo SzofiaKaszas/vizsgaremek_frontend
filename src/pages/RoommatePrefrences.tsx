@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Languages from "../assets/languages";
 import { UserContext } from "../context/userContext";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import {
   Combobox,
   ComboboxContent,
@@ -16,99 +16,186 @@ import { GendersForPref } from "@/assets/genders";
 import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { GoNextProp } from "@/interfaces";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { useNavigate, type NavigateFunction } from "react-router";
 
-/**TODO: If already has roommate pref, show the data in inputs */
 export function RoommatePrefrences({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
-  const [ages, setAges] = useState<[number, number]>([25, 40]);
+  const navigate = useNavigate();
+
+  const [ages, setAges] = useState<[number | undefined, number | undefined]>([
+    25, 50,
+  ]);
+
+  const [gender, setGender] = useState("");
+  const [language, setLanguage] = useState("");
+  const [hasRoommatePref, setHasRoommatePref] = useState(false);
 
   const MIN_AGE = 18;
   const MAX_AGE = 100;
 
+  useEffect(() => {
+    async function fetchData() {
+      const hasRoommatePreff = await context.getHasRoommatePref();
+      setHasRoommatePref(hasRoommatePref);
+
+      if (hasRoommatePreff) {
+        const roommatePref = await context.getRoommatePref();
+        if (!roommatePref) return;
+
+        setAges([roommatePref.minAge, roommatePref.maxAge]);
+        setGender(roommatePref.gender ?? "");
+        setLanguage(roommatePref.language ?? "");
+      }
+    }
+
+    fetchData();
+  }, [context.userData]);
+
   return (
-    <form
-    className="form-scope"
-      onSubmit={async (e) => {
-        handleSubmit(e, context, ages, goNext);
-      }}
-    >
-      <CardTitle className="text-center text-xl font-bold p-2">
-        Your Prefrences
-      </CardTitle>
-      <Field className="age-slider-scope m-2">
-        <FieldLabel>
-          Age range: {ages[0]} – {ages[1]}
-        </FieldLabel>
-        <Slider
-          defaultValue={[25, 50]}
-          min={MIN_AGE}
-          max={MAX_AGE}
-          step={1}
-          className="mx-auto w-full max-w-xs"
-          value={ages}
-          onValueChange={(value) => {
-            setAges(value as [number, number]);
-          }}
-        />
-      </Field>
-      <Field className="m-2">
-        <FieldLabel htmlFor="gender">Language you speak:</FieldLabel>
-        <Combobox items={GendersForPref}>
-          <ComboboxInput
-            placeholder="Select a gender"
+    <>
+      <Toaster position="top-center" />
+
+      <form
+        className="
+          px-2 sm:px-3
+          space-y-5
+        "
+        onSubmit={async (e) => {
+          handleSubmit(e, context, ages, goNext, navigate);
+        }}
+      >
+
+        {/* HEADER */}
+        <div className="text-center space-y-1">
+          <CardTitle className="text-lg font-semibold">
+            Roommate Preferences
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Who would you like to live with?
+          </p>
+        </div>
+
+        {/* AGE RANGE CARD */}
+        <Field>
+          <FieldLabel>Age range</FieldLabel>
+
+          <div className="
+            rounded-2xl
+            border border-muted
+            bg-muted/20
+            p-3
+            space-y-3
+          ">
+
+            {/* TOP INFO */}
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-muted-foreground">Min</span>
+              <span className="font-medium text-accent">
+                {ages[0]}
+              </span>
+              <span className="text-muted-foreground">Max</span>
+              <span className="font-medium text-accent">
+                {ages[1]}
+              </span>
+            </div>
+            <div className="age-slider-scope">
+              {/* SLIDER */}
+              <Slider
+                defaultValue={[25, 50]}
+                min={MIN_AGE}
+                max={MAX_AGE}
+                step={1}
+                value={ages}
+                onValueChange={(value) => {
+                  setAges(value as [number, number]);
+                }}
+                className="w-full"
+              />
+            </div></div>
+
+          <FieldDescription
+            id="ageErr"
+            className="text-red-500 text-xs mt-1"
+          />
+        </Field>
+
+        {/* GENDER */}
+        <Field className="space-y-1">
+          <FieldLabel htmlFor="gender">Preferred Gender</FieldLabel>
+
+          <Combobox
+            items={GendersForPref}
             name="gender"
-            id="gender"
-          />
-          <ComboboxContent>
-            <ComboboxEmpty>No items found.</ComboboxEmpty>
-            <ComboboxList>
-              {(item) => (
-                <ComboboxItem key={item} value={item}>
-                  {item}
-                </ComboboxItem>
-              )}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
-      </Field>
+            value={gender}
+            onValueChange={(value) => setGender(value ?? "")}
+          >
+            <ComboboxInput id="gender" placeholder="Select gender" />
+            <ComboboxContent>
+              <ComboboxEmpty>No results</ComboboxEmpty>
+              <ComboboxList>
+                {(item) => (
+                  <ComboboxItem key={item} value={item}>
+                    {item}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
 
-      <Field className="m-2">
-        <FieldLabel htmlFor="language">Language you speak:</FieldLabel>
-        <Combobox items={Languages}>
-          <ComboboxInput
-            placeholder="Select a language"
+          <FieldDescription id="genderErr" className="text-red-500 text-xs" />
+          <input type="hidden" name="gender" />
+        </Field>
+
+        {/* LANGUAGE */}
+        <Field className="space-y-1">
+          <FieldLabel htmlFor="language">Language</FieldLabel>
+
+          <Combobox
+            items={Languages}
             name="language"
-            id="language"
-          />
-          <ComboboxContent>
-            <ComboboxEmpty>No items found.</ComboboxEmpty>
-            <ComboboxList>
-              {(item) => (
-                <ComboboxItem key={item} value={item}>
-                  {item}
-                </ComboboxItem>
-              )}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
-      </Field>
+            value={language}
+            onValueChange={(value) => setLanguage(value ?? "")}
+          >
+            <ComboboxInput id="language" placeholder="Select language" />
+            <ComboboxContent>
+              <ComboboxEmpty>No results</ComboboxEmpty>
+              <ComboboxList>
+                {(item) => (
+                  <ComboboxItem key={item} value={item}>
+                    {item}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
 
-      <div className="my-button-scope">
-        <Button variant={"default"} type="submit" className="primary-btn m-1">
-          Next
-        </Button>
-        <Button
-          variant={"outline"}
-          type="button"
-          className="sec-btn m-1"
-          onClick={() => {
-            goNext();
-          }}
-        >
-          Skip
-        </Button>
-      </div>
-    </form>
+          <FieldDescription id="languageErr" className="text-red-500 text-xs" />
+          <input type="hidden" name="language" />
+        </Field>
+
+        {/* BUTTONS */}
+        <div className="pt-2 space-y-2">
+          <Button
+            type="submit"
+            className="w-full bg-accent text-white rounded-xl py-2"
+          >
+            Next
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-accent text-accent rounded-xl py-2"
+            onClick={() => goNext()}
+          >
+            Skip
+          </Button>
+        </div>
+
+      </form>
+    </>
   );
 }
 
@@ -117,71 +204,83 @@ async function handleSubmit(
   context: React.ContextType<typeof UserContext>,
   ages: [number, number],
   goNext: () => void,
+  navigate: NavigateFunction
 ) {
+  /**Prevent page refreshing */
   e.preventDefault();
+  /**Get form data */
   const form = new FormData(e.currentTarget);
 
-  const hasRoommatePref = await context.getHasRoommatePref();
+  /**Blur the active element to lose focus */
+  (document.activeElement as HTMLElement)?.blur();
 
+  /*get data */
   const minAge = ages[0];
   const maxAge = ages[1];
+  const gender = (form.get("gender") as string) || null;
+  const language = (form.get("language") as string) || null;
 
+  document.getElementById("ageErr")!.innerHTML = "";
+  document.getElementById("genderErr")!.innerHTML = "";
+  document.getElementById("languageErr")!.innerHTML = "";
+
+  /**Validate ages */
   switch (true) {
     case minAge === undefined || maxAge === undefined:
       return;
     case isNaN(minAge) || isNaN(maxAge):
-      alert("Ages must be numbers");
+      document.getElementById("ageErr")!.innerHTML = "Ages must be numbers";
       return;
     case minAge < 18:
-      alert("Minimum age must be at least 18");
+      document.getElementById("ageErr")!.innerHTML = "Minimum age must be at least 18";
       return;
     case maxAge > 100:
-      alert("Maximum age must be at most 100");
+      document.getElementById("ageErr")!.innerHTML = "Maximum age must be at most 100";
       return;
     case minAge > maxAge:
-      alert("Minimum age cannot be greater than maximum age");
+      document.getElementById("ageErr")!.innerHTML = "Minimum age cannot be greater than maximum age";
       return;
   }
 
-  const gender = form.get("gender") as string;
-  const language = form.get("language") as string;
+  /* Create roommate preferences object */
+  const pref = {
+    minAge: minAge ? Number(minAge) : null,
+    maxAge: maxAge ? Number(maxAge) : null,
+    gender: gender,
+    language: language,
+  };
 
-  console.log(hasRoommatePref);
+  const hasRoommatePref = await context.getHasRoommatePref();
+  /* If no validation errors, add or edit roommate preferences */
   if (hasRoommatePref == false) {
-    console.log("nincs pref");
+    /* No roommate preferences, add new one*/
     try {
-      await context.addRoommatePref({
-        minAge: minAge ? Number(minAge) : undefined,
-        maxAge: maxAge ? Number(maxAge) : undefined,
-        gender: gender,
-        language: language,
-      });
-      alert("Preferences saved successfully");
-      if (context.userData?.lookingForHouse) {
-        goNext();
-      } else {
-        window.location.href = "/main";
-      }
+      await context.addRoommatePref(pref);
+      toast.success("Preferences saved successfully");
+      setTimeout(() => {
+        if (context.userData?.lookingForHouse) {
+          goNext();
+        } else {
+          navigate("/main");
+        }
+      }, 800);
     } catch (err) {
-      alert((err as Error).message);
+      toast.error((err as Error).message);
     }
   } else {
-    console.log("van pref");
+    /** Edit existing roommate preferences */
     try {
-      await context.editRoommatePref({
-        minAge: minAge ? Number(minAge) : undefined,
-        maxAge: maxAge ? Number(maxAge) : undefined,
-        gender: gender,
-        language: language,
-      });
-      alert("Preferences saved successfully");
-      if (context.userData?.lookingForHouse) {
-        goNext();
-      } else {
-        window.location.href = "/main";
-      }
+      await context.editRoommatePref(pref);
+      toast.success("Preferences saved successfully");
+      setTimeout(() => {
+        if (context.userData?.lookingForHouse) {
+          goNext();
+        } else {
+          navigate("/main");
+        }
+      }, 800);
     } catch (err) {
-      alert((err as Error).message);
+      toast.error((err as Error).message);
     }
   }
 }

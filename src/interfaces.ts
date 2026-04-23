@@ -1,4 +1,9 @@
-import type { FurnishingType, HeatingType, KitchenFurnishingType, PropertyType } from "./assets/housePref";
+import type {
+  FurnishingType,
+  HeatingType,
+  KitchenFurnishingType,
+  PropertyType,
+} from "./assets/housePref";
 // --------------- User interfaces -----------------
 
 //interface when getting full data of users
@@ -18,6 +23,7 @@ export interface User {
   occupation?: string;
   connectionEmail?: string;
 
+  rating: number;
   hasHouse: boolean;
   lookingForPeople: boolean;
   lookingForHouse: boolean;
@@ -92,6 +98,29 @@ export interface HousePref {
   minBathrooms?: number;
 }
 
+//---------------rate------------------------------
+//interface for user rating table
+export interface RateUser {
+  id: number;
+
+  raterId: number;
+  ratedUserId: number;
+
+  ratingScore: number; // 1 to 5 starts
+  ratingMessage: string;
+}
+
+export interface RateHouse {
+  id: number;
+
+  raterId: number;
+  ratedHouseId: number;
+
+  ratingScore: number; // 1 to 5 starts
+  ratingMessage: string;
+}
+
+//---------------------props-----------------------
 //interface for props of the PleaseLogin component
 export interface PleaseLoginProps {
   text: string;
@@ -105,8 +134,7 @@ export interface GoNextProp {
 //interface for props of the FindRoommateSlide and FindRoommateCard component
 export interface FindRoommateProps {
   isLoggedIn: boolean;
- 
-  roommatePref: User[];
+  roommatePref: UserNecesarry[];
 }
 
 //interface for props of the FindHouseCard component
@@ -115,18 +143,34 @@ export interface FindHouseProps {
   housePref: HouseListing[];
 }
 
+//interface for props of the LikedHouseCard component
+export interface LikedHouseProps {
+  isLoggedIn: boolean;
+  likedHouses: HouseListing[];
+}
+
+//interface for props of the LikedUserCard component
+export interface LikedUserProps {
+  isLoggedIn: boolean;
+  likedUsers: User[];
+}
+
 //interface for props of the HouseListingCard component
 export interface HouseListingProps {
   houseListing: HouseListing;
 }
 
 //interface for the DialogContent when you click a user (so u can see more of their data)
-export interface DialogContentProps{
+export interface DialogContentProps {
   id: number;
-  prefList: User[];
+  prefList: UserNecesarry[];
   onDislike: (id: number) => void;
   onLike: (id: number) => void;
-  triggerAnimation: (id: number, dir: "left" | "right", action: "like" | "dislike") => void;
+  triggerAnimation: (
+    id: number,
+    dir: "left" | "right",
+    action: "like" | "dislike",
+  ) => void;
 }
 
 //---------------context interfaces-------------------
@@ -142,17 +186,26 @@ export interface AuthContextType {
 //interface for the managemant of the user data in usercontext
 export interface UserContextType {
   userData: User | undefined;
-  //userdata
+
   getUserById: (id: number) => Promise<User>;
   changeUserData: (newData: Partial<User>) => void;
-  //roommatepref
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
   getHasRoommatePref: () => Promise<boolean>;
+  getRoommatePref: () => Promise<RoommatePref | undefined>;
   editRoommatePref: (newData: Partial<RoommatePref>) => void;
   getMatches: () => Promise<UserNecesarry[]>;
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
-  getLikes: () => Promise<UserNecesarry[]>;
+  getLikes: () => Promise<User[]>;
+  likesMatches: () => Promise<User[]>;
+  likedUser: () => Promise<User[]>;
+  rateUser: (id: number, data: Partial<RateUser>) => void;
+  createAdmin: (_newData: Partial<User>) => void;
+  adminList: () => Promise<User[]>;
+  pendingRoommateRatings:() => Promise<RateUser[]>;
+  pendingHouseRatingList: () => Promise<RateHouse[]>;
+  approveRoommateRating: (_id:number) => { };
+  approveHouseRating: (_id:number) => { };
 }
 
 //interface for the managemant of the house data in housecontext
@@ -160,13 +213,18 @@ export interface HouseContextType {
   //houselisting
   getHouseListings: () => Promise<HouseListing[]>;
   addHouseListing: (newData: Omit<HouseListing, "idHouse">) => Promise<void>;
-  editHouseListing: (idHouse: number, newData: Partial<HouseListing>) => Promise<void>;
+  editHouseListing: (
+    idHouse: number,
+    newData: Partial<HouseListing>,
+  ) => Promise<void>;
   deleteHouseListing: (idHouse: number) => Promise<void>;
   //housepref
   getHasHousePref: () => Promise<boolean>;
+  getHousePref: () => Promise<HousePref | undefined>;
   changeHousePref: (newData: Partial<HousePref>) => void;
   addHousePref: (newData: Omit<HousePref, "idHouse">) => void;
   getMatches: () => Promise<HouseListing[]>;
   addLiked: (id: number) => void;
   getLikes: () => Promise<HouseListing[]>;
+  rateHouse: (id: number, data: Partial<RateHouse>) => void;
 }

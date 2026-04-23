@@ -1,175 +1,191 @@
 import { Card } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
-import type { FindRoommateProps, User } from "@/interfaces";
-import { PleaseLogin } from "./PleaseLogin";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { FindRoommateDialogContent } from "./FindRoommateDialogContent";
-import { /*useContext,*/ useContext, useEffect, useState } from "react";
-import { Heart, Star, ThumbsDown } from "lucide-react";
+import type { FindRoommateProps, User, UserNecesarry } from "@/interfaces";
+import { useContext, useEffect, useState } from "react";
+import { Heart, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
-//import { UserContext } from "@/context/userContext";
+import { Carousel, CarouselContent } from "@/components/ui/carousel";
 
 export function FindRoommateCard(props: FindRoommateProps) {
-  const [roommatePrefList, setroommatePrefList] = useState<User[]>([]);
-
-  const [animatingId, setAnimatingId] = useState<number | null>(null);
-  const [direction, setDirection] = useState<"left" | "right" | null>(null);
-  const [pendingAction, setPendingAction] = useState<"like" | "dislike" | null>(
-    null,
-  );
-
-  useEffect(() => {
-    async function set() {
-      setroommatePrefList(await props.roommatePref);
-    }
-    set();
-  }, [props.roommatePref]);
-
-  function removeUser(id: number) {
-    setroommatePrefList((prev) => prev.filter((user) => user.idUser !== id));
-  }
+  const [list, setList] = useState<UserNecesarry[]>([]);
+  const [fullUsers, setFullUsers] = useState<Record<number, User>>({});
+  const [loading, setLoading] = useState(true);
 
   const context = useContext(UserContext);
 
-  async function LikeClick(id: number) {
-    console.log(id);
+  // base list
+  useEffect(() => {
+    setList(props.roommatePref);
+  }, [props.roommatePref]);
+
+  // full user data (occupation etc.)
+  useEffect(() => {
+    if (!list.length) return;
+
+    let cancelled = false;
+
+    async function fetchUsers() {
+      setLoading(true);
+
+      const results: Record<number, User> = {};
+
+      await Promise.all(
+        list.map(async (u) => {
+          const full = await context.getUserById(u.idUser);
+          results[u.idUser] = full;
+        })
+      );
+
+      if (!cancelled) {
+        setFullUsers(results);
+        setLoading(false);
+      }
+    }
+
+    fetchUsers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [list, context]);
+
+  async function like(id: number) {
     await context.addLiked(id);
+    next();
   }
-  if (roommatePrefList.length === 0 && props.isLoggedIn) {
+
+  function dislike() {
+    next();
+  }
+
+  function next() {
+    setList((prev) => prev.slice(1));
+  }
+
+  if (!props.isLoggedIn) {
     return (
-      <div className="w-full text-center mt-10 text-lg font-medium text-muted-foreground">
-        No more roommates available right now.
+      <div className="text-center mt-10 text-muted-foreground">
+        Please login to continue
       </div>
     );
   }
 
-  return props.isLoggedIn === true ? (
-    <div className="find-card-scope grid grid-cols-1 md:grid-cols-3 gap-2 mt-4 px-2">
-      {roommatePrefList.map((pref) => (
-        <Dialog key={pref.idUser}>
-          <DialogTrigger asChild onClick={handleOpen}>
-            <Card
-              className={`
-    col-auto card w-full p-4
-    ${animatingId === pref.idUser && direction === "right" ? "swipe-right" : ""}
-    ${animatingId === pref.idUser && direction === "left" ? "swipe-left" : ""}
-  `}
-              onAnimationEnd={async () => {
-                if (animatingId === pref.idUser) {
-                  if (pendingAction === "like") {
-                    LikeClick(pref.idUser);
-                  }
-                  removeUser(pref.idUser);
-
-                  setAnimatingId(null);
-                  setDirection(null);
-                  setPendingAction(null);
-                }
-              }}
-            >
-              <Carousel>
-                <CarouselContent className="image-wrapper">
-                  <img
-                    src="https://github.com/shadcn.png"
-                    alt={`${pref.firstName} ${pref.lastName}'s profile picture`}
-                    className="w-full h-48 object-cover rounded-md"
-                  />
-                </CarouselContent>
-              </Carousel>
-              <Field>
-                {pref.firstName} {pref.lastName} - {getAge(pref.birthDay)}
-                <FieldDescription>{whatToShow(pref.gender)}</FieldDescription>
-              </Field>
-              <Field>{pref.userBio}</Field>
-              <Field>Language: {whatToShow(pref.language)}</Field>
-              <div className="w-full flex gap-4 justify-center">
-                <button
-                  className="dislikeButton h-10 w-10 rounded-full flex items-center justify-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setAnimatingId(pref.idUser);
-                    setDirection("left");
-                    setPendingAction("dislike");
-                  }}
-                >
-                  <ThumbsDown
-                    fill="var(--color-bluee)"
-                    stroke="var(--color-bluee)"
-                  />
-                </button>
-                <button
-                  className="likeButton h-10 w-10 rounded-full flex items-center justify-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setAnimatingId(pref.idUser);
-                    setDirection("right");
-                    setPendingAction("like");
-                  }}
-                >
-                  <Heart fill="red" stroke="red" />
-                </button>
-              </div>
-            </Card>
-          </DialogTrigger>
-          <FindRoommateDialogContent
-            id={pref.idUser}
-            prefList={roommatePrefList}
-            onDislike={removeUser}
-            onLike={LikeClick}
-            triggerAnimation={(id, dir, action) => {
-              setAnimatingId(id);
-              setDirection(dir);
-              setPendingAction(action);
-            }}
-          />
-        </Dialog>
-      ))}
-    </div>
-  ) : (
-    <PleaseLogin text="Please login to find a roommate" />
-  );
-}
-
-/**Making sure dialog doesnt open if your selecting text */
-function handleOpen(e: React.MouseEvent) {
-  const selection = window.getSelection();
-  const isSelecting = selection && selection.toString().length > 0;
-
-  if (isSelecting) {
-    e.preventDefault();
-    e.stopPropagation();
-    return;
+  if (loading || list.length === 0) {
+    return (
+      <div className="text-center mt-10 text-muted-foreground">
+        There's no more roommates..
+      </div>
+    );
   }
+
+  const active = list[0];
+  const activeFull = fullUsers[active.idUser];
+  const preview = list.slice(1, 4);
+
+  return (
+    <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      {/* LEFT STACK */}
+      <div className="space-y-3 order-2 lg:order-1">
+        {preview.map((p) => (
+          <Card key={p.idUser} className="p-3 opacity-60">
+            <div className="font-medium">
+              {p.firstName} {p.lastName}
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* CENTER */}
+      <div className="order-1 lg:order-2">
+        <Card className="p-5 min-h-[520px] flex flex-col justify-between">
+
+          <div>
+            <Carousel>
+              <CarouselContent className="image-wrapper">
+                <img
+                  src="https://github.com/shadcn.png"
+                  className="w-full h-56 object-cover rounded-md mb-4"
+                />
+              </CarouselContent>
+            </Carousel>
+            <Field>
+              <div className="text-lg font-semibold">
+                {active.firstName} {active.lastName}
+              </div>
+              <FieldDescription>
+                {active.gender ?? "Not specified"}
+              </FieldDescription>
+            </Field>
+
+            <Field className="mt-3 text-sm text-muted-foreground">
+              {active.userBio ?? "No bio available"}
+            </Field>
+          </div>
+
+          {/* ACTIONS */}
+          <div className="pt-6 pb-2">
+            <div className="flex justify-between">
+              <button
+                onClick={dislike}
+                className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <ThumbsDown />
+              </button>
+
+              <button
+                onClick={() => like(active.idUser)}
+                className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center hover:scale-105 transition"
+              >
+                <Heart />
+              </button>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* RIGHT DETAILS */}
+      <div className="order-3">
+        <Card className="p-5 min-h-[520px]">
+
+          <h2 className="text-lg font-semibold mb-4">
+            Profile details
+          </h2>
+
+          {activeFull ? (
+            <div className="space-y-2 text-sm">
+              <p><b>Age:</b> {getAge(activeFull.birthDay)}</p>
+              <p><b>Gender:</b> {activeFull.gender ?? "Not specified"}</p>
+              <p><b>Bio:</b> {activeFull.userBio ?? "Not specified"}</p>
+              <p><b>Language:</b> {activeFull.language ?? "Not specified"}</p>
+              <p><b>Occupation:</b> {activeFull.occupation ?? "Not specified"}</p>
+              <p><b>Email:</b> {activeFull.email ?? "Not specified"}</p>
+            </div>
+          ) : (
+            <p className="text-muted-foreground">Loading details...</p>
+          )}
+        </Card>
+      </div>
+
+    </div>
+  );
 }
 
 function getAge(birthDay: Date | undefined) {
   if (!birthDay) return "Unknown";
 
-  const date = birthDay instanceof Date ? birthDay : new Date(birthDay);
-
+  const date = new Date(birthDay);
   if (isNaN(date.getTime())) return "Unknown";
 
   const now = new Date();
   let age = now.getFullYear() - date.getFullYear();
 
-  const hasHadBirthdayThisYear =
+  const hasHadBirthday =
     now.getMonth() > date.getMonth() ||
-    (now.getMonth() === date.getMonth() && now.getDate() >= date.getDate());
+    (now.getMonth() === date.getMonth() &&
+      now.getDate() >= date.getDate());
 
-  if (!hasHadBirthdayThisYear) {
-    age -= 1;
-  }
+  if (!hasHadBirthday) age--;
 
   return age;
-}
-
-function whatToShow(string: string | undefined | null) {
-  if (string === undefined || string === "" || string === null) {
-    return "Not specified";
-  } else {
-    return string;
-  }
 }

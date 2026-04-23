@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import type { HouseContextType, HouseListing, HousePref } from "@/interfaces";
+import type { HouseContextType, HouseListing, HousePref, RateHouse } from "@/interfaces";
 import { useContext, type PropsWithChildren, createContext } from "react";
 import { UserContext } from "./userContext";
 import { errorCheckHouse } from "./errorCheck";
@@ -18,11 +18,13 @@ const defaultUserContext: HouseContextType = {
   ) => {},
   deleteHouseListing: async (_idHouse: number) => {},
   getHasHousePref: async (): Promise<boolean> => false,
+  getHousePref: async (): Promise<HousePref | undefined> => undefined as unknown as HousePref,
   changeHousePref: async (_newData: Partial<HousePref>) => {},
   addHousePref: async (_newData: Omit<HousePref, "idHouse">) => {},
   getMatches: async () => [] as HouseListing[],
   addLiked: async (_id: number) => {},
   getLikes: async () => [] as HouseListing[],
+  rateHouse: async (_id, _data) => {},
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -126,6 +128,32 @@ export function HouseContextProvider(props: PropsWithChildren) {
       }
       return true;
     },
+    async getHousePref(): Promise<HousePref | undefined> {
+      const response = await fetch(
+        API_URL + `/house-search-prefrences/${context.userData?.idUser}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
+          },
+        },
+      );
+
+      if (!response.ok) {
+        errorCheckHouse(response);
+        return;
+      }
+      
+      let prefrence;
+      try {
+        prefrence = await response.json();
+        console.log(prefrence);
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+      return prefrence as HousePref;
+    },
     async changeHousePref(newData: Partial<HousePref>): Promise<void> {
       const response = await fetch(
         API_URL + `/house-search-prefrences/update`,
@@ -228,6 +256,23 @@ export function HouseContextProvider(props: PropsWithChildren) {
         throw new Error("Server did not return JSON");
       }
       return likedList as HouseListing[];
+    },
+
+    async rateHouse(id: number, data: Partial<RateHouse>): Promise<void> {
+      const response = await fetch(API_URL + `/house-listing/rate/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        errorCheckHouse(response);
+      }
+
+      console.log("siker");
     },
   };
 

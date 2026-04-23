@@ -6,36 +6,54 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
+
 import type {
+  RateHouse,
+  RateUser,
   RoommatePref,
   User,
   UserContextType,
   UserNecesarry,
 } from "../interfaces";
+
 import { AuthContext } from "./authContext";
 import { errorCheckUser, errorCheckUserEdit } from "./errorCheck";
 
 const API_URL = "http://localhost:3000";
-//TODO: get error from backend
+
 const defaultUserContext: UserContextType = {
-  userData: undefined as User | undefined,
+  userData: undefined as unknown as User,
+
   getUserById: async (_id: number) => undefined as unknown as User,
-  changeUserData: async (_newData: Partial<User>) => {},
-  getHasRoommatePref: async (): Promise<boolean> => false,
-  addRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  editRoommatePref: async (_newData: Partial<RoommatePref>) => {},
+  changeUserData: async (_newData: Partial<User>) => { },
+
+  getHasRoommatePref: async () => false,
+  getRoommatePref: async () => undefined as unknown as RoommatePref,
+  addRoommatePref: async (_newData: Partial<RoommatePref>) => { },
+  editRoommatePref: async (_newData: Partial<RoommatePref>) => { },
+  changeRoommatePref: async (_newData: Partial<RoommatePref>) => { },
+
   getMatches: async () => [] as UserNecesarry[],
-  changeRoommatePref: async (_newData: Partial<RoommatePref>) => {},
-  addLiked: async (_id: number) => {},
-  getLikes: async () => [] as UserNecesarry[],
+  addLiked: async (_id: number) => { },
+  getLikes: async () => [] as User[],
+  likesMatches: async () => [] as User[],
+  likedUser: async () => [] as User[],
+  rateUser: async (_id: number, _data: Partial<RateUser>) => { },
+
+  createAdmin: async (_newData: Partial<User>) => { },
+  adminList: async () => [] as User[],
+  pendingRoommateRatings: async () => [] as RateUser[],
+  pendingHouseRatingList: async () => [] as RateHouse[],
+  approveRoommateRating: async (_id:number) => { },
+  approveHouseRating: async (_id:number) => { },
+
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const UserContext = createContext(defaultUserContext);
 
-/**TODO: check links cus they change -- ones that have id in them */
 export function UserContextProvider(props: PropsWithChildren) {
   const { currentUserId } = useContext(AuthContext);
+
   const [userData, setUserData] = useState<User | undefined>(undefined);
 
   async function getUser() {
@@ -50,26 +68,24 @@ export function UserContextProvider(props: PropsWithChildren) {
       errorCheckUser(response);
     }
 
-    const userData = (await response.json()) as User;
-    return userData;
+    return (await response.json()) as User;
   }
 
   useEffect(() => {
     if (!currentUserId) {
-      (async () => {
-        setUserData(undefined);
-      })();
+      setUserData(undefined);
       return;
-    } else {
-      (async () => {
-        const user = await getUser();
-        setUserData(user);
-      })();
     }
+
+    (async () => {
+      const user = await getUser();
+      setUserData(user);
+    })();
   }, [currentUserId]);
 
-  const contextValue = {
-    userData: userData,
+  const contextValue: UserContextType = {
+    userData,
+
     async getUserById(id: number): Promise<User> {
       const response = await fetch(API_URL + `/user/${id}`, {
         method: "GET",
@@ -82,8 +98,7 @@ export function UserContextProvider(props: PropsWithChildren) {
         errorCheckUser(response);
       }
 
-      const roommateData = (await response.json()) as User;
-      return roommateData;
+      return (await response.json()) as User;
     },
 
     async changeUserData(newData: Partial<User>): Promise<void> {
@@ -99,6 +114,7 @@ export function UserContextProvider(props: PropsWithChildren) {
       if (!response.ok) {
         errorCheckUserEdit(response);
       }
+
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
     },
@@ -116,25 +132,41 @@ export function UserContextProvider(props: PropsWithChildren) {
           },
         );
 
-        if (!response.ok) {
-          return false; // backend error, no preferences
-        }
+        if (!response.ok) return false;
 
         const data = await response.json();
-
-        if (!data || Object.keys(data).length === 0) {
-          return false;
-        }
-
-        return true;
-      } catch (err) {
-        console.error("getHasRoommatePref crashed:", err);
+        return !!data && Object.keys(data).length > 0;
+      } catch {
         return false;
       }
     },
 
+    async getRoommatePref(): Promise<RoommatePref | undefined> {
+      try {
+        const response = await fetch(
+          API_URL + `/roommates-prefrences/${userData?.idUser}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            },
+          },
+        );
+
+        if (!response.ok) {
+          errorCheckUserEdit(response);
+          return;
+        }
+
+        return (await response.json()) as RoommatePref;
+      } catch {
+        return;
+      }
+    },
+
     async addRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
-      const response = await fetch(API_URL + `/roommates-prefrences/add`, {
+      await fetch(API_URL + `/roommates-prefrences/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -142,57 +174,17 @@ export function UserContextProvider(props: PropsWithChildren) {
         },
         body: JSON.stringify(newData),
       });
-      if (!response.ok) {
-        errorCheckUser(response);
-        return;
-      }
     },
 
     async editRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
-      console.log("Editing roommate preferences with data:", userData?.idUser);
-      const response = await fetch(
-        API_URL + `/roommates-prefrences/${userData?.idUser}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-          body: JSON.stringify(newData),
+      await fetch(API_URL + `/roommates-prefrences/${userData?.idUser}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
         },
-      );
-
-      if (!response.ok) {
-        errorCheckUserEdit(response);
-        return;
-      }
-    },
-
-    async getMatches(): Promise<UserNecesarry[]> {
-      const response = await fetch(
-        API_URL + "/roommates-prefrences/getmatches",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        errorCheckUser(response);
-        return [];
-      }
-
-      let prefrenceList;
-      try {
-        prefrenceList = await response.json();
-        console.log(prefrenceList);
-      } catch {
-        throw new Error("Server did not return JSON");
-      }
-      return prefrenceList as UserNecesarry[];
+        body: JSON.stringify(newData),
+      });
     },
 
     async changeRoommatePref(newData: Partial<RoommatePref>): Promise<void> {
@@ -212,28 +204,14 @@ export function UserContextProvider(props: PropsWithChildren) {
         errorCheckUserEdit(response);
         return;
       }
+
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
     },
 
-    async addLiked(id: number): Promise<void> {
-      const response = await fetch(API_URL + `/user/like/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-      });
-
-      if (!response.ok) {
-        errorCheckUser(response);
-        return;
-      }
-    },
-
-    async getLikes(): Promise<UserNecesarry[]> {
+    async getMatches(): Promise<UserNecesarry[]> {
       const response = await fetch(
-        API_URL + "/user/liked",
+        API_URL + "/roommates-prefrences/getmatches",
         {
           method: "GET",
           headers: {
@@ -248,14 +226,165 @@ export function UserContextProvider(props: PropsWithChildren) {
         return [];
       }
 
-      let likedList;
-      try {
-        likedList = await response.json();
-        console.log(likedList);
-      } catch {
-        throw new Error("Server did not return JSON");
+      return (await response.json()) as UserNecesarry[];
+    },
+
+    async addLiked(id: number): Promise<void> {
+      await fetch(API_URL + `/user/like/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+    },
+
+    async getLikes(): Promise<User[]> {
+      const response = await fetch(API_URL + "/user/liked", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
       }
-      return likedList as UserNecesarry[];
+
+      return (await response.json()) as User[];
+    },
+
+    async likesMatches(): Promise<User[]> {
+      const response = await fetch(API_URL + "/user/likes-matches", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      return (await response.json()) as User[];
+    },
+
+    async likedUser(): Promise<User[]> {
+      const response = await fetch(API_URL + "/user/likes-received", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      return (await response.json()) as User[];
+    },
+
+    async rateUser(id: number, data: Partial<RateUser>): Promise<void> {
+      const response = await fetch(API_URL + `/user/rate/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+      }
+    },
+
+    async createAdmin(newData: Partial<User>): Promise<void> {
+      await fetch(API_URL + `/admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(newData),
+      });
+    },
+
+    async adminList(): Promise<User[]> {
+      const response = await fetch(API_URL + "/admin/adminList", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      return (await response.json()) as User[];
+    },
+
+    async pendingRoommateRatings(): Promise<RateUser[]> {
+      const response = await fetch(API_URL + "/admin/roommateRatingList", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      return (await response.json()) as RateUser[];
+    },
+
+    async pendingHouseRatingList(): Promise<RateHouse[]> {
+      const response = await fetch(API_URL + "/admin/houseRatingList", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      if (!response.ok) {
+        errorCheckUser(response);
+        return [];
+      }
+
+      return (await response.json()) as RateHouse[];
+    },
+
+    async approveRoommateRating(id: number): Promise<void> {
+      await fetch(API_URL + `/admin/aproveRoommateRating/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+    },
+
+    async approveHouseRating(id: number): Promise<void> {
+      await fetch(API_URL + `/admin/aproveHouseRating/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
     },
   };
 
