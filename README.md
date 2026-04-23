@@ -1,13 +1,52 @@
-Kezzy Frontend
+<div align="left">
 
-Used libraries:
-  leo-profanity (to check bad words)
-  shadcn/ui (component library for the UI)
-  tailwind css (styling)
+#  Vizsgaremek Frontend
 
-Launching Frontend:
-  1. Clone the git repository into the same folder as the backend
-  2. cd vizsgaremek_frontend
-  3. install node_modules -- npm i
-  4. run vite -- npm run dev
-  
+Frontend alkalmazás a vizsgaremek projekthez.
+
+
+## Gyors indítás
+
+Kövesd az alábbi lépéseket a projekt futtatásához:
+
+```bash
+git clone https://github.com/SzofiaKaszas/vizsgaremek_frontend.git
+cd vizsgaremek_frontend
+npm install
+npm run dev
+```
+
+---
+
+## Ha nem indul el
+
+Előfordulhat, hogy néhány csomagot manuálisan kell telepíteni:
+
+```bash
+npm install shadcn
+npm install tailwindcss
+npm install leo-profanity
+```
+
+Ezután indítsd újra:
+
+```bash
+npm run dev
+```
+
+---
+
+## 🛠️ Használt technológiák
+
+*  JavaScript / TypeScript
+*  Tailwind CSS
+*  shadcn/ui
+*  leo-profanity
+
+---
+
+## Megjegyzés
+
+Ha továbbra sem működik, érdemes újratelepíteni a függőségeket, vagy ellenőrizni a hiányzó package-eket.
+
+</div>
