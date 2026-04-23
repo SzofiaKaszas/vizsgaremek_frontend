@@ -3,59 +3,58 @@ import { UserContext } from "../context/userContext";
 import { PleaseLogin } from "./PleaseLogin";
 import { HouseContext } from "@/context/houseContext";
 import type { HouseListing } from "@/interfaces";
-import { Button } from "@base-ui/react";
+import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { HouseListingCard } from "./HouseListingCard";
 
-//Component to write out users own House Listings (if he has)
 export function YourHouseListing() {
-  //list for the users own house listings
   const [listings, setListings] = useState<HouseListing[]>([]);
 
-  //
   const usercontext = useContext(UserContext);
   const housecontext = useContext(HouseContext);
 
-  //checking wether the user is logged in based on if he's data is loaded in
-  const isLoggedIn = usercontext.userData ? true : false;
+  const isLoggedIn = Boolean(usercontext.userData);
 
-  //useEffect to get the listings -- only once or when its changed
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    housecontext.getHouseListings().then((listings) => setListings(listings));
-  });
+    housecontext.getHouseListings().then(setListings);
+  }, [isLoggedIn, housecontext]);
 
-  //checking wether the user is logged in
-  return isLoggedIn === true ? (
-    <>
-      {/**if clicking on plus redirecting to the page/form  to add a new houselisting*/}
-      <div className="plus-button-wrapper">
+  if (!isLoggedIn) {
+    return <PleaseLogin text="Please login to view your house listings" />;
+  }
+
+  return (
+    <div className="w-full max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+      {/* HEADER ACTION */}
+      <div className="flex justify-end">
         <Button
-          className={"plus-button"}
           onClick={() => (window.location.href = "/addhouselisting")}
+          className="bg-purple-600 hover:bg-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md transition"
         >
-          <span>
-            <Plus size={35} />
-          </span>
+          <Plus size={22} />
         </Button>
       </div>
-      {/**if user has no house listing yet then show that -- if not then map the list and make HouseListingCards to write the data out */}
+
+      {/* EMPTY STATE */}
       {listings.length === 0 ? (
-        <p className="flex justify-center w-full font-bold">
+        <p className="text-center text-muted-foreground font-medium mt-10">
           You have no house listings yet.
         </p>
       ) : (
-        /*sending a data of a listing to the HouseListingCard component*/
-        listings.map((listing) => (
-          <div className="find-scope">
-            <HouseListingCard houseListing={listing} />
-          </div>
-        ))
+        /* GRID */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {listings.map((listing) => (
+            <HouseListingCard
+              key={listing.idHouse}
+              houseListing={listing}
+            />
+          ))}
+        </div>
       )}
-    </>
-  ) : (
-    //if user is not logged in load PleaseLogin component with the right message
-    <PleaseLogin text="Please login to view your house listings" />
+
+    </div>
   );
 }

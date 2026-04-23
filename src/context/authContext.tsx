@@ -104,6 +104,8 @@ export function AuthContextProvider(props: PropsWithChildren) {
       setToken("");
       setUser(undefined);
       localStorage.removeItem("token");
+
+      window.dispatchEvent(new Event("auth-change"));
     },
 
     async register(user: Omit<User, "idUser">): Promise<User[]> {

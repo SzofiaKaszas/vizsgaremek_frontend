@@ -101,6 +101,8 @@ export interface HousePref {
 //---------------rate------------------------------
 //interface for user rating table
 export interface RateUser {
+  id: number;
+
   raterId: number;
   ratedUserId: number;
 
@@ -109,6 +111,8 @@ export interface RateUser {
 }
 
 export interface RateHouse {
+  id: number;
+
   raterId: number;
   ratedHouseId: number;
 
@@ -185,7 +189,6 @@ export interface UserContextType {
 
   getUserById: (id: number) => Promise<User>;
   changeUserData: (newData: Partial<User>) => void;
-  //roommatepref
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
   getHasRoommatePref: () => Promise<boolean>;
   getRoommatePref: () => Promise<RoommatePref | undefined>;
@@ -194,7 +197,15 @@ export interface UserContextType {
   changeRoommatePref: (newData: Partial<RoommatePref>) => void;
   addLiked: (id: number) => void;
   getLikes: () => Promise<User[]>;
+  likesMatches: () => Promise<User[]>;
+  likedUser: () => Promise<User[]>;
   rateUser: (id: number, data: Partial<RateUser>) => void;
+  createAdmin: (_newData: Partial<User>) => void;
+  adminList: () => Promise<User[]>;
+  pendingRoommateRatings:() => Promise<RateUser[]>;
+  pendingHouseRatingList: () => Promise<RateHouse[]>;
+  approveRoommateRating: (_id:number) => { };
+  approveHouseRating: (_id:number) => { };
 }
 
 //interface for the managemant of the house data in housecontext

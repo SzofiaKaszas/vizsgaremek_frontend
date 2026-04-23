@@ -20,25 +20,21 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { useNavigate, type NavigateFunction } from "react-router";
 
-/**TODO: If already has roommate pref, show the data in inputs */
 export function RoommatePrefrences({ goNext }: GoNextProp) {
   const context = useContext(UserContext);
-
-  /*for navigation with react router*/
   const navigate = useNavigate();
 
   const [ages, setAges] = useState<[number | undefined, number | undefined]>([
     25, 50,
   ]);
 
-  /**Variable for gender and language combobox */
   const [gender, setGender] = useState("");
   const [language, setLanguage] = useState("");
   const [hasRoommatePref, setHasRoommatePref] = useState(false);
+
   const MIN_AGE = 18;
   const MAX_AGE = 100;
 
-  /**useEffect to get default values for the form -- if user already set it but wants to change it */
   useEffect(() => {
     async function fetchData() {
       const hasRoommatePreff = await context.getHasRoommatePref();
@@ -46,10 +42,8 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
 
       if (hasRoommatePreff) {
         const roommatePref = await context.getRoommatePref();
-        if (!roommatePref) {
-          alert("Error fetching roommate preferences");
-          return;
-        }
+        if (!roommatePref) return;
+
         setAges([roommatePref.minAge, roommatePref.maxAge]);
         setGender(roommatePref.gender ?? "");
         setLanguage(roommatePref.language ?? "");
@@ -62,47 +56,84 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
   return (
     <>
       <Toaster position="top-center" />
+
       <form
-        className="form-scope"
+        className="
+          px-2 sm:px-3
+          space-y-5
+        "
         onSubmit={async (e) => {
           handleSubmit(e, context, ages, goNext, navigate);
         }}
       >
-        <CardTitle className="text-center text-xl font-bold p-2">
-          Roommate Preferences
-        </CardTitle>
-        <Field className="age-slider-scope m-2">
-          <FieldLabel>
-            Your age prefrence (roommate): {ages[0]} – {ages[1]}
-          </FieldLabel>
-          <Slider
-            defaultValue={[25, 50]}
-            min={MIN_AGE}
-            max={MAX_AGE}
-            step={1}
-            className="mx-auto w-full max-w-xs"
-            value={ages}
-            onValueChange={(value) => {
-              setAges(value as [number, number]);
-            }}
-          />
+
+        {/* HEADER */}
+        <div className="text-center space-y-1">
+          <CardTitle className="text-lg font-semibold">
+            Roommate Preferences
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Who would you like to live with?
+          </p>
+        </div>
+
+        {/* AGE RANGE CARD */}
+        <Field>
+          <FieldLabel>Age range</FieldLabel>
+
+          <div className="
+            rounded-2xl
+            border border-muted
+            bg-muted/20
+            p-3
+            space-y-3
+          ">
+
+            {/* TOP INFO */}
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-muted-foreground">Min</span>
+              <span className="font-medium text-accent">
+                {ages[0]}
+              </span>
+              <span className="text-muted-foreground">Max</span>
+              <span className="font-medium text-accent">
+                {ages[1]}
+              </span>
+            </div>
+            <div className="age-slider-scope">
+              {/* SLIDER */}
+              <Slider
+                defaultValue={[25, 50]}
+                min={MIN_AGE}
+                max={MAX_AGE}
+                step={1}
+                value={ages}
+                onValueChange={(value) => {
+                  setAges(value as [number, number]);
+                }}
+                className="w-full"
+              />
+            </div></div>
+
           <FieldDescription
             id="ageErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+            className="text-red-500 text-xs mt-1"
+          />
         </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="gender">Preffered Gender:</FieldLabel>
+        {/* GENDER */}
+        <Field className="space-y-1">
+          <FieldLabel htmlFor="gender">Preferred Gender</FieldLabel>
+
           <Combobox
             items={GendersForPref}
             name="gender"
             value={gender}
             onValueChange={(value) => setGender(value ?? "")}
           >
-            <ComboboxInput placeholder="Select a gender" id="gender" />
+            <ComboboxInput id="gender" placeholder="Select gender" />
             <ComboboxContent>
-              <ComboboxEmpty>No items found.</ComboboxEmpty>
+              <ComboboxEmpty>No results</ComboboxEmpty>
               <ComboboxList>
                 {(item) => (
                   <ComboboxItem key={item} value={item}>
@@ -112,24 +143,24 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
               </ComboboxList>
             </ComboboxContent>
           </Combobox>
-          <FieldDescription
-            id="genderErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+
+          <FieldDescription id="genderErr" className="text-red-500 text-xs" />
           <input type="hidden" name="gender" />
         </Field>
 
-        <Field className="m-2">
-          <FieldLabel htmlFor="language">Preferred language:</FieldLabel>
+        {/* LANGUAGE */}
+        <Field className="space-y-1">
+          <FieldLabel htmlFor="language">Language</FieldLabel>
+
           <Combobox
             items={Languages}
             name="language"
             value={language}
             onValueChange={(value) => setLanguage(value ?? "")}
           >
-            <ComboboxInput placeholder="Select a language" id="language" />
+            <ComboboxInput id="language" placeholder="Select language" />
             <ComboboxContent>
-              <ComboboxEmpty>No items found.</ComboboxEmpty>
+              <ComboboxEmpty>No results</ComboboxEmpty>
               <ComboboxList>
                 {(item) => (
                   <ComboboxItem key={item} value={item}>
@@ -139,32 +170,30 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
               </ComboboxList>
             </ComboboxContent>
           </Combobox>
-          <FieldDescription
-            id="languageErr"
-            className="text-red-600 text-sm mt-1"
-          ></FieldDescription>
+
+          <FieldDescription id="languageErr" className="text-red-500 text-xs" />
           <input type="hidden" name="language" />
         </Field>
 
-        <div className="my-button-scope">
-          <Button variant={"default"} type="submit" className="primary-btn m-1">
+        {/* BUTTONS */}
+        <div className="pt-2 space-y-2">
+          <Button
+            type="submit"
+            className="w-full bg-accent text-white rounded-xl py-2"
+          >
             Next
           </Button>
-          {
-            /*hasRoommatePref ?*/ <Button
-              variant={"outline"}
-              type="button"
-              className="sec-btn m-1"
-              onClick={() => {
-                goNext();
-              }}
-            >
-              Skip
-            </Button> /*: (
-          <></>
-        )*/
-          }
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-accent text-accent rounded-xl py-2"
+            onClick={() => goNext()}
+          >
+            Skip
+          </Button>
         </div>
+
       </form>
     </>
   );
