@@ -14,9 +14,19 @@ import {
   Star,
   Settings,
 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Profile() {
   const { userData } = useContext(UserContext);
+
+  let profileImage;
+  if(userData?.images){
+    userData.images.forEach(element => {
+      if(element.IsProfile){
+        profileImage = element.url;
+      }
+    });
+  }
 
   if (!userData) {
     return (
@@ -47,9 +57,10 @@ export function Profile() {
 
             {/* USER INFO */}
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center">
-                <User className="text-purple-600" />
-              </div>
+              <Avatar className="h-15 w-15 transition">
+                <AvatarImage src={profileImage} />
+                <AvatarFallback>P</AvatarFallback>
+              </Avatar>
 
               <div>
                 <p className="font-semibold text-lg">

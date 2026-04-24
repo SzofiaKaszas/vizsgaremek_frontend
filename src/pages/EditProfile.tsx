@@ -137,6 +137,10 @@ export function EditProfile() {
                   required
                   className="rounded-xl focus-visible:ring-[var(--color-accent)]"
                 />
+                <FieldDescription
+                  id="emailErr"
+                  className="text-red-600 text-sm mt-1"
+                />
               </Field>
             </div>
 
@@ -238,7 +242,6 @@ async function handleSubmit(
   if (!confirmed) return;
 
   const form = new FormData(e.currentTarget);
-  let hasError = false;
 
   const firstName = (form.get("firstName") as string) || undefined;
   const lastName = (form.get("lastName") as string) || undefined;
@@ -248,31 +251,56 @@ async function handleSubmit(
   const lookingForHouse = form.has("lookingForHouse");
   const email = (form.get("email") as string) || undefined;
 
+  document.getElementById("firstNameErr")!.innerHTML = "";
+  document.getElementById("ageErr")!.innerHTML = "";
+  document.getElementById("emailErr")!.innerHTML = "";
+  document.getElementById("phoneErr")!.innerHTML = "";
+
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
   const regexPhone =
     /^\+?\d{1,3}[-\s.]?\(?\d{2,3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/;
 
-  switch (true) {
-    case !firstName || !lastName || !phoneNumber || !email:
-      console.log("Please fill in all fields.");
-      return;
-    case !regexEmail.test(email as string):
-      console.log("Please enter a valid email address.");
-      return;
-    case !regexPhone.test(phoneNumber as string):
-      console.log("Please enter a valid phone number.");
-      return;
+  let hasError = false;
+
+  /**------------------------------- Validation -------------------------------*/
+
+  /** Name validation */
+  if (!firstName || !lastName) {
+    document.getElementById("firstNameErr")?.append("Please fill in all fields");
+    hasError = true;
   }
 
+  /** Email validation */
+  if (!email) {
+    document
+      .getElementById("emailErr")
+      ?.append("Please enter an email address");
+    hasError = true;
+  } else if (!regexEmail.test(email as string)) {
+    document.getElementById("emailErr")?.append("Invalid Email");
+    hasError = true;
+  }
+
+  /** Phone number validation */
+  if (!phoneNumber) {
+    document.getElementById("phoneErr")?.append("Please enter a phone number");
+    hasError = true;
+  } else if (!regexPhone.test(phoneNumber as string)) {
+    document.getElementById("phoneErr")?.append("Invalid phone number format");
+    hasError = true;
+  }
+
+  /** Age validation */
+  /** User must be at least 18 years old */
   const eighteenYearsAgo = new Date();
   eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
-  const birth = (form.get("age") as string) || undefined;
+  const birth = (form.get("age") as string) || null;
   const birthDay = new Date(birth as string);
 
   if (!birthDay) {
     hasError = true;
-    document.getElementById("ageErr")?.append("Give birthday");
+    document.getElementById("ageErr")?.append("Please enter your birthday");
   } else if (!(isDate(birthDay) && eighteenYearsAgo > birthDay)) {
     hasError = true;
     document

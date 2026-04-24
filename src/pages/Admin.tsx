@@ -4,15 +4,34 @@ import { useNavigate } from "react-router";
 import { UserContext } from "@/context/userContext";
 import type { RateHouse, RateUser, User } from "@/interfaces";
 
-/*if rating is long create admin becomes longer too and pushes house rating down*/
+type Tab = "create" | "admins" | "roommates" | "houses";
+
 export function Admin() {
   const context = useContext(UserContext);
 
   const [admins, setAdmins] = useState<User[]>([]);
   const [roommateRatings, setRoommateRatings] = useState<RateUser[]>([]);
   const [houseRatings, setHouseRatings] = useState<RateHouse[]>([]);
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [activeTab, setActiveTab] = useState<Tab>("create");
+
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    password: "",
+    email: "",
+  });
+
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    password: "",
+    email: "",
+    backend: "",
+  });
 
   const navigate = useNavigate();
 
@@ -21,7 +40,7 @@ export function Admin() {
 
     const timeout = setTimeout(() => {
       navigate("/");
-    }, 300000); // 5 perc
+    }, 300000);
 
     return () => clearTimeout(timeout);
   }, [loading, navigate]);
@@ -46,124 +65,287 @@ export function Admin() {
     load();
   }, [context]);
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  function validate() {
+    const newErrors: typeof errors = {
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      password: "",
+      email: "",
+      backend: "",
+    };
+
+    let hasError = false;
+
+    // NAME
+    if (!form.firstName) {
+      newErrors.firstName = "First name required";
+      hasError = true;
+    }
+
+    if (!form.lastName) {
+      newErrors.lastName = "Last name required";
+      hasError = true;
+    }
+
+    // EMAIL VALIDATION (DTO STYLE)
+    const emailRegex =
+      /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
+
+    if (!form.email) {
+      newErrors.email = "Please enter an email address";
+      hasError = true;
+    } else if (!emailRegex.test(form.email)) {
+      newErrors.email = "Invalid email format";
+      hasError = true;
+    }
+
+    // PHONE
+    const phoneRegex =
+      /^\+?[0-9]{1,3}([-\s.]?[0-9]{2,4}){2,4}$/;
+
+    if (!form.phoneNumber) {
+      newErrors.phoneNumber = "Phone required";
+      hasError = true;
+    } else if (!phoneRegex.test(form.phoneNumber)) {
+      newErrors.phoneNumber = "Invalid phone format";
+      hasError = true;
+    }
+
+    // PASSWORD
+    const hasMin = /.{6,}/.test(form.password);
+    const hasUpper = /[A-Z]/.test(form.password);
+    const hasNumber = /[0-9]/.test(form.password);
+
+    if (!form.password) {
+      newErrors.password = "Password required";
+      hasError = true;
+    } else {
+      const msgs = [];
+      if (!hasMin) msgs.push("Min 6 characters");
+      if (!hasUpper) msgs.push("1 uppercase letter needed");
+      if (!hasNumber) msgs.push("1 number needed");
+
+      if (msgs.length) {
+        newErrors.password = msgs.join(", ");
+        hasError = true;
+      }
+    }
+
+    setErrors(newErrors);
+    return !hasError;
+  }
+
   async function handleCreateAdmin() {
-    if (!email) return;
+    setErrors((p) => ({ ...p, backend: "" }));
 
-    await context.createAdmin({ email } as any);
+    if (!validate()) return;
 
-    const updated = await context.adminList();
-    setAdmins(updated);
+    try {
+      await context.createAdmin(form);
 
-    setEmail("");
+      const updated = await context.adminList();
+      setAdmins(updated);
+
+      setForm({
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        password: "",
+        email: "",
+      });
+
+      setActiveTab("admins");
+    } catch (err: any) {
+      setErrors((p) => ({
+        ...p,
+        backend: err?.message || "Something went wrong",
+      }));
+    }
   }
 
   async function approveRoommate(id: number) {
     await context.approveRoommateRating(id);
-
     setRoommateRatings((prev) => prev.filter((r) => r.id !== id));
   }
 
   async function approveHouse(id: number) {
     await context.approveHouseRating(id);
-
     setHouseRatings((prev) => prev.filter((r) => r.id !== id));
   }
 
   if (loading) return <Loader />;
 
   return (
-    <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
+
+      {/* TABS */}
+      <div className="flex gap-2 flex-wrap">
+        {[
+          { id: "create", label: "Create Admin" },
+          { id: "admins", label: "Admins" },
+          { id: "roommates", label: "Roommate Ratings" },
+          { id: "houses", label: "House Ratings" },
+        ].map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setActiveTab(t.id as Tab)}
+            className="px-4 py-2 rounded border text-sm"
+            style={{
+              backgroundColor:
+                activeTab === t.id ? "var(--color-accent)" : "transparent",
+              color: activeTab === t.id ? "white" : "inherit",
+            }}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
 
       {/* CREATE ADMIN */}
-      <div className="border p-4 rounded-xl">
-        <h2 className="font-semibold mb-3">Create Admin</h2>
+      {activeTab === "create" && (
+        <div className="border rounded-xl p-4 space-y-3 max-w-lg">
 
-        <div className="flex gap-2">
+          <h2 className="font-semibold">Create Admin</h2>
+
           <input
-            placeholder="Admin email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="firstName"
+            placeholder="First name"
+            value={form.firstName}
+            onChange={handleChange}
             className="border px-3 py-2 rounded w-full"
           />
+          <p className="text-xs text-red-500">{errors.firstName}</p>
+
+          <input
+            name="lastName"
+            placeholder="Last name"
+            value={form.lastName}
+            onChange={handleChange}
+            className="border px-3 py-2 rounded w-full"
+          />
+          <p className="text-xs text-red-500">{errors.lastName}</p>
+
+          <input
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            className="border px-3 py-2 rounded w-full"
+          />
+          <p className="text-xs text-red-500">{errors.email}</p>
+
+          <input
+            name="phoneNumber"
+            placeholder="Phone number"
+            value={form.phoneNumber}
+            onChange={handleChange}
+            className="border px-3 py-2 rounded w-full"
+          />
+          <p className="text-xs text-red-500">{errors.phoneNumber}</p>
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="border px-3 py-2 rounded w-full"
+          />
+          <p className="text-xs text-red-500">{errors.password}</p>
 
           <button
             onClick={handleCreateAdmin}
-            className="px-4 py-2 bg-black text-white rounded"
+            className="w-full px-4 py-2 rounded text-white"
+            style={{ backgroundColor: "var(--color-accent)" }}
           >
-            Add
+            Add Admin
           </button>
+
+          {errors.backend && (
+            <p className="text-red-500 text-sm">{errors.backend}</p>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* ADMIN LIST */}
-      <div>
-        <h2 className="font-semibold mb-3">Admins</h2>
-
+      {/* ADMINS */}
+      {activeTab === "admins" && (
         <div className="space-y-2">
           {admins.map((a) => (
             <div
               key={a.idUser}
-              className="p-3 border rounded-lg flex justify-between"
+              className="border rounded-xl p-3 flex justify-between"
             >
-              <span>{a.email}</span>
-              <span className="text-sm text-gray-500">ID: {a.idUser}</span>
+              <span className="text-sm">{a.email}</span>
+              <span className="text-xs text-muted-foreground">
+                ID: {a.idUser}
+              </span>
             </div>
           ))}
         </div>
-      </div>
+      )}
 
-      {/* ROOMMATE RATINGS */}
-      <div>
-        <h2 className="font-semibold mb-3">Roommate Ratings</h2>
-
+      {/* ROOMMATES */}
+      {activeTab === "roommates" && (
         <div className="space-y-2">
           {roommateRatings.map((r) => (
             <div
               key={r.id}
-              className="p-3 border rounded-lg flex justify-between items-center"
+              className="border rounded-xl p-3 flex justify-between"
             >
               <div>
-                <p className="font-medium">Rating: {r.ratingScore}</p>
-                <p className="text-sm text-gray-500">{r.ratingMessage}</p>
+                <p className="text-sm font-medium">
+                  Rating: {r.ratingScore}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {r.ratingMessage}
+                </p>
               </div>
 
               <button
                 onClick={() => approveRoommate(r.id)}
-                className="px-3 py-1 bg-green-600 text-white rounded"
+                className="px-3 py-1 rounded text-white text-xs"
+                style={{ backgroundColor: "var(--color-accent)" }}
               >
                 Approve
               </button>
             </div>
           ))}
         </div>
-      </div>
+      )}
 
-      {/* HOUSE RATINGS */}
-      <div>
-        <h2 className="font-semibold mb-3">House Ratings</h2>
-
+      {/* HOUSES */}
+      {activeTab === "houses" && (
         <div className="space-y-2">
           {houseRatings.map((r) => (
             <div
               key={r.id}
-              className="p-3 border rounded-lg flex justify-between items-center"
+              className="border rounded-xl p-3 flex justify-between"
             >
               <div>
-                <p className="font-medium">Rating: {r.ratingScore}</p>
-                <p className="text-sm text-gray-500">{r.ratingMessage}</p>
+                <p className="text-sm font-medium">
+                  Rating: {r.ratingScore}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {r.ratingMessage}
+                </p>
               </div>
 
               <button
                 onClick={() => approveHouse(r.id)}
-                className="px-3 py-1 bg-green-600 text-white rounded"
+                className="px-3 py-1 rounded text-white text-xs"
+                style={{ backgroundColor: "var(--color-accent)" }}
               >
                 Approve
               </button>
             </div>
           ))}
         </div>
-      </div>
-
+      )}
     </div>
   );
 }

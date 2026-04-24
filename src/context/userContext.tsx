@@ -13,6 +13,7 @@ import type {
   RoommatePref,
   User,
   UserContextType,
+  UserImages,
   UserNecesarry,
 } from "../interfaces";
 
@@ -26,6 +27,7 @@ const defaultUserContext: UserContextType = {
 
   getUserById: async (_id: number) => undefined as unknown as User,
   changeUserData: async (_newData: Partial<User>) => { },
+  uploadUserImage: async (_file: File) => { },
 
   getHasRoommatePref: async () => false,
   getRoommatePref: async () => undefined as unknown as RoommatePref,
@@ -44,8 +46,8 @@ const defaultUserContext: UserContextType = {
   adminList: async () => [] as User[],
   pendingRoommateRatings: async () => [] as RateUser[],
   pendingHouseRatingList: async () => [] as RateHouse[],
-  approveRoommateRating: async (_id:number) => { },
-  approveHouseRating: async (_id:number) => { },
+  approveRoommateRating: async (_id: number) => { },
+  approveHouseRating: async (_id: number) => { },
 
 };
 
@@ -67,7 +69,7 @@ export function UserContextProvider(props: PropsWithChildren) {
     if (!response.ok) {
       errorCheckUser(response);
     }
-
+    console.log(response)
     return (await response.json()) as User;
   }
 
@@ -117,6 +119,20 @@ export function UserContextProvider(props: PropsWithChildren) {
 
       const updatedUser = (await response.json()) as User;
       setUserData(updatedUser);
+    },
+
+    async uploadUserImage(file: File): Promise<void> {
+      const formData = new FormData();
+      formData.append("file", file); // 👈 MUST be "file"
+      console.log(formData)
+
+      await fetch(API_URL + "/images/upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // if needed
+        },
+        body: formData,
+      });
     },
 
     async getHasRoommatePref(): Promise<boolean> {

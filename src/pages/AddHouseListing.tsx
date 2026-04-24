@@ -21,237 +21,359 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { HouseContext } from "@/context/houseContext";
 import { UserContext } from "@/context/userContext";
 import type { HouseContextType, UserContextType } from "@/interfaces";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import filter from "leo-profanity";
 
 /**TODO: toast és navigate */
 export function AddHouseListing() {
+  const [step, setStep] = useState(1);
+  const [createdHouseId, setCreatedHouseId] = useState<number | null>(null);
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+
   const housecontext = useContext(HouseContext);
   const usercontext = useContext(UserContext);
 
+  // 👉 STEP 2 upload
+  const handleImageUpload = async () => {
+    if (!selectedFile || !createdHouseId) return;
+    if (images.length >= 8) return;
+
+    setUploading(true);
+
+    try {
+      await housecontext.uploadHouseImage(selectedFile, createdHouseId);
+
+      const previewUrl = URL.createObjectURL(selectedFile);
+
+      setImages((prev) => [...prev, previewUrl]);
+      setSelectedFile(null);
+
+      toast.success("Image uploaded");
+    } catch (err) {
+      toast.error("Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
-    <div className="w-full flex justify-center px-4 py-10">
-      <form
-        onSubmit={(e) => handleSubmit(e, usercontext, housecontext)}
-        className="w-full max-w-3xl space-y-6"
-      >
+    <>
+      <Toaster position="top-center" />
 
-        {/* HEADER */}
-        <Card className="p-6">
-          <CardTitle className="text-xl font-bold">
-            Add House Listing
-          </CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
-            Create a new listing for your property
-          </p>
-        </Card>
+      <div className="w-full flex justify-center px-4 py-10">
+        <div className="w-full max-w-3xl space-y-6">
 
-        {/* BASIC INFO */}
-        <Card className="p-6 space-y-4">
-
-          <h3 className="font-semibold">Basic information</h3>
-
-          <Field>
-            <FieldLabel>
-              Description <span className="text-red-500">*</span>
-            </FieldLabel>
-            <Textarea name="description" />
-          </Field>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <Field>
-              <FieldLabel>
-                City <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input name="city" />
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Address <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input name="location" />
-            </Field>
-
+          {/* HEADER */}
+          <div className="text-center space-y-1">
+            <CardTitle>
+              {step === 1 ? "Create listing" : "Upload images"}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {step === 1
+                ? "Add your property details"
+                : "Add photos to your listing"}
+            </p>
           </div>
 
-          <Field>
-            <FieldLabel>
-              Rent <span className="text-red-500">*</span>
-            </FieldLabel>
-            <Input type="number" name="rent" />
-          </Field>
+          {/* STEP 1 */}
+          <Toaster position="top-center" />
+          <div className="w-full flex justify-center px-4 py-10">
+            {step === 1 && (
+              <form
+                onSubmit={(e) =>
+                  handleCreateHouse(
+                    e,
+                    usercontext,
+                    housecontext,
+                    setStep,
+                    setCreatedHouseId
+                  )
+                }
+                className="space-y-6"
+              >
+                {/* HEADER */}
+                <Card className="p-6">
+                  <CardTitle className="text-xl font-bold"> Add House Listing
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1"> Create a new listing for your property </p>
+                </Card> {/* BASIC INFO */}
+                <Card className="p-6 space-y-4">
+                  <h3 className="font-semibold">Basic information</h3>
+                  <Field> <FieldLabel> Description
+                    <span className="text-red-500">*</span>
+                  </FieldLabel>
+                    <Textarea name="description" required/>
+                    <FieldDescription
+                      id="descriptionErr"
+                      className="text-red-600 text-sm mt-1"
+                    ></FieldDescription>
+                  </Field>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Field>
+                      <FieldLabel> City
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Input name="city" required/>
+                      <FieldDescription
+                        id="cityErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                    <Field>
+                      <FieldLabel> Address
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Input name="location" required/>
+                      <FieldDescription
+                        id="locationErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                  </div>
+                  <Field>
+                    <FieldLabel> Rent
+                      <span className="text-red-500">*</span>
+                    </FieldLabel>
+                    <Input type="number" name="rent" required/>
+                    <FieldDescription
+                      id="rentErr"
+                      className="text-red-600 text-sm mt-1"
+                    ></FieldDescription>
+                  </Field>
+                </Card>
+                {/* PROPERTY */}
+                <Card className="p-6 space-y-4">
+                  <h3 className="font-semibold">Property details</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Field>
+                      <FieldLabel> Property type
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Combobox items={Property} required>
+                        <ComboboxInput name="propertyType" required/>
 
-        </Card>
+                        <ComboboxContent>
+                          <ComboboxEmpty>No items</ComboboxEmpty>
 
-        {/* PROPERTY */}
-        <Card className="p-6 space-y-4">
+                          <ComboboxList>
+                            {Property.map((item) => (
+                              <ComboboxItem key={item} value={item}>
+                                {item}
+                              </ComboboxItem>
+                            ))}
+                          </ComboboxList>
 
-          <h3 className="font-semibold">Property details</h3>
+                        </ComboboxContent>
+                      </Combobox>
+                      <FieldDescription
+                        id="propertyErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                    <Field>
+                      <FieldLabel>Floor</FieldLabel>
+                      <Input type="number" name="floor" />
+                      <FieldDescription
+                        id="floorErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                    <Field>
+                      <FieldLabel> Square meter
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Input type="number" name="sqmeter" required/>
+                      <FieldDescription
+                        id="sqmeterErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                    <Field>
+                      <FieldLabel> Rooms
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Input type="number" name="rooms" required/>
+                      <FieldDescription
+                        id="minRoomsErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                    <Field>
+                      <FieldLabel> Bathrooms
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Input type="number" name="bathrooms" required/>
+                      <FieldDescription
+                        id="bathroomsErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                  </div>
+                </Card>
+                {/* COMFORT */}
+                <Card className="p-6 space-y-4">
+                  <h3 className="font-semibold">Comfort</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Field> <FieldLabel> Heating <span className="text-red-500">*</span>
+                    </FieldLabel>
+                      <Combobox items={Heating} required>
+                        <ComboboxInput name="heatingType" required/>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ComboboxContent>
+                          <ComboboxEmpty>No items</ComboboxEmpty>
+                          <ComboboxList>
+                            {Heating.map((item) => (
+                              <ComboboxItem key={item} value={item}>
+                                {item}
+                              </ComboboxItem>
+                            ))}
+                          </ComboboxList>
+                        </ComboboxContent>
+                      </Combobox>
+                      <FieldDescription
+                        id="heatingErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                    <Field>
+                      <FieldLabel> Furnishing
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Combobox items={Furnishing} required>
+                        <ComboboxInput name="furnishing" required/>
 
-            <Field>
-              <FieldLabel>
-                Property type <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={Property}>
-                <ComboboxInput name="propertyType" />
-                <ComboboxContent>
-                  <ComboboxEmpty>No items</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
+                        <ComboboxContent>
+                          <ComboboxEmpty>No items</ComboboxEmpty>
 
-            <Field>
-              <FieldLabel>Floor</FieldLabel>
-              <Input type="number" name="floor" />
-            </Field>
+                          <ComboboxList>
+                            {Furnishing.map((item) => (
+                              <ComboboxItem key={item} value={item}>
+                                {item}
+                              </ComboboxItem>
+                            ))}
+                          </ComboboxList>
 
-            <Field>
-              <FieldLabel>
-                Square meter <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input type="number" name="sqmeter" />
-            </Field>
+                        </ComboboxContent>
+                      </Combobox>
+                      <FieldDescription
+                        id="furnishingErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field>
+                    <Field>
+                      <FieldLabel> Kitchen
+                        <span className="text-red-500">*</span>
+                      </FieldLabel>
+                      <Combobox items={KitchenFurnishing} required>
+                        <ComboboxInput name="kitchenFurnishing" required/>
 
-            <Field>
-              <FieldLabel>
-                Rooms <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input type="number" name="rooms" />
-            </Field>
+                        <ComboboxContent>
+                          <ComboboxEmpty>No items</ComboboxEmpty>
 
-            <Field>
-              <FieldLabel>
-                Bathrooms <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Input type="number" name="bathrooms" />
-            </Field>
+                          <ComboboxList>
+                            {KitchenFurnishing.map((item) => (
+                              <ComboboxItem key={item} value={item}>
+                                {item}
+                              </ComboboxItem>
+                            ))}
+                          </ComboboxList>
 
+                        </ComboboxContent>
+                      </Combobox>
+                      <FieldDescription
+                        id="kitchenFurnishingErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </Field> {/* SWITCH */}
+                    <div className="flex items-center justify-between border rounded-md p-3">
+                      <span>Air conditioner</span>
+                      <Switch name="airConditioner" className="data-[state=checked]:bg-purple-600" />
+                      <FieldDescription
+                        id="airconditionerErr"
+                        className="text-red-600 text-sm mt-1"
+                      ></FieldDescription>
+                    </div>
+                  </div>
+                </Card>
+                {/* ACTIONS */}
+                <div className="flex justify-end gap-3">
+                  <Button
+                    type="submit"
+                    className="w-full bg-accent text-white"
+                  >
+                    Continue to images
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {/* STEP 2 */}
+            {step === 2 && (
+              <div className="space-y-6">
+
+                <Field>
+                  <FieldLabel>Images (max 8)</FieldLabel>
+                  <div className="flex gap-2 items-center">
+                    <Input type="file" accept="image/*"
+                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
+                    <Button type="button"
+                      disabled={!selectedFile || images.length >= 8 || uploading}
+                      className="bg-accent text-white"
+                      onClick={handleImageUpload} >
+                      {uploading ? "Uploading..." : "Upload"}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2"> {images.length}/8 uploaded </p>
+                  {/* PREVIEW */}
+                  <div className="grid grid-cols-3 gap-2 mt-3">
+                    {images.map((img, i) => (<img key={i} src={img}
+                      className="w-full h-20 object-cover rounded-md border" />))}
+                  </div>
+                </Field>
+                <div className="flex justify-between">
+                  <Button
+                    variant="outline"
+                    onClick={() => setStep(1)}
+                  >
+                    Back
+                  </Button>
+
+                  <Button
+                    onClick={() =>
+                      (window.location.href = "/managehouselising")
+                    }
+                    className="bg-accent text-white"
+                  >
+                    Finish
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
-
-        </Card>
-
-        {/* COMFORT */}
-        <Card className="p-6 space-y-4">
-
-          <h3 className="font-semibold">Comfort</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <Field>
-              <FieldLabel>
-                Heating <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={Heating}>
-                <ComboboxInput name="heatingType" />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Furnishing <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={Furnishing}>
-                <ComboboxInput name="furnishing" />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
-
-            <Field>
-              <FieldLabel>
-                Kitchen <span className="text-red-500">*</span>
-              </FieldLabel>
-              <Combobox items={KitchenFurnishing}>
-                <ComboboxInput name="kitchenFurnishing" />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </Field>
-
-            {/* SWITCH */}
-            <div className="flex items-center justify-between border rounded-md p-3">
-              <span>Air conditioner</span>
-
-              <Switch
-                name="airConditioner"
-                className="data-[state=checked]:bg-purple-600"
-              />
-            </div>
-
-          </div>
-
-        </Card>
-
-        {/* ACTIONS */}
-        <div className="flex justify-end gap-3">
-
-          <Button
-            type="button"
-            variant="outline"
-            className="border-gray-300"
-            onClick={() => (window.location.href = "/managehouselising")}
-          >
-            Back
-          </Button>
-
-          <Button
-            type="submit"
-            className="bg-purple-600 hover:bg-purple-500 text-white"
-          >
-            Add Listing
-          </Button>
-
         </div>
-
-      </form>
-    </div>
+      </div>
+    </>
   );
 }
 
-async function handleSubmit(
+async function handleCreateHouse(
   e: React.FormEvent<HTMLFormElement>,
   userContext: UserContextType,
   houseContext: HouseContextType,
+  setStep: (s: number) => void,
+  setCreatedHouseId: (id: number) => void
 ) {
   e.preventDefault();
 
@@ -271,37 +393,128 @@ async function handleSubmit(
   const bathrooms = form.get("bathrooms");
   const airConditioner = form.get("airConditioner") === "on";
 
-  if (rent && Number(rent) < 0) {
-    console.log("Rent must be positive");
-    return;
+  // reset errors
+  const errors = [
+    "descriptionErr",
+    "rentErr",
+    "sqmeterErr",
+    "minRoomsErr",
+    "cityErr",
+    "propertyErr",
+    "heatingErr",
+    "furnishingErr",
+    "kitchenFurnishingErr",
+    "bathroomsErr",
+    "locationErr",
+    "floorErr",
+  ];
+
+  errors.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = "";
+  });
+
+  let hasError = false;
+
+  // helper
+  const isEmpty = (v: any) => !v || String(v).trim().length === 0;
+  const isNegative = (v: any) => Number(v) < 0;
+  const isNaNNumber = (v: any) => isNaN(Number(v));
+
+  // VALIDATION
+  if (isEmpty(description)) {
+    document.getElementById("descriptionErr")!.innerHTML = "Required";
+    hasError = true;
+  } else if (filter.check(description as string)) {
+    document.getElementById("descriptionErr")!.innerHTML = "Inappropriate content";
+    hasError = true;
   }
 
-  switch (true) {
-    case rent && Number(rent) < 0:
-      console.log("Rent must be positive");
-      return;
-    case sqmeter && Number(sqmeter) < 0:
-      console.log("squaremeter cant be negative");
-      return;
-    case rooms && Number(rooms) < 0:
-      console.log("room number cant be negative");
-      return;
-    case bathrooms && Number(bathrooms) < 0:
-      console.log("bathroom number cant be negative");
-      return;
-    default:
-      break;
+  if (isEmpty(city)) {
+    document.getElementById("cityErr")!.innerHTML = "Required";
+    hasError = true;
+  } else if (filter.check(city as string)) {
+    document.getElementById("cityErr")!.innerHTML = "Inappropriate content";
+    hasError = true;
   }
+
+  if (isEmpty(location)) {
+    document.getElementById("locationErr")!.innerHTML = "Required";
+    hasError = true;
+  }else if (filter.check(location as string)) {
+    document.getElementById("locationErr")!.innerHTML = "Inappropriate content";
+    hasError = true;
+  }
+
+  if (isEmpty(rent)) {
+    document.getElementById("rentErr")!.innerHTML = "Required";
+    hasError = true;
+  } else if (isNaNNumber(rent) || isNegative(rent)) {
+    document.getElementById("rentErr")!.innerHTML = "Must be positive number";
+    hasError = true;
+  }
+
+  if (isEmpty(sqmeter)) {
+    document.getElementById("sqmeterErr")!.innerHTML = "Required";
+    hasError = true;
+  } else if (isNaNNumber(sqmeter) || isNegative(sqmeter)) {
+    document.getElementById("sqmeterErr")!.innerHTML = "Must be positive number";
+    hasError = true;
+  }
+
+  if (isEmpty(rooms)) {
+    document.getElementById("minRoomsErr")!.innerHTML = "Required";
+    hasError = true;
+  } else if (isNaNNumber(rooms) || isNegative(rooms)) {
+    document.getElementById("minRoomsErr")!.innerHTML = "Must be positive number";
+    hasError = true;
+  }
+
+  if (isEmpty(bathrooms)) {
+    document.getElementById("bathroomsErr")!.innerHTML = "Required";
+    hasError = true;
+  } else if (isNaNNumber(bathrooms) || isNegative(bathrooms)) {
+    document.getElementById("bathroomsErr")!.innerHTML = "Must be positive number";
+    hasError = true;
+  }
+
+  if (isEmpty(propertyType)) {
+    document.getElementById("propertyErr")!.innerHTML = "Required";
+    hasError = true;
+  }
+
+  if (isEmpty(heatingType)) {
+    document.getElementById("heatingErr")!.innerHTML = "Required";
+    hasError = true;
+  }
+
+  if (isEmpty(furnishing)) {
+    document.getElementById("furnishingErr")!.innerHTML = "Required";
+    hasError = true;
+  }
+
+  if (isEmpty(kitchenFurnishing)) {
+    document.getElementById("kitchenFurnishingErr")!.innerHTML = "Required";
+    hasError = true;
+  }
+
+  // floor optional, but if exists validate
+  if (floor && (isNaNNumber(floor) || isNegative(floor))) {
+    document.getElementById("floorErr")!.innerHTML = "Must be positive number";
+    hasError = true;
+  }
+
+  if (hasError) return;
 
   const userId = userContext.userData?.idUser;
-    if (!userId) {
-      alert("User ID not found. Please log in again.");
-      return;
-    }
-    console.log("User ID for house listing:", userId);
+  if (!userId) {
+    toast("User ID not found. Please log in again.");
+    return;
+  }
+  console.log("User ID for house listing:", userId);
 
   try {
-    await houseContext.addHouseListing({
+    const newHouse = await houseContext.addHouseListing({
       houseIdUser: userId,
       description: description as string,
       location: location as string,
@@ -317,10 +530,14 @@ async function handleSubmit(
       bathrooms: Number(bathrooms),
       airConditioner: airConditioner,
     });
-    alert("House listing added successfully");
-    window.location.href = "/managehouselising";
+    console.log("CREATED HOUSE:", newHouse);
+    setCreatedHouseId(newHouse.idHouse);
+
+    toast("House listing added successfully");
+
+    setStep(2);
   } catch (err) {
-    alert((err as Error).message);
+    toast((err as Error).message);
     console.error("Error details:", err);
   }
   return;

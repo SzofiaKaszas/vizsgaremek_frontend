@@ -16,6 +16,8 @@ export interface User {
   password: string;
   email: string;
 
+  images: UserImages[];
+
   userBio?: string;
   birthDay?: Date;
   gender?: string; // could be enum
@@ -81,6 +83,8 @@ export interface HouseListing {
   kitchenLevel: KitchenFurnishingType;
   bathrooms: number;
   airConditioner: boolean;
+
+  images: HouseImages[];
 }
 
 //interface for getting house prefrences or creating one
@@ -118,6 +122,32 @@ export interface RateHouse {
 
   ratingScore: number; // 1 to 5 starts
   ratingMessage: string;
+}
+
+export interface UserImages {
+  id: number;
+  userIdImages: number;
+  key: string;
+  IsProfile: boolean;
+  deleted: boolean;
+  url: string;
+  createdAt: Date;
+
+  // relation (optional, mert nem mindig van include-olva)
+  user?: User;
+}
+
+export interface HouseImages {
+  idHouseImage: number;
+  houseIdImages: number;
+  url: string;
+  deleted: boolean;
+  uploadedAt: Date;
+  key: string;
+  IsProfile: boolean;
+
+  // relation (nem mindig van betöltve)
+  house?: HouseListing;
 }
 
 //---------------------props-----------------------
@@ -189,6 +219,7 @@ export interface UserContextType {
 
   getUserById: (id: number) => Promise<User>;
   changeUserData: (newData: Partial<User>) => void;
+  uploadUserImage: (file: File) => void;
   addRoommatePref: (newData: Partial<RoommatePref>) => void;
   getHasRoommatePref: () => Promise<boolean>;
   getRoommatePref: () => Promise<RoommatePref | undefined>;
@@ -212,12 +243,13 @@ export interface UserContextType {
 export interface HouseContextType {
   //houselisting
   getHouseListings: () => Promise<HouseListing[]>;
-  addHouseListing: (newData: Omit<HouseListing, "idHouse">) => Promise<void>;
+  addHouseListing: (newData: Omit<HouseListing, "idHouse">) => Promise<HouseListing>;
   editHouseListing: (
     idHouse: number,
     newData: Partial<HouseListing>,
   ) => Promise<void>;
   deleteHouseListing: (idHouse: number) => Promise<void>;
+  uploadHouseImage: (file: File, houseId: number) => void;
   //housepref
   getHasHousePref: () => Promise<boolean>;
   getHousePref: () => Promise<HousePref | undefined>;

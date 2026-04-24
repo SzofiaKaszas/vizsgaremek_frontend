@@ -1,10 +1,10 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription } from "@/components/ui/field";
 import type { FindRoommateProps, User, UserNecesarry } from "@/interfaces";
 import { useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
 import { UserContext } from "@/context/userContext";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 export function FindRoommateCard(props: FindRoommateProps) {
   const [list, setList] = useState<UserNecesarry[]>([]);
@@ -101,14 +101,35 @@ export function FindRoommateCard(props: FindRoommateProps) {
         <Card className="p-5 min-h-[520px] flex flex-col justify-between">
 
           <div>
-            <Carousel>
-              <CarouselContent className="image-wrapper">
-                <img
-                  src="https://github.com/shadcn.png"
-                  className="w-full h-56 object-cover rounded-md mb-4"
-                />
-              </CarouselContent>
-            </Carousel>
+            {activeFull?.images?.length ? (
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {activeFull.images.map((img) => (
+                    <CarouselItem key={img.id} className="basis-full">
+                      <Card className="p-0 overflow-hidden rounded-xl shadow-none border">
+                        <CardContent className="p-0">
+                          <div className="w-full h-90 overflow-hidden">
+                            <img
+                              src={img.url}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
+            ) : (
+              <Carousel>
+                <CarouselContent>
+                  <img
+                    src="https://github.com/shadcn.png"
+                    className="w-full h-90 object-cover rounded-md mb-4"
+                  />
+                </CarouselContent>
+              </Carousel>
+            )}
             <Field>
               <div className="text-lg font-semibold">
                 {active.firstName} {active.lastName}
