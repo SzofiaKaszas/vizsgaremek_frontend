@@ -9,6 +9,7 @@ import { PleaseLogin } from "./PleaseLogin";
 import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
+import { FindHouseSlide } from "./FindHouseSlide";
 
 export function FindHouse() {
   const userContext = useContext(UserContext);
@@ -94,7 +95,7 @@ export function FindHouse() {
         </Tabs>
       </div>
 
-      {/* CONTENT */}
+     
       <Tabs value={tab} onValueChange={setTab}>
 
         <TabsContent value="grid" className="mt-4">
@@ -105,11 +106,10 @@ export function FindHouse() {
         </TabsContent>
 
         <TabsContent value="list" className="mt-4">
-          <div className="flex justify-center mt-10">
-            <h1 className="text-2xl font-bold text-center">
-              Dolgozunk rajta
-            </h1>
-          </div>
+          <FindHouseSlide
+            isLoggedIn={isLoggedIn}
+            housePref={housePref}
+          />
         </TabsContent>
 
       </Tabs>
