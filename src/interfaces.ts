@@ -243,7 +243,7 @@ export interface UserContextType {
 export interface HouseContextType {
   //houselisting
   getHouseListings: () => Promise<HouseListing[]>;
-  addHouseListing: (newData: Omit<HouseListing, "idHouse">) => Promise<void>;
+  addHouseListing: (newData: Omit<HouseListing, "idHouse">) => Promise<HouseListing>;
   editHouseListing: (
     idHouse: number,
     newData: Partial<HouseListing>,

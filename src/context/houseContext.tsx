@@ -11,7 +11,7 @@ const API_URL = "http://localhost:3000";
 // Default values so React has an initial context shape
 const defaultUserContext: HouseContextType = {
   getHouseListings: async () => [] as HouseListing[],
-  addHouseListing: async (_newData: Omit<HouseListing, "idHouse">) => { },
+  addHouseListing: async (_newData: Omit<HouseListing, "idHouse">) => undefined as undefined as HouseListing,
   editHouseListing: async (
     _idHouse: number,
     _newData: Partial<HouseListing>,
@@ -62,21 +62,23 @@ export function HouseContextProvider(props: PropsWithChildren) {
     },
     async addHouseListing(
       newData: Omit<HouseListing, "idHouse">,
-    ): Promise<void> {
+    ): Promise<HouseListing> {
       const response = await fetch(API_URL + `/house-listing`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // send token
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
         },
         body: JSON.stringify(newData),
       });
 
-      // If backend returns error → throw readable message
       if (!response.ok) {
         errorCheckHouse(response);
-        return;
+        throw new Error("Failed to create house");
       }
+
+      const data = await response.json();
+      return data;
     },
     async editHouseListing(
       idHouse: number,

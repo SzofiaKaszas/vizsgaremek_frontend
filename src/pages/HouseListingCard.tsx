@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/card";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { HouseListingProps } from "@/interfaces";
 
 export function HouseListingCard(props: HouseListingProps) {
@@ -11,15 +11,35 @@ export function HouseListingCard(props: HouseListingProps) {
 
         {/* IMAGE */}
         <div className="rounded-lg overflow-hidden">
-          <Carousel>
-            <CarouselContent>
-              <img
-                src="https://github.com/shadcn.png"
-                alt="house"
-                className="w-full h-48 object-cover"
-              />
-            </CarouselContent>
-          </Carousel>
+          {house?.images?.length ? (
+            <Carousel className="w-full">
+              <CarouselContent>
+                {house.images.map((img) => (
+                  <CarouselItem key={img.idHouseImage} className="basis-full">
+                    <Card className="p-0 overflow-hidden rounded-xl shadow-none border">
+                      <CardContent className="p-0">
+                        <div className="w-full h-90 overflow-hidden">
+                          <img
+                            src={img.url}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          ) : (
+            <Carousel>
+              <CarouselContent>
+                <img
+                  src="https://github.com/shadcn.png"
+                  className="w-full h-90 object-cover rounded-md mb-4"
+                />
+              </CarouselContent>
+            </Carousel>
+          )}
         </div>
 
         {/* HEADER */}
