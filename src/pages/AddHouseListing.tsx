@@ -114,7 +114,7 @@ export function AddHouseListing() {
                   <Field> <FieldLabel> Description
                     <span className="text-red-500">*</span>
                   </FieldLabel>
-                    <Textarea name="description" />
+                    <Textarea name="description" required/>
                     <FieldDescription
                       id="descriptionErr"
                       className="text-red-600 text-sm mt-1"
@@ -125,7 +125,7 @@ export function AddHouseListing() {
                       <FieldLabel> City
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Input name="city" />
+                      <Input name="city" required/>
                       <FieldDescription
                         id="cityErr"
                         className="text-red-600 text-sm mt-1"
@@ -135,7 +135,7 @@ export function AddHouseListing() {
                       <FieldLabel> Address
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Input name="location" />
+                      <Input name="location" required/>
                       <FieldDescription
                         id="locationErr"
                         className="text-red-600 text-sm mt-1"
@@ -146,7 +146,7 @@ export function AddHouseListing() {
                     <FieldLabel> Rent
                       <span className="text-red-500">*</span>
                     </FieldLabel>
-                    <Input type="number" name="rent" />
+                    <Input type="number" name="rent" required/>
                     <FieldDescription
                       id="rentErr"
                       className="text-red-600 text-sm mt-1"
@@ -161,8 +161,8 @@ export function AddHouseListing() {
                       <FieldLabel> Property type
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Combobox items={Property}>
-                        <ComboboxInput name="propertyType" />
+                      <Combobox items={Property} required>
+                        <ComboboxInput name="propertyType" required/>
 
                         <ComboboxContent>
                           <ComboboxEmpty>No items</ComboboxEmpty>
@@ -194,7 +194,7 @@ export function AddHouseListing() {
                       <FieldLabel> Square meter
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Input type="number" name="sqmeter" />
+                      <Input type="number" name="sqmeter" required/>
                       <FieldDescription
                         id="sqmeterErr"
                         className="text-red-600 text-sm mt-1"
@@ -204,7 +204,7 @@ export function AddHouseListing() {
                       <FieldLabel> Rooms
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Input type="number" name="rooms" />
+                      <Input type="number" name="rooms" required/>
                       <FieldDescription
                         id="minRoomsErr"
                         className="text-red-600 text-sm mt-1"
@@ -214,7 +214,7 @@ export function AddHouseListing() {
                       <FieldLabel> Bathrooms
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Input type="number" name="bathrooms" />
+                      <Input type="number" name="bathrooms" required/>
                       <FieldDescription
                         id="bathroomsErr"
                         className="text-red-600 text-sm mt-1"
@@ -228,8 +228,8 @@ export function AddHouseListing() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Field> <FieldLabel> Heating <span className="text-red-500">*</span>
                     </FieldLabel>
-                      <Combobox items={Heating}>
-                        <ComboboxInput name="heatingType" />
+                      <Combobox items={Heating} required>
+                        <ComboboxInput name="heatingType" required/>
 
                         <ComboboxContent>
                           <ComboboxEmpty>No items</ComboboxEmpty>
@@ -251,8 +251,8 @@ export function AddHouseListing() {
                       <FieldLabel> Furnishing
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Combobox items={Furnishing}>
-                        <ComboboxInput name="furnishing" />
+                      <Combobox items={Furnishing} required>
+                        <ComboboxInput name="furnishing" required/>
 
                         <ComboboxContent>
                           <ComboboxEmpty>No items</ComboboxEmpty>
@@ -276,8 +276,8 @@ export function AddHouseListing() {
                       <FieldLabel> Kitchen
                         <span className="text-red-500">*</span>
                       </FieldLabel>
-                      <Combobox items={KitchenFurnishing}>
-                        <ComboboxInput name="kitchenFurnishing" />
+                      <Combobox items={KitchenFurnishing} required>
+                        <ComboboxInput name="kitchenFurnishing" required/>
 
                         <ComboboxContent>
                           <ComboboxEmpty>No items</ComboboxEmpty>
