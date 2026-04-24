@@ -346,8 +346,8 @@ export function LikeUserCard(props: LikedUserProps) {
             {/* EXTRA INFO */}
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="bg-muted/40 rounded-md p-3">
-                <p className="text-xs text-muted-foreground">User ID</p>
-                <p className="font-medium">{selectedUser.idUser}</p>
+                <p className="text-xs text-muted-foreground">Rating</p>
+                <p className="font-medium">{selectedUser.rating}</p>
               </div>
 
               {(selectedUser as any).phone && (
