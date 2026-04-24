@@ -251,6 +251,11 @@ async function handleSubmit(
   const lookingForHouse = form.has("lookingForHouse");
   const email = (form.get("email") as string) || undefined;
 
+  document.getElementById("firstNameErr")!.innerHTML = "";
+  document.getElementById("ageErr")!.innerHTML = "";
+  document.getElementById("emailErr")!.innerHTML = "";
+  document.getElementById("phoneErr")!.innerHTML = "";
+
   const regexEmail = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
   const regexPhone =
     /^\+?\d{1,3}[-\s.]?\(?\d{2,3}\)?[-\s.]?\d{3}[-\s.]?\d{4,6}$/;
