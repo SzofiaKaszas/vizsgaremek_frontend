@@ -125,6 +125,19 @@ export function LikeUserCard(props: LikedUserProps) {
     return profile?.url ?? "https://github.com/shadcn.png";
   }
 
+  const renderStars = (rating: number) => {
+    const maxStars = 5;
+    return (
+      <div className="flex gap-1">
+        {Array.from({ length: maxStars }, (_, i) => (
+          <span key={i}>
+            {i < Math.round(rating) ? "⭐" : "☆"}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   if (!props.isLoggedIn) {
     return <PleaseLogin text="Please login to view liked users" />;
   }
@@ -190,10 +203,7 @@ export function LikeUserCard(props: LikedUserProps) {
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
-                      <button className="text-xs px-2 py-1 rounded bg-accent text-white">
-                        Rate
-                      </button>
+                    <div className="flex">
                       <button
                         onClick={() => removeMatch(u)}
                         className="text-xs text-red-500"
@@ -303,18 +313,43 @@ export function LikeUserCard(props: LikedUserProps) {
       <div className="col-span-2 mt-4 md:mt-0">
         {selectedUser ? (
           <Card className="p-4 md:p-6 space-y-6 max-h-[80vh] overflow-y-auto">
-
-            {/* HEADER */}
             <div className="flex items-center gap-4 md:gap-5">
               <img
                 src={profileimg(selectedUser)}
                 className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
               />
 
-              <div>
-                <h2 className="text-lg md:text-xl font-semibold">
-                  {selectedUser.firstName} {selectedUser.lastName}
-                </h2>
+              <div className="flex flex-col w-full">
+                <div className="flex items-center w-full">
+                  <h2 className="text-lg md:text-xl font-semibold">
+                    {selectedUser.firstName} {selectedUser.lastName}
+                  </h2>
+
+                  <div className="flex items-center gap-3 ml-auto">
+                    {selectedUser.rating > 0 && (
+                      <div className="flex items-center gap-2">
+                        {renderStars(selectedUser.rating)}
+                        <span className="text-sm text-muted-foreground">
+                          ({selectedUser.rating})
+                        </span>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() =>
+                        navigate("/rate", {
+                          state: {
+                            id: selectedUser.idUser,
+                            houseOrRoommate: "roommate",
+                          },
+                        })
+                      }
+                      className="text-xs px-3 py-1.5 rounded-md bg-accent text-white hover:opacity-90 transition"
+                    >
+                      Rate
+                    </button>
+                  </div>
+                </div>
 
                 <div className="flex gap-2 mt-1 text-xs md:text-sm flex-wrap">
                   <span className="px-2 py-1 bg-gray-100 rounded">
@@ -322,7 +357,7 @@ export function LikeUserCard(props: LikedUserProps) {
                   </span>
 
                   <span className="px-2 py-1 bg-gray-100 rounded">
-                    {getAge((selectedUser as any).birthDay)} years
+                    {getAge(selectedUser.birthDay as any)} years
                   </span>
 
                   {selectedUser.email && (
@@ -345,30 +380,49 @@ export function LikeUserCard(props: LikedUserProps) {
 
             {/* EXTRA INFO */}
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="bg-muted/40 rounded-md p-3">
-                <p className="text-xs text-muted-foreground">Rating</p>
-                <p className="font-medium">{selectedUser.rating}</p>
-              </div>
-
-              {(selectedUser as any).phone && (
-                <div className="bg-muted/40 rounded-md p-3">
-                  <p className="text-xs text-muted-foreground">Phone</p>
-                  <p className="font-medium">{(selectedUser as any).phone}</p>
-                </div>
-              )}
 
               <div className="bg-muted/40 rounded-md p-3">
                 <p className="text-xs text-muted-foreground">Birth date</p>
                 <p className="font-medium">
-                  {(selectedUser as any).birthDay
-                    ? new Date((selectedUser as any).birthDay).toLocaleDateString()
+                  {selectedUser.birthDay
+                    ? new Date(selectedUser.birthDay).toLocaleDateString()
                     : "-"}
                 </p>
               </div>
 
+              {selectedUser.language && (
+                <div className="bg-muted/40 rounded-md p-3">
+                  <p className="text-xs text-muted-foreground">Language</p>
+                  <p className="font-medium">{selectedUser.language}</p>
+                </div>
+              )}
+
+              {selectedUser.userBio && (
+                <div className="bg-muted/40 rounded-md p-3 col-span-2">
+                  <p className="text-xs text-muted-foreground">Bio</p>
+                  <p className="font-medium">{selectedUser.userBio}</p>
+                </div>
+              )}
+
+              {selectedUser.occupation && (
+                <div className="bg-muted/40 rounded-md p-3">
+                  <p className="text-xs text-muted-foreground">Occupation</p>
+                  <p className="font-medium">{selectedUser.occupation}</p>
+                </div>
+              )}
+
+              {selectedUser.connectionEmail && (
+                <div className="bg-muted/40 rounded-md p-3">
+                  <p className="text-xs text-muted-foreground">Connection Email</p>
+                  <p className="font-medium">{selectedUser.connectionEmail}</p>
+                </div>
+              )}
+
               <div className="bg-muted/40 rounded-md p-3">
-                <p className="text-xs text-muted-foreground">Gender</p>
-                <p className="font-medium">{selectedUser.gender}</p>
+                <p className="text-xs text-muted-foreground">Has House</p>
+                <p className="font-medium">
+                  {selectedUser.hasHouse ? "Yes" : "No"}
+                </p>
               </div>
             </div>
 
@@ -397,6 +451,6 @@ export function LikeUserCard(props: LikedUserProps) {
           </p>
         )}
       </div>
-    </div>
+    </div >
   );
 }

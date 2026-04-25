@@ -9,12 +9,22 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 
 export function LikedHouseCard(props: LikedHouseProps) {
   const [houses, setHouses] = useState<HouseListing[]>([]);
+  const [openImage, setOpenImage] = useState<string | null>(null);
+  const [activeImages, setActiveImages] = useState<Record<number, number>>({});
   const navigate = useNavigate();
   const houseContext = useContext(HouseContext);
 
   useEffect(() => {
     setHouses(props.likedHouses);
   }, [props.likedHouses]);
+
+
+  const setHouseImage = (houseId: number, index: number) => {
+    setActiveImages((prev) => ({
+      ...prev,
+      [houseId]: index,
+    }));
+  };
 
   function removeHouse(id: number) {
     setHouses((prev) => prev.filter((h) => h.idHouse !== id));
@@ -47,24 +57,63 @@ export function LikedHouseCard(props: LikedHouseProps) {
         >
 
           {house?.images?.length ? (
-            <Carousel className="w-full">
-              <CarouselContent>
-                {house.images.map((img) => (
-                  <CarouselItem key={img.idHouseImage} className="basis-full">
-                    <Card className="p-0 overflow-hidden rounded-xl shadow-none border">
-                      <CardContent className="p-0">
-                        <div className="w-full h-90 overflow-hidden">
-                          <img
-                            src={img.url}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </CarouselItem>
+            <>
+              <Carousel
+                className="w-full"
+                setApi={(api) => {
+                  if (!api) return;
+
+                  api.on("select", () => {
+                    setHouseImage(
+                      house.idHouse,
+                      api.selectedScrollSnap()
+                    );
+                  });
+                }}
+              >
+                <CarouselContent>
+                  {house.images.map((img, index) => (
+                    <CarouselItem key={img.idHouseImage} className="basis-full">
+                      <Card className="p-0 overflow-hidden rounded-xl shadow-none border">
+                        <CardContent className="p-0">
+                          <div className="w-full h-90 overflow-hidden">
+                            <div className="relative w-full h-90 overflow-hidden rounded-md flex items-center justify-center">
+
+                              {/* blurred background */}
+                              <img
+                                src={img.url}
+                                className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110"
+                              />
+
+                              {/* dark overlay (optional but makes it nicer) */}
+                              <div className="absolute inset-0 bg-black/10" />
+
+                              {/* main image */}
+                              <img
+                                src={img.url}
+                                className="relative max-w-full max-h-full object-contain z-10"
+                                onClick={() => setOpenImage(img.url)}
+                              />
+
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
+              <div className="flex justify-center gap-2 mt-2">
+                {house.images.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`h-2 w-2 rounded-full transition-all ${index === (activeImages[house.idHouse] ?? 0)
+                      ? "bg-purple-600 w-4"
+                      : "bg-gray-300"
+                      }`}
+                  />
                 ))}
-              </CarouselContent>
-            </Carousel>
+              </div></>
           ) : (
             <Carousel>
               <CarouselContent>
@@ -134,6 +183,18 @@ export function LikedHouseCard(props: LikedHouseProps) {
         </Card>
       ))}
 
+      {openImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
+          onClick={() => setOpenImage(null)}
+        >
+          <img
+            src={openImage}
+            className="max-w-[90%] max-h-[90%] object-contain rounded-md shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }

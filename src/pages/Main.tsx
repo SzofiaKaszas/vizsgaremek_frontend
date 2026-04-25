@@ -105,16 +105,13 @@ function GuestView() {
   );
 }
 
-/* =======================================================
-   🔐 DASHBOARD VIEW (logged in)
-======================================================= */
 function DashboardView() {
   return (
     <>
       {/* HEADER */}
       <section className="max-w-6xl mx-auto px-4 pt-12 pb-8">
         <h1 className="text-3xl font-bold mb-2">
-          Welcome back 👋
+          Welcome
         </h1>
         <p className="text-slate-600">
           Here’s what’s happening in your network today.
@@ -178,10 +175,6 @@ function DashboardView() {
     </>
   );
 }
-
-/* =======================================================
-   COMPONENTEK
-======================================================= */
 
 function FeatureCard({
   icon,
