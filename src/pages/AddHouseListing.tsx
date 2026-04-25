@@ -335,13 +335,6 @@ export function AddHouseListing() {
                 </Field>
                 <div className="flex justify-between">
                   <Button
-                    variant="outline"
-                    onClick={() => setStep(1)}
-                  >
-                    Back
-                  </Button>
-
-                  <Button
                     onClick={() =>
                       (window.location.href = "/managehouselising")
                     }
