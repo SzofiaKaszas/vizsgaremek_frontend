@@ -116,10 +116,14 @@ export function LikeUserCard(props: LikedUserProps) {
   }
 
   function profileimg(u: User) {
-    console.log(u)
-    const profile = u.images?.find(img => img.IsProfile);
-
-    return profile?.url ?? "https://github.com/shadcn.png";
+    return u.images?.[0]?.url || "https://github.com/shadcn.png";
+    if (u.images.length != 0) {
+      /*userData.images.forEach(element => {
+        if(element.IsProfile){
+          profileImage = element.url;
+        }
+      });*/
+    }
   }
 
   const renderStars = (rating: number) => {

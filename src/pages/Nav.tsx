@@ -7,7 +7,6 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 /**ha van houselistingje up akkor is mutassa a navon a cuccot ha nincs berakva az hogy akar hazat eladni */
@@ -36,13 +35,14 @@ export function NavBar() {
     currentUserId === undefined && { to: "/login", label: "Login" },
   ].filter(Boolean) as { to: string; label: string }[];
 
-  let profileImage;
-  if(userData?.images){
-    userData.images.forEach(element => {
+  const profileImage =
+  userData?.images?.[0]?.url || undefined;
+  if(userData?.images.length != 0){
+    /*userData.images.forEach(element => {
       if(element.IsProfile){
         profileImage = element.url;
       }
-    });
+    });*/
   }
 
   useEffect(() => {
@@ -142,7 +142,9 @@ export function NavBar() {
             <NavLink to="/profile">
               <Avatar className="h-9 w-9 ring-2 ring-transparent hover:ring-purple-500 transition">
                 <AvatarImage src={profileImage} />
-                <AvatarFallback>P</AvatarFallback>
+                <AvatarFallback>
+                  P
+                </AvatarFallback>
               </Avatar>
             </NavLink>
           )}

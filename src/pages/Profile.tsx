@@ -18,13 +18,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export function Profile() {
   const { userData } = useContext(UserContext);
 
-  let profileImage;
-  if(userData?.images){
-    userData.images.forEach(element => {
+  const profileImage =
+  userData?.images?.[0]?.url || undefined;
+  if(userData?.images.length != 0){
+    /*userData.images.forEach(element => {
       if(element.IsProfile){
         profileImage = element.url;
       }
-    });
+    });*/
   }
 
   if (!userData) {
