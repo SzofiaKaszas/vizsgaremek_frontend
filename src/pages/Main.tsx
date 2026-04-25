@@ -16,11 +16,8 @@ export function Main() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50">
-
       {!currentUserId && <GuestView />}
-
       {currentUserId && <DashboardView />}
-
     </div>
   );
 }
@@ -59,7 +56,6 @@ function GuestView() {
         </div>
       </section>
 
-      {/* FEATURES */}
       <section className="max-w-6xl mx-auto px-4 pb-16">
         <h2 className="text-xl font-semibold text-center mb-10">
           Why choose us?
@@ -99,24 +95,32 @@ function GuestView() {
 }
 
 function DashboardView() {
+  const isNewUser = true;
+
+  if (isNewUser) {
+    return <OnboardingView />;
+  }
+
+  return <ReturningUserView />;
+}
+
+function OnboardingView() {
   return (
     <>
       <section className="max-w-6xl mx-auto px-4 pt-12 pb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          Welcome
-        </h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome</h1>
         <p className="text-slate-600">
-          Here’s what’s happening in your network today.
+          Here’s a quick overview of what you can do on our page.
         </p>
       </section>
 
       <section className="max-w-6xl mx-auto px-4 pb-10">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { label: "New matches", value: "12" },
-            { label: "Messages", value: "5" },
-            { label: "Likes", value: "18" },
-            { label: "Views", value: "42" },
+            { label: "In a minute", value: "Find Roommate" },
+            { label: "People", value: "Match with" },
+            { label: "with people", value: "Connect" },
+            { label: "to rent in a minute", value: "Find a house" }
           ].map((stat) => (
             <Card key={stat.label} className="shadow-sm">
               <CardContent className="py-6 text-center">
@@ -131,40 +135,19 @@ function DashboardView() {
       </section>
 
       <section className="max-w-6xl mx-auto px-4 pb-12">
-        <h2 className="text-lg font-semibold mb-4">Quick actions</h2>
+        <h2 className="text-lg font-semibold mb-4 text-center">
+          Get started
+        </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <ActionCard icon={<Users size={18} />} title="Find roommates" link="/findroomate" />
-          <ActionCard icon={<Home size={18} />} title="Find housing" link="/findhouse" />
-          <ActionCard icon={<Heart size={18} />} title="Your likes" link="/likes" />
+          <ActionCard icon={<Users size={18} />} title="Browse roommates" link="/findroomate" />
+          <ActionCard icon={<Home size={18} />} title="Explore housing" link="/findhouse" />
+          <ActionCard icon={<Heart size={18} />} title="Save favorites" link="/likes" />
         </div>
-      </section>
-
-      <section className="max-w-6xl mx-auto px-4 pb-20">
-        <h2 className="text-lg font-semibold mb-4">Recent activity</h2>
-
-        <Card className="shadow-sm">
-          <CardContent className="divide-y">
-            {[
-              "Anna liked your profile",
-              "New match: David",
-              "3 new listings near you",
-            ].map((item, i) => (
-              <div key={i} className="py-4 flex justify-between items-center">
-                <div className="flex items-center gap-2 text-slate-700">
-                  <MessageCircle size={16} className="text-purple-500" />
-                  {item}
-                </div>
-                <span className="text-xs text-slate-400">2h ago</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
       </section>
     </>
   );
 }
-
 function FeatureCard({
   icon,
   title,

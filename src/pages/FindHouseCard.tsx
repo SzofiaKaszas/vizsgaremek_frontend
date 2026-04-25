@@ -48,8 +48,6 @@ export function FindHouseCard(props: FindHouseProps) {
 
   return (
     <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-      {/* LEFT STACK */}
       <div className="space-y-3 order-2 lg:order-1">
         {preview.map((p) => (
           <Card key={p.idHouse} className="p-3 opacity-60">
@@ -60,7 +58,6 @@ export function FindHouseCard(props: FindHouseProps) {
         ))}
       </div>
 
-      {/* CENTER */}
       <div className="order-1 lg:order-2">
         <Card className="p-5 min-h-[520px] flex flex-col justify-between">
 
@@ -114,7 +111,6 @@ export function FindHouseCard(props: FindHouseProps) {
             </div>
           </div>
 
-          {/* ACTIONS */}
           <div className="pt-6 pb-2">
             <div className="flex justify-between">
               <button
@@ -135,7 +131,6 @@ export function FindHouseCard(props: FindHouseProps) {
         </Card>
       </div>
 
-      {/* RIGHT DETAILS */}
       <div className="order-3">
         <Card className="p-5 min-h-[520px]">
 
