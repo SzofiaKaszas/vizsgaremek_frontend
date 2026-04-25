@@ -1,6 +1,6 @@
 import { HouseContext } from "@/context/houseContext";
 import type { FindHouseProps, HouseListing } from "@/interfaces";
-import { Heart, ThumbsDown, CircleArrowUp, Image, Bath, DoorOpen,Icon } from "lucide-react";
+import { Heart, ThumbsDown, CircleArrowUp, Image, Bath, DoorOpen, Icon } from "lucide-react";
 
 import { useContext, useEffect, useState } from "react";
 
@@ -94,7 +94,7 @@ export function FindHouseSlide(props: FindHouseProps) {
   const active = list[0];
 
   return (
-    <div className="flex justify-center mt-4">
+    <div className="flex justify-center mt-8">
       <div className="w-full max-w-sm">
         <motion.div
           drag="x"
@@ -108,10 +108,19 @@ export function FindHouseSlide(props: FindHouseProps) {
           <Card className="rounded-2xl shadow-xl overflow-hidden">
 
             <div className="relative">
-              <img
-                src="https://cdn.pixabay.com/photo/2020/06/25/10/21/architecture-5339245_1280.jpg"
-                className="w-full h-80 object-cover"
-              />
+              {active.images?.length ? (
+                <img
+                  src={active.images[0].url}
+                  className="w-full h-80 object-cover"
+                />
+              ) : (
+                <img
+                  src="http://localhost:9000/test-image/Q.jpg" 
+                  className="w-full h-80 object-cover"
+                />
+                
+              )}
+              {/*Ha a kép szerver nem müködne szofi inen szedtem a képet https://pixabay.com/photos/question-mark-question-symbol-463497/*/}
 
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
                 <h2 className="text-lg font-semibold">
@@ -182,23 +191,31 @@ export function FindHouseSlide(props: FindHouseProps) {
                       className="max-w-xs mx-auto flex justify-center"
                     >
                       <CarouselContent>
-                        {Array.from({ length: 3 }).map((_, index) => (
-                          <CarouselItem key={index}>
-                            <Card className="m-px">
-                              <CardContent className="flex aspect-square items-center justify-center p-6">
-                                <img
-                                  src="https://github.com/shadcn.png" //"https://cdn.pixabay.com/photo/2023/03/11/17/40/ai-generated-7844936_1280.jpg"//
-                                  className="w-full h-56 object-cover rounded-t-md"
-                                />
-                              </CardContent>
-                            </Card>
-                          </CarouselItem>
-                        ))}
+                        {active.images?.length > 0 ? (
+                          Array.from({ length: active.images.length }).map((_, index) => (
+                            <CarouselItem key={index}>
+                              <Card className="m-px">
+                                <CardContent className="flex aspect-square items-center justify-center p-6">
+                                  <img
+                                    src={active.images[index].url}
+                                    className="w-full h-56 object-cover rounded-t-md"
+                                  /> 
+                                 
+                                </CardContent>
+                              </Card>
+                            </CarouselItem>
+                          ))
+                        ) : (
+                          <p className="flex justify-center gap-2 ">No picture </p>
+                      
+                        )}
                       </CarouselContent>
                     </Carousel>
-                    <div className="py-2 text-center text-sm text-black font-semibold flex items-center justify-center gap-2 ">
-                      <Image /> {current} of {count}
-                    </div>
+                    {active.images?.length > 0 && (
+                      <div className="py-2 text-center text-sm text-black font-semibold flex items-center justify-center gap-2 ">
+                        <Image /> {current} of {count}
+                      </div>
+                    )}
 
                     <div className="mt-4 space-y-2 text-sm text-center">
                       <p><b>Type:</b> {active.propertyType}</p>
