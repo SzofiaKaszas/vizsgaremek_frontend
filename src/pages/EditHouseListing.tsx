@@ -68,7 +68,6 @@ export default function EditHouseListing() {
             <div className="w-full flex justify-center px-4 py-10">
                 <div className="w-full max-w-3xl space-y-6">
 
-                    {/* HEADER */}
                     <div className="text-center space-y-1">
                         <CardTitle>Edit house listing</CardTitle>
                         <p className="text-sm text-muted-foreground">
@@ -78,7 +77,6 @@ export default function EditHouseListing() {
 
                     <form onSubmit={(e) => { handleEdit(e, houseContext, navigate, setLoading, house, userData) }} className="space-y-6">
 
-                        {/* BASIC INFO */}
                         <Card className="p-6 space-y-4">
                             <h3 className="font-semibold">Basic information</h3>
 
@@ -130,7 +128,6 @@ export default function EditHouseListing() {
                             </Field>
                         </Card>
 
-                        {/* DETAILS */}
                         <Card className="p-6 space-y-4">
                             <h3 className="font-semibold">Property details</h3>
 
@@ -213,7 +210,6 @@ export default function EditHouseListing() {
                             </div>
                         </Card>
 
-                        {/* COMFORT */}
                         <Card className="p-6 space-y-4">
                             <h3 className="font-semibold">Comfort</h3>
 

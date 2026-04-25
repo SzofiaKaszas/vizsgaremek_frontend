@@ -133,7 +133,6 @@ export function HousePrefrences() {
             <FieldDescription id="minRoomsErr" className="text-xs text-red-500" />
           </Field>
 
-          {/* BATHROOMS */}
           <Field>
             <FieldLabel htmlFor="bathrooms">Min bathrooms</FieldLabel>
             <Input
@@ -150,7 +149,6 @@ export function HousePrefrences() {
           </Field>
         </div>
 
-        {/* CITY FULL WIDTH */}
         <Field>
           <FieldLabel htmlFor="city">City</FieldLabel>
           <Input

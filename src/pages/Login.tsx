@@ -17,7 +17,6 @@ export function Login() {
           className="w-full max-w-md space-y-6 sm:space-y-7 px-1 sm:px-2"
           onSubmit={(e) => handleSubmit(e, context)}
         >
-          {/* HEADER */}
           <div className="text-center space-y-1 sm:space-y-2">
             <CardTitle className="text-lg sm:text-xl font-semibold">
               Welcome back
@@ -27,7 +26,6 @@ export function Login() {
             </p>
           </div>
 
-          {/* EMAIL */}
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input
@@ -43,7 +41,6 @@ export function Login() {
             />
           </Field>
 
-          {/* PASSWORD */}
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
 
@@ -72,7 +69,6 @@ export function Login() {
             />
           </Field>
 
-          {/* BUTTON */}
           <div className="pt-2 space-y-3">
             <Button
               type="submit"

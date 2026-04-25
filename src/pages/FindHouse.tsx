@@ -6,7 +6,6 @@ import type { HouseListing } from "@/interfaces";
 import { UserContext } from "@/context/userContext";
 import { HouseContext } from "@/context/houseContext";
 import { PleaseLogin } from "./PleaseLogin";
-import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { FindHouseSlide } from "./FindHouseSlide";
@@ -35,12 +34,10 @@ export function FindHouse() {
     setTab(isMobile ? "list" : "grid");
   }, [isMobile]);
 
-  // ❌ not logged in
   if (!isLoggedIn) {
     return <PleaseLogin text="Please login to find houses" />;
   }
 
-  // ❌ no setup
   if (hasHousePref === false) {
     return (
       <div className="flex justify-center mt-20 px-4">
@@ -60,7 +57,6 @@ export function FindHouse() {
     );
   }
 
-  // ⏳ loading
   if (hasHousePref === null) {
     return (
       <div className="flex justify-center mt-20">
@@ -72,7 +68,6 @@ export function FindHouse() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 mt-10 space-y-6">
 
-      {/* HEADER (same as roommate) */}
       <div className="flex items-center justify-between border rounded-xl p-3 bg-background shadow-sm">
 
         <div>

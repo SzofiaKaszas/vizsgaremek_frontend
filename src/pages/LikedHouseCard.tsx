@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState, useEffect, useContext } from "react";
 import type { HouseListing, LikedHouseProps, User } from "@/interfaces";
 import { PleaseLogin } from "./PleaseLogin";
-import { Heart, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { HouseContext } from "@/context/houseContext";
 import { useNavigate } from "react-router";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
@@ -154,7 +154,6 @@ export function LikedHouseCard(props: LikedHouseProps) {
             {house.description}
           </p>
 
-          {/* ACTIONS */}
           <div className="flex justify-between items-center pt-4 mt-auto border-t">
 
             <button

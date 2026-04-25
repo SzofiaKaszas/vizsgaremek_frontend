@@ -5,7 +5,6 @@ import { Logout } from "./Logout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  User,
   Mail,
   Phone,
   Home,
@@ -41,7 +40,6 @@ export function Profile() {
 
       <div className="max-w-4xl mx-auto space-y-6">
 
-        {/* HEADER */}
         <div className="text-center">
           <h1 className="text-2xl font-bold">
             Your profile
@@ -51,11 +49,9 @@ export function Profile() {
           </p>
         </div>
 
-        {/* PROFILE SUMMARY */}
         <Card className="border shadow-sm">
           <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
 
-            {/* USER INFO */}
             <div className="flex items-center gap-4">
               <Avatar className="h-15 w-15 transition">
                 <AvatarImage src={profileImage} />
@@ -72,7 +68,6 @@ export function Profile() {
               </div>
             </div>
 
-            {/* ACTIONS */}
             <div className="flex gap-2 flex-wrap">
               <EditProfile />
               <Button
@@ -118,7 +113,6 @@ export function Profile() {
           />
         </div>
 
-        {/* STATUS CARD */}
         <Card className="border shadow-sm">
           <CardContent className="p-6">
             <h2 className="font-semibold mb-4 flex items-center gap-2">

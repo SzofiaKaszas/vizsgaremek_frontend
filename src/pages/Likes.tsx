@@ -39,7 +39,6 @@ export function Likes() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 mt-10 space-y-6">
 
-      {/* HEADER */}
       <div className="rounded-xl border bg-background shadow-sm p-5 flex items-center justify-between">
 
         <div>
@@ -49,7 +48,6 @@ export function Likes() {
           </p>
         </div>
 
-        {/* SWITCH */}
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="bg-muted p-1 rounded-lg">
             <TabsTrigger value="users">
@@ -63,7 +61,6 @@ export function Likes() {
 
       </div>
 
-      {/* CONTENT */}
       <Tabs value={tab} onValueChange={setTab}>
 
         <TabsContent value="users" className="mt-4">

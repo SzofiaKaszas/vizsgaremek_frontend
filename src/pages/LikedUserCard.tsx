@@ -4,18 +4,15 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import type { LikedUserProps, User, UserNecesarry } from "@/interfaces";
 import { UserContext } from "@/context/userContext";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 export function LikeUserCard(props: LikedUserProps) {
   const [likedUsers, setLikedUsers] = useState<UserNecesarry[]>([]);
   const [likedFullUsers, setLikedFullUsers] = useState<User[]>([]);
   const [matches, setMatches] = useState<User[]>([]);
   const [likedLoggedInUser, setLikedLoggedInUser] = useState<User[]>([]);
-  const [fullUsers, setFullUsers] = useState<Record<number, User>>({});
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // COLLAPSIBLE STATES
   const [openMatches, setOpenMatches] = useState(true);
   const [openLiked, setOpenLiked] = useState(true);
   const [openLikedYou, setOpenLikedYou] = useState(true);
@@ -158,7 +155,6 @@ export function LikeUserCard(props: LikedUserProps) {
       gap-4 md:gap-6
     "
     >
-      {/* LEFT SIDE */}
       <div
         className="
         col-span-1
@@ -166,7 +162,6 @@ export function LikeUserCard(props: LikedUserProps) {
         md:border-r md:pr-4
       "
       >
-        {/* MATCHES */}
         {matches.length > 0 && (
           <div>
             <button
@@ -218,7 +213,6 @@ export function LikeUserCard(props: LikedUserProps) {
           </div>
         )}
 
-        {/* YOU LIKED */}
         {onlyLiked.length > 0 && (
           <div>
             <button
@@ -263,7 +257,6 @@ export function LikeUserCard(props: LikedUserProps) {
           </div>
         )}
 
-        {/* LIKED YOU */}
         {onlyLikedYou.length > 0 && (
           <div>
             <button
@@ -309,7 +302,6 @@ export function LikeUserCard(props: LikedUserProps) {
         )}
       </div>
 
-      {/* RIGHT SIDE */}
       <div className="col-span-2 mt-4 md:mt-0">
         {selectedUser ? (
           <Card className="p-4 md:p-6 space-y-6 max-h-[80vh] overflow-y-auto">
@@ -378,7 +370,6 @@ export function LikeUserCard(props: LikedUserProps) {
               </div>
             )}
 
-            {/* EXTRA INFO */}
             <div className="grid grid-cols-2 gap-3 text-sm">
 
               <div className="bg-muted/40 rounded-md p-3">

@@ -17,23 +17,17 @@ export function Main() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50">
 
-      {/* ================= GUEST VIEW ================= */}
       {!currentUserId && <GuestView />}
 
-      {/* ================= LOGGED IN VIEW ================= */}
       {currentUserId && <DashboardView />}
 
     </div>
   );
 }
 
-/* =======================================================
-   👋 GUEST VIEW (marketing / onboarding)
-======================================================= */
 function GuestView() {
   return (
     <>
-      {/* HERO */}
       <section className="max-w-6xl mx-auto px-4 pt-20 pb-12 text-center">
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
           Find your perfect{" "}
@@ -90,7 +84,6 @@ function GuestView() {
         </div>
       </section>
 
-      {/* SOCIAL PROOF */}
       <section className="max-w-4xl mx-auto px-4 pb-20">
         <Card className="text-center border shadow-sm">
           <CardContent className="py-10">
@@ -108,7 +101,6 @@ function GuestView() {
 function DashboardView() {
   return (
     <>
-      {/* HEADER */}
       <section className="max-w-6xl mx-auto px-4 pt-12 pb-8">
         <h1 className="text-3xl font-bold mb-2">
           Welcome
@@ -118,7 +110,6 @@ function DashboardView() {
         </p>
       </section>
 
-      {/* STATS */}
       <section className="max-w-6xl mx-auto px-4 pb-10">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
@@ -139,7 +130,6 @@ function DashboardView() {
         </div>
       </section>
 
-      {/* QUICK ACTIONS */}
       <section className="max-w-6xl mx-auto px-4 pb-12">
         <h2 className="text-lg font-semibold mb-4">Quick actions</h2>
 
@@ -150,7 +140,6 @@ function DashboardView() {
         </div>
       </section>
 
-      {/* ACTIVITY FEED */}
       <section className="max-w-6xl mx-auto px-4 pb-20">
         <h2 className="text-lg font-semibold mb-4">Recent activity</h2>
 

@@ -51,7 +51,6 @@ export function SetUpProfile() {
   const goNext = () => {
     const idx = steps.indexOf(step);
 
-    // safety fix (prevents -1 bug)
     if (idx < 0) return;
 
     const nextStep = steps[idx + 1];

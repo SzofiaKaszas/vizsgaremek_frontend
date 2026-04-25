@@ -35,7 +35,6 @@ export function HouseListingCard(props: HouseListingProps) {
     <div className="w-full flex justify-center">
       <Card className="w-full max-w-sm p-4 space-y-4 hover:shadow-lg transition rounded-xl border border-muted/40">
 
-        {/* IMAGE */}
         <div className="rounded-lg overflow-hidden">
           {house?.images?.length ? (
             <>

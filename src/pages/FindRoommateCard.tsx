@@ -84,8 +84,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
 
   return (
     <div className="w-full max-w-6xl mx-auto mt-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-      {/* LEFT STACK */}
       <div className="space-y-3 order-2 lg:order-1">
         {preview.map((p) => (
           <Card key={p.idUser} className="p-3 opacity-60">
@@ -96,7 +94,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
         ))}
       </div>
 
-      {/* CENTER */}
       <div className="order-1 lg:order-2">
         <Card className="p-5 min-h-[520px] flex flex-col justify-between">
 
@@ -165,7 +162,6 @@ export function FindRoommateCard(props: FindRoommateProps) {
         </Card>
       </div>
 
-      {/* RIGHT DETAILS */}
       <div className="order-3">
         <Card className="p-5 min-h-[520px]">
 

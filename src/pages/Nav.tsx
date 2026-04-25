@@ -47,7 +47,6 @@ export function NavBar() {
 
   useEffect(() => {
   const sync = () => {
-    // force re-render trigger workaround
     setForceUpdate((x) => x + 1);
   };
 
@@ -60,13 +59,11 @@ export function NavBar() {
     <nav className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
 
-        {/* LEFT - HAMBURGER */}
         <div className="sm:hidden">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <button className="relative w-8 h-8 flex items-center justify-center">
 
-                {/* HAMBURGER → X */}
                 <span
                   className={`absolute h-0.5 w-6 bg-slate-800 transition-all duration-300 ${open ? "rotate-45" : "-translate-y-2"
                     }`}
@@ -86,7 +83,6 @@ export function NavBar() {
               side="left"
               className="bg-white/95 backdrop-blur-xl border-r border-slate-200 p-0"
             >
-              {/* SAFE AREA */}
               <div className="pt-8 pb-[env(safe-area-inset-bottom)] px-6 flex flex-col">
 
                 {navItems.map((item) => (
@@ -110,17 +106,14 @@ export function NavBar() {
           </Sheet>
         </div>
 
-        {/* CENTER - LOGO */}
         <div className="flex-1 flex justify-center sm:justify-start">
           <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent">
             Kezzy
           </span>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
 
-          {/* DESKTOP NAV */}
           <div className="hidden sm:flex items-center gap-6 mr-4">
             {navItems.map((item) => (
               <NavLink key={item.to} to={item.to}>
@@ -134,7 +127,6 @@ export function NavBar() {
                   >
                     {item.label}
 
-                    {/* UNDERLINE */}
                     <span
                       className={`absolute left-0 -bottom-1 h-[2px] bg-purple-500 transition-all duration-300
           ${isActive ? "w-full" : "w-0 group-hover:w-full"
@@ -146,19 +138,6 @@ export function NavBar() {
             ))}
           </div>
 
-          
-          {/*currentUserId && (
-            <div className="relative">
-              <div className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition">
-                🔔
-              </div>
-              <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
-                3
-              </span>
-            </div>
-          )*/}
-
-          {/* AVATAR */}
           {currentUserId && (
             <NavLink to="/profile">
               <Avatar className="h-9 w-9 ring-2 ring-transparent hover:ring-purple-500 transition">

@@ -11,6 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import { Heart, ThumbsDown } from "lucide-react";
 import { DialogClose } from "@/components/ui/dialog";
 
+/**I dont think we use this anymore but dont want to delete cus i dont know where its imported (propably in FindRoommateCard)*/
 export function FindRoommateDialogContent(props: DialogContentProps) {
   const context = useContext(UserContext);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);

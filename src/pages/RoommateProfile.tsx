@@ -45,7 +45,6 @@ export function RoommateProfile({ goNext }: GoNextProp) {
     setShowEmailInput(!!context.userData?.connectionEmail);
   }, [context.userData]);
 
-  // NEW: upload handler (keeps backend logic intact)
   const handleImageUpload = async () => {
     if (!selectedFile) return;
     if (images.length >= 8) return;
@@ -55,7 +54,6 @@ export function RoommateProfile({ goNext }: GoNextProp) {
     try {
       await context.uploadUserImage(selectedFile);
 
-      // preview only (backend doesn't return URL)
       const previewUrl = URL.createObjectURL(selectedFile);
 
       setImages((prev) => [...prev, previewUrl]);
@@ -78,7 +76,6 @@ export function RoommateProfile({ goNext }: GoNextProp) {
         className="space-y-6 sm:space-y-7 px-1 sm:px-2"
         onSubmit={(e) => handleSubmit(e, context, goNext)}
       >
-        {/* HEADER */}
         <div className="text-center space-y-1 sm:space-y-2">
           <CardTitle className="text-lg sm:text-xl font-semibold">
             Your Profile
@@ -199,7 +196,6 @@ export function RoommateProfile({ goNext }: GoNextProp) {
           </Field>
         )}
 
-        {/* NEW MULTI IMAGE UPLOAD SYSTEM */}
         <Field>
           <FieldLabel>Images (max 8)</FieldLabel>
 
@@ -224,7 +220,6 @@ export function RoommateProfile({ goNext }: GoNextProp) {
             {images.length}/8 uploaded
           </p>
 
-          {/* PREVIEW */}
           <div className="grid grid-cols-3 gap-2 mt-3">
             {images.map((img, i) => (
               <img

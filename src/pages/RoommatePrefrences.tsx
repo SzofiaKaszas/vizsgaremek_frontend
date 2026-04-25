@@ -179,7 +179,7 @@ export function RoommatePrefrences({ goNext }: GoNextProp) {
         <div className="pt-2 space-y-2">
           <Button
             type="submit"
-            className="w-full bg-accent text-white rounded-xl py-2"
+            className="w-full bg-accent hover:bg-accent/90 text-white rounded-xl py-2.5"
           >
             Next
           </Button>

@@ -81,7 +81,6 @@ export function Admin() {
 
     let hasError = false;
 
-    // NAME
     if (!form.firstName) {
       newErrors.firstName = "First name required";
       hasError = true;
@@ -92,7 +91,6 @@ export function Admin() {
       hasError = true;
     }
 
-    // EMAIL VALIDATION (DTO STYLE)
     const emailRegex =
       /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
 
@@ -104,7 +102,6 @@ export function Admin() {
       hasError = true;
     }
 
-    // PHONE
     const phoneRegex =
       /^\+?[0-9]{1,3}([-\s.]?[0-9]{2,4}){2,4}$/;
 
@@ -116,7 +113,6 @@ export function Admin() {
       hasError = true;
     }
 
-    // PASSWORD
     const hasMin = /.{6,}/.test(form.password);
     const hasUpper = /[A-Z]/.test(form.password);
     const hasNumber = /[0-9]/.test(form.password);
@@ -125,13 +121,13 @@ export function Admin() {
       newErrors.password = "Password required";
       hasError = true;
     } else {
-      const msgs = [];
-      if (!hasMin) msgs.push("Min 6 characters");
-      if (!hasUpper) msgs.push("1 uppercase letter needed");
-      if (!hasNumber) msgs.push("1 number needed");
+      const message = [];
+      if (!hasMin) message.push("Min 6 characters");
+      if (!hasUpper) message.push("1 uppercase letter needed");
+      if (!hasNumber) message.push("1 number needed");
 
-      if (msgs.length) {
-        newErrors.password = msgs.join(", ");
+      if (message.length) {
+        newErrors.password = message.join(", ");
         hasError = true;
       }
     }
@@ -183,7 +179,6 @@ export function Admin() {
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
 
-      {/* TABS */}
       <div className="flex gap-2 flex-wrap">
         {[
           { id: "create", label: "Create Admin" },
@@ -206,7 +201,6 @@ export function Admin() {
         ))}
       </div>
 
-      {/* CREATE ADMIN */}
       {activeTab === "create" && (
         <div className="border rounded-xl p-4 space-y-3 max-w-lg">
 
@@ -272,7 +266,6 @@ export function Admin() {
         </div>
       )}
 
-      {/* ADMINS */}
       {activeTab === "admins" && (
         <div className="space-y-2">
           {admins.map((a) => (
@@ -289,7 +282,6 @@ export function Admin() {
         </div>
       )}
 
-      {/* ROOMMATES */}
       {activeTab === "roommates" && (
         <div className="space-y-2">
           {roommateRatings.map((r) => (
@@ -318,7 +310,6 @@ export function Admin() {
         </div>
       )}
 
-      {/* HOUSES */}
       {activeTab === "houses" && (
         <div className="space-y-2">
           {houseRatings.map((r) => (

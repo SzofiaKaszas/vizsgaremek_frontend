@@ -45,7 +45,6 @@ export function AddHouseListing() {
   const housecontext = useContext(HouseContext);
   const usercontext = useContext(UserContext);
 
-  // 👉 STEP 2 upload
   const handleImageUpload = async () => {
     if (!selectedFile || !createdHouseId) return;
     if (images.length >= 8) return;
@@ -74,8 +73,6 @@ export function AddHouseListing() {
 
       <div className="w-full flex justify-center px-4 py-10">
         <div className="w-full max-w-3xl space-y-6">
-
-          {/* HEADER */}
           <div className="text-center space-y-1">
             <CardTitle>
               {step === 1 ? "Create listing" : "Upload images"}
@@ -87,7 +84,6 @@ export function AddHouseListing() {
             </p>
           </div>
 
-          {/* STEP 1 */}
           <Toaster position="top-center" />
           <div className="w-full flex justify-center px-4 py-10">
             {step === 1 && (
@@ -103,12 +99,11 @@ export function AddHouseListing() {
                 }
                 className="space-y-6"
               >
-                {/* HEADER */}
                 <Card className="p-6">
                   <CardTitle className="text-xl font-bold"> Add House Listing
                   </CardTitle>
                   <p className="text-sm text-muted-foreground mt-1"> Create a new listing for your property </p>
-                </Card> {/* BASIC INFO */}
+                </Card> 
                 <Card className="p-6 space-y-4">
                   <h3 className="font-semibold">Basic information</h3>
                   <Field> <FieldLabel> Description
@@ -153,7 +148,6 @@ export function AddHouseListing() {
                     ></FieldDescription>
                   </Field>
                 </Card>
-                {/* PROPERTY */}
                 <Card className="p-6 space-y-4">
                   <h3 className="font-semibold">Property details</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -222,7 +216,6 @@ export function AddHouseListing() {
                     </Field>
                   </div>
                 </Card>
-                {/* COMFORT */}
                 <Card className="p-6 space-y-4">
                   <h3 className="font-semibold">Comfort</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -296,7 +289,7 @@ export function AddHouseListing() {
                         id="kitchenFurnishingErr"
                         className="text-red-600 text-sm mt-1"
                       ></FieldDescription>
-                    </Field> {/* SWITCH */}
+                    </Field> 
                     <div className="flex items-center justify-between border rounded-md p-3">
                       <span>Air conditioner</span>
                       <Switch name="airConditioner" className="data-[state=checked]:bg-purple-600" />
@@ -307,7 +300,6 @@ export function AddHouseListing() {
                     </div>
                   </div>
                 </Card>
-                {/* ACTIONS */}
                 <div className="flex justify-end gap-3">
                   <Button
                     type="submit"
@@ -336,7 +328,6 @@ export function AddHouseListing() {
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2"> {images.length}/8 uploaded </p>
-                  {/* PREVIEW */}
                   <div className="grid grid-cols-3 gap-2 mt-3">
                     {images.map((img, i) => (<img key={i} src={img}
                       className="w-full h-20 object-cover rounded-md border" />))}

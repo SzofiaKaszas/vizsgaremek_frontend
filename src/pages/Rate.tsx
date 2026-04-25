@@ -1,11 +1,11 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate, type NavigateFunction } from "react-router";
 import { Star } from "lucide-react";
 import { UserContext } from "@/context/userContext";
 import { HouseContext } from "@/context/houseContext";
-import type { RateHouse, RateUser } from "@/interfaces";
+import type { HouseContextType, RateHouse, RateUser, UserContextType } from "@/interfaces";
 import { toast, Toaster } from "sonner";
 
 export function Rate() {
@@ -27,42 +27,15 @@ export function Rate() {
     );
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const form = new FormData(e.currentTarget);
-    const comment = form.get("comment")?.toString() || "";
-
-    if (houseOrRoommate === "roommate") {
-      const rate: Partial<RateUser> = {
-        ratingMessage: comment,
-        ratingScore: rating,
-      };
-
-      await userContext.rateUser(id, rate);
-      toast.success("Successfully rated roommate");
-    }
-
-    if (houseOrRoommate === "house") {
-      const rate: Partial<RateHouse> = {
-        ratingMessage: comment,
-        ratingScore: rating,
-      };
-
-      await houseContext.rateHouse(id, rate);
-      toast.success("Successfully rated house");
-    }
-
-    setTimeout(() => navigate(-1), 600);
-  }
-
   return (
     <>
       <Toaster position="top-center" />
 
       <div className="min-h-screen flex items-center justify-center px-4 bg-background">
 
-        <form onSubmit={handleSubmit} className="w-full max-w-md">
+        <form onSubmit={(e) => {
+          handleSubmit(e, houseOrRoommate, rating, userContext, id, houseContext, navigate)
+        }} className="w-full max-w-md">
 
           <Card className="p-6 space-y-6 shadow-lg">
 
@@ -141,4 +114,33 @@ export function Rate() {
       </div>
     </>
   );
+}
+
+async function handleSubmit(e: React.FormEvent<HTMLFormElement>, houseOrRoommate: any, rating: number, userContext: UserContextType, id: any, houseContext: HouseContextType, navigate: NavigateFunction) {
+  e.preventDefault();
+
+  const form = new FormData(e.currentTarget);
+  const comment = form.get("comment")?.toString() || "";
+
+  if (houseOrRoommate === "roommate") {
+    const rate: Partial<RateUser> = {
+      ratingMessage: comment,
+      ratingScore: rating,
+    };
+
+    await userContext.rateUser(id, rate);
+    toast.success("Successfully rated roommate");
+  }
+
+  if (houseOrRoommate === "house") {
+    const rate: Partial<RateHouse> = {
+      ratingMessage: comment,
+      ratingScore: rating,
+    };
+
+    await houseContext.rateHouse(id, rate);
+    toast.success("Successfully rated house");
+  }
+
+  setTimeout(() => navigate(-1), 600);
 }

@@ -6,7 +6,6 @@ import { LayoutGrid, GalleryHorizontal } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FindRoommateSlide } from "./FindRoommateSlide";
 import { PleaseLogin } from "./PleaseLogin";
-import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 
@@ -63,8 +62,6 @@ export function FindRoommate() {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 mt-10 space-y-6">
-
-      {/* HEADER / DASHBOARD BAR */}
       <div className="flex items-center justify-between border rounded-xl p-3 bg-background shadow-sm">
         <div>
           <h2 className="text-xl font-semibold">Find Roommates</h2>
@@ -85,7 +82,6 @@ export function FindRoommate() {
         </Tabs>
       </div>
 
-      {/* CONTENT */}
       <Tabs value={tab} onValueChange={setTab}>
         <TabsContent value="grid" className="mt-4">
           <FindRoommateCard
@@ -105,7 +101,6 @@ export function FindRoommate() {
   );
 }
 
-/* mobile hook unchanged */
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : false
