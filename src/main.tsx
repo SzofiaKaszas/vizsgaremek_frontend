@@ -20,6 +20,7 @@ import { AddHouseListing } from "./pages/AddHouseListing.tsx";
 import { Likes } from "./pages/Likes.tsx";
 import { Admin } from "./pages/Admin.tsx";
 import { Rate } from "./pages/Rate.tsx";
+import EditHouseListing from "./pages/EditHouseListing.tsx";
 
 //routing
 const router = createBrowserRouter([
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "/likes", Component: Likes }, // to see who/what the user liked
       { path: "/addhouselisting", Component:  AddHouseListing }, //to add own house listing
       { path: "/managehouselising", Component: YourHouseListing }, //to manage own house listings
+      { path: "/edithouse", Component: EditHouseListing }, //to manage own house listings
       { path: "/profile", Component: Profile }, // to see own profile
       { path: "/editprofile", Component: EditProfile }, // to edit own profile
       { path: "/admin", Component: Admin }, // admin page ?? 
